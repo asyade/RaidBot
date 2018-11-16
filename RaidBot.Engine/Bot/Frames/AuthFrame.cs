@@ -34,13 +34,25 @@ namespace RaidBot.Engine.Bot.Frames
         [MessageHandlerAttribut(typeof(HelloConnect))]
         private void HandleHelloConnect(HelloConnect msg)
         {
-            Console.WriteLine("Salt " + msg.salt + " key len " + msg.key.Length);
-            foreach (sbyte b in msg.key)
-                Console.Write(b + ", ");
+            Console.WriteLine("Waiting id");
             mHelloConnect = msg;
-            SendCredentials();
+            this.Brain.Bypass.AuthentificationLoaded += Bypass_AuthentificationLoaded;
+            this.Brain.Bypass.RequestAuthentificationMessage(msg.salt, msg.key);
         }
-        
+
+        private void Bypass_AuthentificationLoaded(object sender, Daemon.Daemon.IdentificationLoadedEventArgs e)
+        {
+            Console.WriteLine("Mine|" + e.Salt + "|" + mHelloConnect.salt + "|");
+            if (e.Salt != mHelloConnect.salt)
+            {
+                Console.WriteLine("Wrong identification messge");
+                return;
+            }
+            this.Brain.Bypass.AuthentificationLoaded -= Bypass_AuthentificationLoaded;
+            Console.WriteLine("Send the identification msg to server");
+            Brain.SendMessage(e.Msg);
+        }
+
         [MessageHandlerAttribut(typeof(IdentificationFailedMessage))]
         private void HandleIdentificationFailedMessage(IdentificationFailedMessage msg)
         {

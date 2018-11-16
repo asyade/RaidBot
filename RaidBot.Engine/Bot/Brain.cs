@@ -20,13 +20,15 @@ namespace RaidBot.Engine.Bot
         public Client Connection { get; set; }
         public Dispatcher.Dispatcher Dispatcher { get; }
         public uint GlobalInstanceId { get; set; }
- 
+
+
+        public Daemon.Daemon Bypass { get; }
         Dictionary<UInt32, Frame> frames;
 
-        public Brain(BotConfig config)
+        public Brain(BotConfig config, Daemon.Daemon daemon)
         {
             this.Dispatcher = new Dispatcher.Dispatcher();
-
+            Bypass = daemon;
             GlobalInstanceId = 0;
             Config = config;
             State = new Store();

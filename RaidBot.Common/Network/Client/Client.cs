@@ -13,6 +13,7 @@ namespace RaidBot.Common.Network.Client
     public class Client
     {
         #region Declarations
+        public bool IsNewProtocol { get; set; } // Not well named, if it's true when we read packed we also read aditional packed counter (only for mitm or slave client)
         private Socket clientSocket;
         public bool Runing { get; private set; }
         private byte[] sendBuffer, receiveBuffer;
@@ -34,13 +35,15 @@ namespace RaidBot.Common.Network.Client
 
         public Client(IPAddress ip, int port,Logger logg)
         {
+            IsNewProtocol = false;
             this.Logg = logg;
             Init();
             Start(ip, port);
         }
 
-        public Client(Socket socket, Logger logg)
+        public Client(Socket socket, Logger logg, bool newProtocol)
         {
+            IsNewProtocol = newProtocol;
             this.Logg = logg;
             Init();
             Start(socket);
@@ -138,7 +141,7 @@ namespace RaidBot.Common.Network.Client
             if (currentMessage == null)
                 currentMessage = new Buffer();
             long pos = buffer.Position;
-            if (currentMessage.Build(buffer))
+            if (currentMessage.Build(buffer, IsNewProtocol))
             {
                 OnDataReceived(new DataReceivedEventArgs(currentMessage));
                 currentMessage = null;
@@ -177,7 +180,6 @@ namespace RaidBot.Common.Network.Client
             }
             if (Runing)
             {
-                Console.WriteLine("Revcv");
                 int bytesRead = 0;
                 bytesRead = client.EndReceive(asyncResult);
                if (bytesRead == 0)

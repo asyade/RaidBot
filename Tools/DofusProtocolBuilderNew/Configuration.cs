@@ -79,7 +79,7 @@ namespace DofusProtocolBuilder
                 new XmlMessagesProfile
                     {
                         Name = "Xml Messages classes",
-                        OutPutPath = "messages_xml/",
+                        OutPutPath = "messages/",
                         SourcePath = @"com/ankamagames/dofus/network/messages/",
                         EnableParsing = true,
                     };
@@ -88,7 +88,7 @@ namespace DofusProtocolBuilder
                 new XmlTypesProfile
                     {
                         Name = "Xml Types classes",
-                        OutPutPath = "types_xml/",
+                        OutPutPath = "types/",
                         SourcePath = @"com/ankamagames/dofus/network/types/",
                         EnableParsing = true,
                         

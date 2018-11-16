@@ -33,7 +33,7 @@ namespace RaidBot.Protocol.Types
             return getTypeInstance<T>((uint)ProtocolId);
         }
 
-        public static NetworkMessage GetPacket(byte[] data,uint id)
+        public static NetworkMessage GetPacket(byte[] data, uint id)
         {
             if (!messagesInitializd)
                 InitializeMessages();

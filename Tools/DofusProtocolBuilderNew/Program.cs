@@ -69,10 +69,10 @@ namespace DofusProtocolBuilder
                 {
                     Configuration.XmlMessagesProfile,
                     Configuration.XmlTypesProfile,
-                    Configuration.MessagesProfile,
-                    Configuration.TypesProfile,
-                    Configuration.DatacenterProfile,
-                    Configuration.EnumsProfile,
+                    //Configuration.MessagesProfile,
+                    //Configuration.TypesProfile,
+                    //Configuration.DatacenterProfile,
+                    //Configuration.EnumsProfile,
                 };
 
             foreach (ParsingProfile parsingProfile in profiles)
@@ -87,7 +87,7 @@ namespace DofusProtocolBuilder
 
                 if (!Directory.Exists(Configuration.Output))
                     Directory.CreateDirectory(Configuration.Output);
-
+         
                 
                 if (Directory.Exists(Path.Combine(Configuration.Output, parsingProfile.OutPutPath)))
                 {
@@ -102,31 +102,12 @@ namespace DofusProtocolBuilder
 
                 foreach (string file in files)
                 {
-                    string relativePath = parsingProfile.GetRelativePath(file);
-
-                    if (!Directory.Exists(Path.Combine(Configuration.Output, parsingProfile.OutPutPath, relativePath)))
-                        Directory.CreateDirectory(Path.Combine(Configuration.Output, parsingProfile.OutPutPath, relativePath));
-
-                    var parser = new Parser(file, parsingProfile.BeforeParsingReplacementRules,
-                                            parsingProfile.IgnoredLines)
-                        {IgnoreMethods = parsingProfile.IgnoreMethods};
-
-                    try
-                    {
-                        if (parsingProfile.EnableParsing)
-                            parser.ParseFile();
-                    }
-                    catch (InvalidCodeFileException)
-                    {
-                        Console.WriteLine("File {0} not parsed correctly", Path.GetFileName(file));
-                        continue;
-                    }
-
-                    parsingProfile.ExecuteProfile(parser);
+                    String output = file.Replace(parsingProfile.SourcePath, parsingProfile.OutPutPath).Replace(".as", ".cs");
+                    string contents = File.ReadAllText(file);
+                    Directory.CreateDirectory(Path.GetDirectoryName(output));
+                    File.WriteAllText(output, new FastConvert(contents).Parsed.ToString());
                 }
 
-                Console.WriteLine("Done !");
-				Console.ReadLine();
             }
         }
 

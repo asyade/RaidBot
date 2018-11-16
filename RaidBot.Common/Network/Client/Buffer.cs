@@ -49,7 +49,7 @@ namespace RaidBot.Common.Network.Client
         }
 
         public byte[] FullPacket { get;  set; }
-        public bool Build(BigEndianReader reader)
+        public bool Build(BigEndianReader reader, bool messageCounter)
         {
             if (IsValid)
                 return true;
@@ -58,6 +58,8 @@ namespace RaidBot.Common.Network.Client
             {
                 Header = reader.ReadShort();
             }
+            if (messageCounter)
+                reader.ReadUInt();
 
             if (LengthBytesCount.HasValue &&
                 reader.BytesAvailable >= LengthBytesCount && !Length.HasValue)

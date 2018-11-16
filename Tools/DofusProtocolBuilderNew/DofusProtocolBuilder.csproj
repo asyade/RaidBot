@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="FastConvert.cs" />
     <Compile Include="Parsing\AccessModifiers.cs" />
     <Compile Include="Parsing\ClassInfo.cs" />
     <Compile Include="Parsing\Elements\ControlStatement.cs" />
