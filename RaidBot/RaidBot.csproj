@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3D6E8B1A-4A6A-4BC6-9797-9EC747D05037}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>RaidBot</RootNamespace>
+    <AssemblyName>RaidBot</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\RaidBot.Common\RaidBot.Common.csproj">
+      <Project>{1EF1A56A-46E9-4EDA-8461-872FCFA50385}</Project>
+      <Name>RaidBot.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RaidBot.Engine\RaidBot.Engine.csproj">
+      <Project>{424C9731-030E-4D09-A4DA-117C496BCF18}</Project>
+      <Name>RaidBot.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RaidBot.Protocol\RaidBot.Protocol.csproj">
+      <Project>{601CBDE9-7169-41C3-B408-525D8BB0A2DE}</Project>
+      <Name>RaidBot.Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RaidBot.Data\RaidBot.Data.csproj">
+      <Project>{65EE1577-D1D7-4011-BF2B-F589FDD4C528}</Project>
+      <Name>RaidBot.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>

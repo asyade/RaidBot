@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{424C9731-030E-4D09-A4DA-117C496BCF18}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RaidBot.Engine</RootNamespace>
+    <AssemblyName>RaidBot.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bot\BotConfig.cs" />
+    <Compile Include="Bot\BotState.cs" />
+    <Compile Include="Bot\Brain.cs" />
+    <Compile Include="Bot\Data\Store.cs" />
+    <Compile Include="Bot\Frames\AuthFrame.cs" />
+    <Compile Include="Bot\Frames\CharacterSelectionFrame.cs" />
+    <Compile Include="Bot\Frames\Frame.cs" />
+    <Compile Include="Daemon\Daemon.cs" />
+    <Compile Include="Dispatcher\Dispatcher.cs" />
+    <Compile Include="Dispatcher\IMessagesHandler.cs" />
+    <Compile Include="Dispatcher\MessageDelegateDefinition.cs" />
+    <Compile Include="Dispatcher\MessageHandlerAttribut.cs" />
+    <Compile Include="Dispatcher\MessageInitializedEventArgs.cs" />
+    <Compile Include="Dispatcher\MessagesHandler.cs" />
+    <Compile Include="MigrateRequestEventArgs.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setting\RemoteSetting.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>RemoteSetting.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Setting\TrajetSetting.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>TrajetSetting.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\Security\Cryptography.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Setting\RemoteSetting.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>RemoteSetting.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Setting\TrajetSetting.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>TrajetSetting.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\RaidBot.Data\RaidBot.Data.csproj">
+      <Project>{65EE1577-D1D7-4011-BF2B-F589FDD4C528}</Project>
+      <Name>RaidBot.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RaidBot.Protocol\RaidBot.Protocol.csproj">
+      <Project>{601CBDE9-7169-41C3-B408-525D8BB0A2DE}</Project>
+      <Name>RaidBot.Protocol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RaidBot.Common\RaidBot.Common.csproj">
+      <Project>{1EF1A56A-46E9-4EDA-8461-872FCFA50385}</Project>
+      <Name>RaidBot.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
