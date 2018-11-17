@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeMountsStableAddMessage : NetworkMessage
 {
 
-public const uint Id = 6555;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6555;
+	public override uint MessageId { get { return Id; } }
+
+	public MountClientData[] MountDescription { get; set; }
+
+	public ExchangeMountsStableAddMessage() {}
+
+
+	public ExchangeMountsStableAddMessage InitExchangeMountsStableAddMessage(MountClientData[] MountDescription)
+	{
+		this.MountDescription = MountDescription;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.MountDescription.Length);
+		foreach (MountClientData item in this.MountDescription)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int MountDescriptionLen = reader.ReadShort();
+		MountDescription = new MountClientData[MountDescriptionLen];
+		for (int i = 0; i < MountDescriptionLen; i++)
+		{
+			this.MountDescription[i] = new MountClientData();
+			this.MountDescription[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.MountClientData[] mountDescription;
-        
-
-public ExchangeMountsStableAddMessage()
-{
-}
-
-public ExchangeMountsStableAddMessage(Types.MountClientData[] mountDescription)
-        {
-            this.mountDescription = mountDescription;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)mountDescription.Length);
-            foreach (var entry in mountDescription)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            mountDescription = new Types.MountClientData[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 mountDescription[i] = new Types.MountClientData();
-                 mountDescription[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

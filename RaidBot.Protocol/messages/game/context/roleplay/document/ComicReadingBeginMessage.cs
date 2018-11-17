@@ -1,74 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ComicReadingBeginMessage : NetworkMessage
 {
 
-public const uint Id = 6536;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6536;
+	public override uint MessageId { get { return Id; } }
+
+	public short ComicId { get; set; }
+
+	public ComicReadingBeginMessage() {}
+
+
+	public ComicReadingBeginMessage InitComicReadingBeginMessage(short ComicId)
+	{
+		this.ComicId = ComicId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ComicId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ComicId = reader.ReadVarShort();
+	}
 }
-
-public ushort comicId;
-        
-
-public ComicReadingBeginMessage()
-{
-}
-
-public ComicReadingBeginMessage(ushort comicId)
-        {
-            this.comicId = comicId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(comicId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-comicId = reader.ReadVaruhshort();
-            if (comicId < 0)
-                throw new Exception("Forbidden value on comicId = " + comicId + ", it doesn't respect the following condition : comicId < 0");
-            
-
-}
-
-
-}
-
-
 }

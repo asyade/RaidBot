@@ -1,110 +1,75 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SlaveSwitchContextMessage : NetworkMessage
 {
 
-public const uint Id = 6214;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6214;
+	public override uint MessageId { get { return Id; } }
+
+	public double MasterId { get; set; }
+	public double SlaveId { get; set; }
+	public SpellItem[] SlaveSpells { get; set; }
+	public CharacterCharacteristicsInformations SlaveStats { get; set; }
+	public Shortcut[] Shortcuts { get; set; }
+
+	public SlaveSwitchContextMessage() {}
+
+
+	public SlaveSwitchContextMessage InitSlaveSwitchContextMessage(double MasterId, double SlaveId, SpellItem[] SlaveSpells, CharacterCharacteristicsInformations SlaveStats, Shortcut[] Shortcuts)
+	{
+		this.MasterId = MasterId;
+		this.SlaveId = SlaveId;
+		this.SlaveSpells = SlaveSpells;
+		this.SlaveStats = SlaveStats;
+		this.Shortcuts = Shortcuts;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MasterId);
+		writer.WriteDouble(this.SlaveId);
+		writer.WriteShort(this.SlaveSpells.Length);
+		foreach (SpellItem item in this.SlaveSpells)
+		{
+			item.Serialize(writer);
+		}
+		this.SlaveStats.Serialize(writer);
+		writer.WriteShort(this.Shortcuts.Length);
+		foreach (Shortcut item in this.Shortcuts)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MasterId = reader.ReadDouble();
+		this.SlaveId = reader.ReadDouble();
+		int SlaveSpellsLen = reader.ReadShort();
+		SlaveSpells = new SpellItem[SlaveSpellsLen];
+		for (int i = 0; i < SlaveSpellsLen; i++)
+		{
+			this.SlaveSpells[i] = new SpellItem();
+			this.SlaveSpells[i].Deserialize(reader);
+		}
+		this.SlaveStats = new CharacterCharacteristicsInformations();
+		this.SlaveStats.Deserialize(reader);
+		int ShortcutsLen = reader.ReadShort();
+		Shortcuts = new Shortcut[ShortcutsLen];
+		for (int i = 0; i < ShortcutsLen; i++)
+		{
+			this.Shortcuts[i] = ProtocolTypeManager.GetInstance<Shortcut>(reader.ReadShort());
+			this.Shortcuts[i].Deserialize(reader);
+		}
+	}
 }
-
-public int masterId;
-        public int slaveId;
-        public Types.SpellItem[] slaveSpells;
-        public Types.CharacterCharacteristicsInformations slaveStats;
-        public Types.Shortcut[] shortcuts;
-        
-
-public SlaveSwitchContextMessage()
-{
-}
-
-public SlaveSwitchContextMessage(int masterId, int slaveId, Types.SpellItem[] slaveSpells, Types.CharacterCharacteristicsInformations slaveStats, Types.Shortcut[] shortcuts)
-        {
-            this.masterId = masterId;
-            this.slaveId = slaveId;
-            this.slaveSpells = slaveSpells;
-            this.slaveStats = slaveStats;
-            this.shortcuts = shortcuts;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(masterId);
-            writer.WriteInt(slaveId);
-            writer.WriteUShort((ushort)slaveSpells.Length);
-            foreach (var entry in slaveSpells)
-            {
-                 entry.Serialize(writer);
-            }
-            slaveStats.Serialize(writer);
-            writer.WriteUShort((ushort)shortcuts.Length);
-            foreach (var entry in shortcuts)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-masterId = reader.ReadInt();
-            slaveId = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            slaveSpells = new Types.SpellItem[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 slaveSpells[i] = new Types.SpellItem();
-                 slaveSpells[i].Deserialize(reader);
-            }
-            slaveStats = new Types.CharacterCharacteristicsInformations();
-            slaveStats.Deserialize(reader);
-            limit = reader.ReadUShort();
-            shortcuts = new Types.Shortcut[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 shortcuts[i] = Types.ProtocolTypeManager.GetInstance<Types.Shortcut>(reader.ReadShort());
-                 shortcuts[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

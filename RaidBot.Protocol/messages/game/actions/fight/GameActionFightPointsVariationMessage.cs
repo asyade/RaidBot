@@ -1,79 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameActionFightPointsVariationMessage : AbstractGameActionMessage
 {
 
-public const uint Id = 1030;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 1030;
+	public override uint MessageId { get { return Id; } }
+
+	public double TargetId { get; set; }
+	public short Delta { get; set; }
+
+	public GameActionFightPointsVariationMessage() {}
+
+
+	public GameActionFightPointsVariationMessage InitGameActionFightPointsVariationMessage(double TargetId, short Delta)
+	{
+		this.TargetId = TargetId;
+		this.Delta = Delta;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.TargetId);
+		writer.WriteShort(this.Delta);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.TargetId = reader.ReadDouble();
+		this.Delta = reader.ReadShort();
+	}
 }
-
-public int targetId;
-        public short delta;
-        
-
-public GameActionFightPointsVariationMessage()
-{
-}
-
-public GameActionFightPointsVariationMessage(ushort actionId, int sourceId, int targetId, short delta)
-         : base(actionId, sourceId)
-        {
-            this.targetId = targetId;
-            this.delta = delta;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(targetId);
-            writer.WriteShort(delta);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            targetId = reader.ReadInt();
-            delta = reader.ReadShort();
-            
-
-}
-
-
-}
-
-
 }

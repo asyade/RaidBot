@@ -1,77 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AbstractContactInformations : NetworkType
 {
 
-public class AbstractContactInformations
-{
+	public const uint Id = 380;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 380;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int AccountId { get; set; }
+	public String AccountName { get; set; }
+
+	public AbstractContactInformations() {}
+
+
+	public AbstractContactInformations InitAbstractContactInformations(int AccountId, String AccountName)
+	{
+		this.AccountId = AccountId;
+		this.AccountName = AccountName;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.AccountId);
+		writer.WriteUTF(this.AccountName);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.AccountId = reader.ReadInt();
+		this.AccountName = reader.ReadUTF();
+	}
 }
-
-public int accountId;
-        public string accountName;
-        
-
-public AbstractContactInformations()
-{
-}
-
-public AbstractContactInformations(int accountId, string accountName)
-        {
-            this.accountId = accountId;
-            this.accountName = accountName;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(accountId);
-            writer.WriteUTF(accountName);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-accountId = reader.ReadInt();
-            if (accountId < 0)
-                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            accountName = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

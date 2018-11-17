@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightFighterMonsterLightInformations : GameFightFighterLightInformations
 {
 
-public const short Id = 455;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 455;
+	public override uint MessageId { get { return Id; } }
+
+	public short CreatureGenericId { get; set; }
+
+	public GameFightFighterMonsterLightInformations() {}
+
+
+	public GameFightFighterMonsterLightInformations InitGameFightFighterMonsterLightInformations(short CreatureGenericId)
+	{
+		this.CreatureGenericId = CreatureGenericId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.CreatureGenericId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.CreatureGenericId = reader.ReadVarShort();
+	}
 }
-
-public ushort creatureGenericId;
-        
-
-public GameFightFighterMonsterLightInformations()
-{
-}
-
-public GameFightFighterMonsterLightInformations(bool sex, bool alive, int id, sbyte wave, ushort level, sbyte breed, ushort creatureGenericId)
-         : base(sex, alive, id, wave, level, breed)
-        {
-            this.creatureGenericId = creatureGenericId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(creatureGenericId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            creatureGenericId = reader.ReadVaruhshort();
-            if (creatureGenericId < 0)
-                throw new Exception("Forbidden value on creatureGenericId = " + creatureGenericId + ", it doesn't respect the following condition : creatureGenericId < 0");
-            
-
-}
-
-
-}
-
-
 }

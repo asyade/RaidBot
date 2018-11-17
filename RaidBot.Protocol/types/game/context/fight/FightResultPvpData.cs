@@ -1,97 +1,55 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightResultPvpData : FightResultAdditionalData
 {
 
-public const short Id = 190;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 190;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Grade { get; set; }
+	public short MinHonorForGrade { get; set; }
+	public short MaxHonorForGrade { get; set; }
+	public short Honor { get; set; }
+	public short HonorDelta { get; set; }
+
+	public FightResultPvpData() {}
+
+
+	public FightResultPvpData InitFightResultPvpData(byte Grade, short MinHonorForGrade, short MaxHonorForGrade, short Honor, short HonorDelta)
+	{
+		this.Grade = Grade;
+		this.MinHonorForGrade = MinHonorForGrade;
+		this.MaxHonorForGrade = MaxHonorForGrade;
+		this.Honor = Honor;
+		this.HonorDelta = HonorDelta;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.Grade);
+		writer.WriteVarShort(this.MinHonorForGrade);
+		writer.WriteVarShort(this.MaxHonorForGrade);
+		writer.WriteVarShort(this.Honor);
+		writer.WriteVarShort(this.HonorDelta);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Grade = reader.ReadByte();
+		this.MinHonorForGrade = reader.ReadVarShort();
+		this.MaxHonorForGrade = reader.ReadVarShort();
+		this.Honor = reader.ReadVarShort();
+		this.HonorDelta = reader.ReadVarShort();
+	}
 }
-
-public byte grade;
-        public ushort minHonorForGrade;
-        public ushort maxHonorForGrade;
-        public ushort honor;
-        public short honorDelta;
-        
-
-public FightResultPvpData()
-{
-}
-
-public FightResultPvpData(byte grade, ushort minHonorForGrade, ushort maxHonorForGrade, ushort honor, short honorDelta)
-        {
-            this.grade = grade;
-            this.minHonorForGrade = minHonorForGrade;
-            this.maxHonorForGrade = maxHonorForGrade;
-            this.honor = honor;
-            this.honorDelta = honorDelta;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(grade);
-            writer.WriteVaruhshort(minHonorForGrade);
-            writer.WriteVaruhshort(maxHonorForGrade);
-            writer.WriteVaruhshort(honor);
-            writer.WriteVarshort(honorDelta);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            grade = reader.ReadByte();
-            if (grade < 0 || grade > 255)
-                throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0 || grade > 255");
-            minHonorForGrade = reader.ReadVaruhshort();
-            if (minHonorForGrade < 0 || minHonorForGrade > 20000)
-                throw new Exception("Forbidden value on minHonorForGrade = " + minHonorForGrade + ", it doesn't respect the following condition : minHonorForGrade < 0 || minHonorForGrade > 20000");
-            maxHonorForGrade = reader.ReadVaruhshort();
-            if (maxHonorForGrade < 0 || maxHonorForGrade > 20000)
-                throw new Exception("Forbidden value on maxHonorForGrade = " + maxHonorForGrade + ", it doesn't respect the following condition : maxHonorForGrade < 0 || maxHonorForGrade > 20000");
-            honor = reader.ReadVaruhshort();
-            if (honor < 0 || honor > 20000)
-                throw new Exception("Forbidden value on honor = " + honor + ", it doesn't respect the following condition : honor < 0 || honor > 20000");
-            honorDelta = reader.ReadVarshort();
-            
-
-}
-
-
-}
-
-
 }

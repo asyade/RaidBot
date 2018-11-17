@@ -1,98 +1,60 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameFightFighterLightInformations : NetworkType
 {
 
-public class GameFightFighterLightInformations
-{
+	public const uint Id = 413;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 413;
-public virtual short TypeId
-{
-    get { return Id; }
+	public bool Sex { get; set; }
+	public bool Alive { get; set; }
+	public double Id_ { get; set; }
+	public byte Wave { get; set; }
+	public short Level { get; set; }
+	public byte Breed { get; set; }
+
+	public GameFightFighterLightInformations() {}
+
+
+	public GameFightFighterLightInformations InitGameFightFighterLightInformations(bool Sex, bool Alive, double Id_, byte Wave, short Level, byte Breed)
+	{
+		this.Sex = Sex;
+		this.Alive = Alive;
+		this.Id_ = Id_;
+		this.Wave = Wave;
+		this.Level = Level;
+		this.Breed = Breed;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, Sex);
+		box = BooleanByteWrapper.SetFlag(box, 1, Alive);
+		writer.WriteByte(box);
+		writer.WriteDouble(this.Id_);
+		writer.WriteByte(this.Wave);
+		writer.WriteVarShort(this.Level);
+		writer.WriteByte(this.Breed);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.Sex = BooleanByteWrapper.GetFlag(box, 0);
+		this.Alive = BooleanByteWrapper.GetFlag(box, 1);
+		this.Id_ = reader.ReadDouble();
+		this.Wave = reader.ReadByte();
+		this.Level = reader.ReadVarShort();
+		this.Breed = reader.ReadByte();
+	}
 }
-
-public bool sex;
-        public bool alive;
-        public int id;
-        public sbyte wave;
-        public ushort level;
-        public sbyte breed;
-        
-
-public GameFightFighterLightInformations()
-{
-}
-
-public GameFightFighterLightInformations(bool sex, bool alive, int id, sbyte wave, ushort level, sbyte breed)
-        {
-            this.sex = sex;
-            this.alive = alive;
-            this.id = id;
-            this.wave = wave;
-            this.level = level;
-            this.breed = breed;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, sex);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, alive);
-            writer.WriteByte(flag1);
-            writer.WriteInt(id);
-            writer.WriteSByte(wave);
-            writer.WriteVaruhshort(level);
-            writer.WriteSByte(breed);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-byte flag1 = reader.ReadByte();
-            sex = BooleanByteWrapper.GetFlag(flag1, 0);
-            alive = BooleanByteWrapper.GetFlag(flag1, 1);
-            id = reader.ReadInt();
-            wave = reader.ReadSByte();
-            if (wave < 0)
-                throw new Exception("Forbidden value on wave = " + wave + ", it doesn't respect the following condition : wave < 0");
-            level = reader.ReadVaruhshort();
-            if (level < 0)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0");
-            breed = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

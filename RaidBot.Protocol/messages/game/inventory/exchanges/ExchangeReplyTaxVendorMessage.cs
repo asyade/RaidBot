@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeReplyTaxVendorMessage : NetworkMessage
 {
 
-public const uint Id = 5787;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5787;
+	public override uint MessageId { get { return Id; } }
+
+	public long ObjectValue { get; set; }
+	public long TotalTaxValue { get; set; }
+
+	public ExchangeReplyTaxVendorMessage() {}
+
+
+	public ExchangeReplyTaxVendorMessage InitExchangeReplyTaxVendorMessage(long ObjectValue, long TotalTaxValue)
+	{
+		this.ObjectValue = ObjectValue;
+		this.TotalTaxValue = TotalTaxValue;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.ObjectValue);
+		writer.WriteVarLong(this.TotalTaxValue);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ObjectValue = reader.ReadVarLong();
+		this.TotalTaxValue = reader.ReadVarLong();
+	}
 }
-
-public uint objectValue;
-        public uint totalTaxValue;
-        
-
-public ExchangeReplyTaxVendorMessage()
-{
-}
-
-public ExchangeReplyTaxVendorMessage(uint objectValue, uint totalTaxValue)
-        {
-            this.objectValue = objectValue;
-            this.totalTaxValue = totalTaxValue;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(objectValue);
-            writer.WriteVaruhint(totalTaxValue);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-objectValue = reader.ReadVaruhint();
-            if (objectValue < 0)
-                throw new Exception("Forbidden value on objectValue = " + objectValue + ", it doesn't respect the following condition : objectValue < 0");
-            totalTaxValue = reader.ReadVaruhint();
-            if (totalTaxValue < 0)
-                throw new Exception("Forbidden value on totalTaxValue = " + totalTaxValue + ", it doesn't respect the following condition : totalTaxValue < 0");
-            
-
-}
-
-
-}
-
-
 }

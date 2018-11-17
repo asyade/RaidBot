@@ -1,85 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class SpellItem : Item
 {
 
-public const short Id = 49;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 49;
+	public override uint MessageId { get { return Id; } }
+
+	public int SpellId { get; set; }
+	public short SpellLevel { get; set; }
+
+	public SpellItem() {}
+
+
+	public SpellItem InitSpellItem(int SpellId, short SpellLevel)
+	{
+		this.SpellId = SpellId;
+		this.SpellLevel = SpellLevel;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteInt(this.SpellId);
+		writer.WriteShort(this.SpellLevel);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.SpellId = reader.ReadInt();
+		this.SpellLevel = reader.ReadShort();
+	}
 }
-
-public byte position;
-        public int spellId;
-        public sbyte spellLevel;
-        
-
-public SpellItem()
-{
-}
-
-public SpellItem(byte position, int spellId, sbyte spellLevel)
-        {
-            this.position = position;
-            this.spellId = spellId;
-            this.spellLevel = spellLevel;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(position);
-            writer.WriteInt(spellId);
-            writer.WriteSByte(spellLevel);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            position = reader.ReadByte();
-            if (position < 63 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 63 || position > 255");
-            spellId = reader.ReadInt();
-            spellLevel = reader.ReadSByte();
-            if (spellLevel < 1 || spellLevel > 6)
-                throw new Exception("Forbidden value on spellLevel = " + spellLevel + ", it doesn't respect the following condition : spellLevel < 1 || spellLevel > 6");
-            
-
-}
-
-
-}
-
-
 }

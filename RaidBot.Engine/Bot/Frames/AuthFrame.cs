@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 using RaidBot.Protocol.Enums;
 using System.Security.Cryptography;
 using System.IO;
+using Raidbot.Protocol.Messages;
 
 namespace RaidBot.Engine.Bot.Frames
 {
     public class AuthFrame: Frame
     {
-        public static UInt32 PREDICATE = HelloConnect.Id;
+        public static UInt32 PREDICATE = HelloConnectMessage.Id;
         ProtocolRequired mProtocolRequired;
-        HelloConnect mHelloConnect;
+        HelloConnectMessage mHelloConnect;
         Brain mBrain;
 
         public AuthFrame(Brain brain): base(brain)
@@ -27,23 +28,23 @@ namespace RaidBot.Engine.Bot.Frames
         [MessageHandlerAttribut(typeof(ProtocolRequired))]
         private void HandleProtocolRequired(ProtocolRequired msg)
         {
-            Console.WriteLine("Required version " + msg.requiredVersion);
+            Console.WriteLine("Required version " + msg.RequiredVersion);
             mProtocolRequired = msg;
         }
 
-        [MessageHandlerAttribut(typeof(HelloConnect))]
-        private void HandleHelloConnect(HelloConnect msg)
+        [MessageHandlerAttribut(typeof(HelloConnectMessage))]
+        private void HandleHelloConnect(HelloConnectMessage msg)
         {
             Console.WriteLine("Waiting id");
             mHelloConnect = msg;
             this.Brain.Bypass.AuthentificationLoaded += Bypass_AuthentificationLoaded;
-            this.Brain.Bypass.RequestAuthentificationMessage(msg.salt, msg.key);
+            this.Brain.Bypass.RequestAuthentificationMessage(msg.Salt, msg.Key);
         }
 
         private void Bypass_AuthentificationLoaded(object sender, Daemon.Daemon.IdentificationLoadedEventArgs e)
         {
-            Console.WriteLine("Mine|" + e.Salt + "|" + mHelloConnect.salt + "|");
-            if (e.Salt != mHelloConnect.salt)
+            Console.WriteLine("Mine|" + e.Salt + "|" + mHelloConnect.Salt + "|");
+            if (e.Salt != mHelloConnect.Salt)
             {
                 Console.WriteLine("Wrong identification messge");
                 return;
@@ -56,7 +57,7 @@ namespace RaidBot.Engine.Bot.Frames
         [MessageHandlerAttribut(typeof(IdentificationFailedMessage))]
         private void HandleIdentificationFailedMessage(IdentificationFailedMessage msg)
         {
-            Console.WriteLine("Identification failed, reason : " + (IdentificationFailureReasonEnum)msg.reason);
+            Console.WriteLine("Identification failed, reason : " + (IdentificationFailureReasonEnum)msg.Reason);
         }
 
         [MessageHandlerAttribut(typeof(IdentificationFailedBannedMessage))]
@@ -87,19 +88,6 @@ namespace RaidBot.Engine.Bot.Frames
         private void HandleIdentificationFailedForBadVersion(IdentificationFailedForBadVersionMessage msg)
         {
             Console.WriteLine("Bad version !");
-        }
-
-        private void SendCredentials()
-        {
-            while (this.mHelloConnect.salt.Length < 32)
-                this.mHelloConnect.salt += ' ';
-            String hash = CreateMD5(this.Brain.Config.Password);
-            Console.WriteLine("Encodede : " + hash + "|" + Brain.Config.Password + this.mHelloConnect.salt);
-            sbyte[] creds = Cryptography.Encrypt(this.mHelloConnect.key, this.mHelloConnect.salt, this.mBrain.Config.Username, hash);
-            mBrain.SendMessage(new IdentificationMessage(true, false, false, new Protocol.Types.VersionExtended(2, 48, 17, 96720011, 1, 0, 1, 1), "fr", creds, 0, 0, new ushort[] { }));
-            Console.WriteLine("Send IdentificationMessage ...");
-            mBrain.SendMessage(new ClientKeyMessage("FMHb8I6QyPGS3z413D#01")); // TODO have to be generated
-            Console.WriteLine("Send ClientKeyMessage ...");
         }
     }
 }

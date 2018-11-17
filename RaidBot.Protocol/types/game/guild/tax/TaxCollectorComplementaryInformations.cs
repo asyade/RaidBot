@@ -1,64 +1,27 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TaxCollectorComplementaryInformations : NetworkType
 {
 
-public class TaxCollectorComplementaryInformations
-{
+	public const uint Id = 448;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 448;
-public virtual short TypeId
-{
-    get { return Id; }
+
+	public TaxCollectorComplementaryInformations() {}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+	}
 }
-
-
-
-public TaxCollectorComplementaryInformations()
-{
-}
-
-
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-
-
-}
-
-
-}
-
-
 }

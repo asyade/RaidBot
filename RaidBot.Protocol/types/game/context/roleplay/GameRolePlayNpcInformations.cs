@@ -1,86 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameRolePlayNpcInformations : GameRolePlayActorInformations
 {
 
-public const short Id = 156;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 156;
+	public override uint MessageId { get { return Id; } }
+
+	public short NpcId { get; set; }
+	public bool Sex { get; set; }
+	public short SpecialArtworkId { get; set; }
+
+	public GameRolePlayNpcInformations() {}
+
+
+	public GameRolePlayNpcInformations InitGameRolePlayNpcInformations(short NpcId, bool Sex, short SpecialArtworkId)
+	{
+		this.NpcId = NpcId;
+		this.Sex = Sex;
+		this.SpecialArtworkId = SpecialArtworkId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.NpcId);
+		writer.WriteBoolean(this.Sex);
+		writer.WriteVarShort(this.SpecialArtworkId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.NpcId = reader.ReadVarShort();
+		this.Sex = reader.ReadBoolean();
+		this.SpecialArtworkId = reader.ReadVarShort();
+	}
 }
-
-public ushort npcId;
-        public bool sex;
-        public ushort specialArtworkId;
-        
-
-public GameRolePlayNpcInformations()
-{
-}
-
-public GameRolePlayNpcInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, ushort npcId, bool sex, ushort specialArtworkId)
-         : base(contextualId, look, disposition)
-        {
-            this.npcId = npcId;
-            this.sex = sex;
-            this.specialArtworkId = specialArtworkId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(npcId);
-            writer.WriteBoolean(sex);
-            writer.WriteVaruhshort(specialArtworkId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            npcId = reader.ReadVaruhshort();
-            if (npcId < 0)
-                throw new Exception("Forbidden value on npcId = " + npcId + ", it doesn't respect the following condition : npcId < 0");
-            sex = reader.ReadBoolean();
-            specialArtworkId = reader.ReadVaruhshort();
-            if (specialArtworkId < 0)
-                throw new Exception("Forbidden value on specialArtworkId = " + specialArtworkId + ", it doesn't respect the following condition : specialArtworkId < 0");
-            
-
-}
-
-
-}
-
-
 }

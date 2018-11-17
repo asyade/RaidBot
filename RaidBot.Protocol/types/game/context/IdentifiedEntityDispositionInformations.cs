@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class IdentifiedEntityDispositionInformations : EntityDispositionInformations
 {
 
-public const short Id = 107;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 107;
+	public override uint MessageId { get { return Id; } }
+
+	public double Id_ { get; set; }
+
+	public IdentifiedEntityDispositionInformations() {}
+
+
+	public IdentifiedEntityDispositionInformations InitIdentifiedEntityDispositionInformations(double Id_)
+	{
+		this.Id_ = Id_;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.Id_);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Id_ = reader.ReadDouble();
+	}
 }
-
-public int id;
-        
-
-public IdentifiedEntityDispositionInformations()
-{
-}
-
-public IdentifiedEntityDispositionInformations(short cellId, sbyte direction, int id)
-         : base(cellId, direction)
-        {
-            this.id = id;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(id);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            id = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

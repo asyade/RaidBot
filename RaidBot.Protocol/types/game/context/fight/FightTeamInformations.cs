@@ -1,85 +1,50 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTeamInformations : AbstractFightTeamInformations
 {
 
-public const short Id = 33;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 33;
+	public override uint MessageId { get { return Id; } }
+
+	public FightTeamMemberInformations[] TeamMembers { get; set; }
+
+	public FightTeamInformations() {}
+
+
+	public FightTeamInformations InitFightTeamInformations(FightTeamMemberInformations[] TeamMembers)
+	{
+		this.TeamMembers = TeamMembers;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.TeamMembers.Length);
+		foreach (FightTeamMemberInformations item in this.TeamMembers)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int TeamMembersLen = reader.ReadShort();
+		TeamMembers = new FightTeamMemberInformations[TeamMembersLen];
+		for (int i = 0; i < TeamMembersLen; i++)
+		{
+			this.TeamMembers[i] = ProtocolTypeManager.GetInstance<FightTeamMemberInformations>(reader.ReadShort());
+			this.TeamMembers[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.FightTeamMemberInformations[] teamMembers;
-        
-
-public FightTeamInformations()
-{
-}
-
-public FightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, Types.FightTeamMemberInformations[] teamMembers)
-         : base(teamId, leaderId, teamSide, teamTypeId, nbWaves)
-        {
-            this.teamMembers = teamMembers;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)teamMembers.Length);
-            foreach (var entry in teamMembers)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            teamMembers = new Types.FightTeamMemberInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 teamMembers[i] = Types.ProtocolTypeManager.GetInstance<Types.FightTeamMemberInformations>(reader.ReadShort());
-                 teamMembers[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

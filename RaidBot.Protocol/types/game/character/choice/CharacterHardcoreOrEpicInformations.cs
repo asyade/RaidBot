@@ -1,88 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharacterHardcoreOrEpicInformations : CharacterBaseInformations
 {
 
-public const short Id = 474;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 474;
+	public override uint MessageId { get { return Id; } }
+
+	public byte DeathState { get; set; }
+	public short DeathCount { get; set; }
+	public short DeathMaxLevel { get; set; }
+
+	public CharacterHardcoreOrEpicInformations() {}
+
+
+	public CharacterHardcoreOrEpicInformations InitCharacterHardcoreOrEpicInformations(byte DeathState, short DeathCount, short DeathMaxLevel)
+	{
+		this.DeathState = DeathState;
+		this.DeathCount = DeathCount;
+		this.DeathMaxLevel = DeathMaxLevel;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.DeathState);
+		writer.WriteVarShort(this.DeathCount);
+		writer.WriteVarShort(this.DeathMaxLevel);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.DeathState = reader.ReadByte();
+		this.DeathCount = reader.ReadVarShort();
+		this.DeathMaxLevel = reader.ReadVarShort();
+	}
 }
-
-public sbyte deathState;
-        public ushort deathCount;
-        public byte deathMaxLevel;
-        
-
-public CharacterHardcoreOrEpicInformations()
-{
-}
-
-public CharacterHardcoreOrEpicInformations(uint id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, sbyte deathState, ushort deathCount, byte deathMaxLevel)
-         : base(id, level, name, entityLook, breed, sex)
-        {
-            this.deathState = deathState;
-            this.deathCount = deathCount;
-            this.deathMaxLevel = deathMaxLevel;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(deathState);
-            writer.WriteVaruhshort(deathCount);
-            writer.WriteByte(deathMaxLevel);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            deathState = reader.ReadSByte();
-            if (deathState < 0)
-                throw new Exception("Forbidden value on deathState = " + deathState + ", it doesn't respect the following condition : deathState < 0");
-            deathCount = reader.ReadVaruhshort();
-            if (deathCount < 0)
-                throw new Exception("Forbidden value on deathCount = " + deathCount + ", it doesn't respect the following condition : deathCount < 0");
-            deathMaxLevel = reader.ReadByte();
-            if (deathMaxLevel < 1 || deathMaxLevel > 200)
-                throw new Exception("Forbidden value on deathMaxLevel = " + deathMaxLevel + ", it doesn't respect the following condition : deathMaxLevel < 1 || deathMaxLevel > 200");
-            
-
-}
-
-
-}
-
-
 }

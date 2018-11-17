@@ -1,107 +1,66 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameRolePlayGroupMonsterInformations : GameRolePlayActorInformations
 {
 
-public const short Id = 160;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 160;
+	public override uint MessageId { get { return Id; } }
+
+	public bool KeyRingBonus { get; set; }
+	public bool HasHardcoreDrop { get; set; }
+	public bool HasAVARewardToken { get; set; }
+	public double CreationTime { get; set; }
+	public int AgeBonusRate { get; set; }
+	public byte LootShare { get; set; }
+	public byte AlignmentSide { get; set; }
+
+	public GameRolePlayGroupMonsterInformations() {}
+
+
+	public GameRolePlayGroupMonsterInformations InitGameRolePlayGroupMonsterInformations(bool KeyRingBonus, bool HasHardcoreDrop, bool HasAVARewardToken, double CreationTime, int AgeBonusRate, byte LootShare, byte AlignmentSide)
+	{
+		this.KeyRingBonus = KeyRingBonus;
+		this.HasHardcoreDrop = HasHardcoreDrop;
+		this.HasAVARewardToken = HasAVARewardToken;
+		this.CreationTime = CreationTime;
+		this.AgeBonusRate = AgeBonusRate;
+		this.LootShare = LootShare;
+		this.AlignmentSide = AlignmentSide;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, KeyRingBonus);
+		box = BooleanByteWrapper.SetFlag(box, 1, HasHardcoreDrop);
+		box = BooleanByteWrapper.SetFlag(box, 2, HasAVARewardToken);
+		writer.WriteByte(box);
+		writer.WriteDouble(this.CreationTime);
+		writer.WriteInt(this.AgeBonusRate);
+		writer.WriteByte(this.LootShare);
+		writer.WriteByte(this.AlignmentSide);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		byte box = reader.ReadByte();
+		this.KeyRingBonus = BooleanByteWrapper.GetFlag(box, 0);
+		this.HasHardcoreDrop = BooleanByteWrapper.GetFlag(box, 1);
+		this.HasAVARewardToken = BooleanByteWrapper.GetFlag(box, 2);
+		this.CreationTime = reader.ReadDouble();
+		this.AgeBonusRate = reader.ReadInt();
+		this.LootShare = reader.ReadByte();
+		this.AlignmentSide = reader.ReadByte();
+	}
 }
-
-public bool keyRingBonus;
-        public bool hasHardcoreDrop;
-        public bool hasAVARewardToken;
-        public Types.GroupMonsterStaticInformations staticInfos;
-        public short ageBonus;
-        public sbyte lootShare;
-        public sbyte alignmentSide;
-        
-
-public GameRolePlayGroupMonsterInformations()
-{
-}
-
-public GameRolePlayGroupMonsterInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, bool keyRingBonus, bool hasHardcoreDrop, bool hasAVARewardToken, Types.GroupMonsterStaticInformations staticInfos, short ageBonus, sbyte lootShare, sbyte alignmentSide)
-         : base(contextualId, look, disposition)
-        {
-            this.keyRingBonus = keyRingBonus;
-            this.hasHardcoreDrop = hasHardcoreDrop;
-            this.hasAVARewardToken = hasAVARewardToken;
-            this.staticInfos = staticInfos;
-            this.ageBonus = ageBonus;
-            this.lootShare = lootShare;
-            this.alignmentSide = alignmentSide;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, keyRingBonus);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, hasHardcoreDrop);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, hasAVARewardToken);
-            writer.WriteByte(flag1);
-            writer.WriteShort(staticInfos.TypeId);
-            staticInfos.Serialize(writer);
-            writer.WriteShort(ageBonus);
-            writer.WriteSByte(lootShare);
-            writer.WriteSByte(alignmentSide);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            byte flag1 = reader.ReadByte();
-            keyRingBonus = BooleanByteWrapper.GetFlag(flag1, 0);
-            hasHardcoreDrop = BooleanByteWrapper.GetFlag(flag1, 1);
-            hasAVARewardToken = BooleanByteWrapper.GetFlag(flag1, 2);
-            staticInfos = Types.ProtocolTypeManager.GetInstance<Types.GroupMonsterStaticInformations>(reader.ReadShort());
-            staticInfos.Deserialize(reader);
-            ageBonus = reader.ReadShort();
-            if (ageBonus < -1 || ageBonus > 1000)
-                throw new Exception("Forbidden value on ageBonus = " + ageBonus + ", it doesn't respect the following condition : ageBonus < -1 || ageBonus > 1000");
-            lootShare = reader.ReadSByte();
-            if (lootShare < -1 || lootShare > 8)
-                throw new Exception("Forbidden value on lootShare = " + lootShare + ", it doesn't respect the following condition : lootShare < -1 || lootShare > 8");
-            alignmentSide = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

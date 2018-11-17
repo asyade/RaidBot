@@ -1,160 +1,68 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class ActorRestrictionsInformations : NetworkType
 {
 
-public class ActorRestrictionsInformations
-{
+	public const uint Id = 204;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 204;
-public virtual short TypeId
-{
-    get { return Id; }
+	public bool CantBeAggressed { get; set; }
+	public bool CantBeChallenged { get; set; }
+	public bool CantTrade { get; set; }
+	public bool CantBeAttackedByMutant { get; set; }
+	public bool CantRun { get; set; }
+	public bool ForceSlowWalk { get; set; }
+	public bool CantMinimize { get; set; }
+	public bool CantMove { get; set; }
+
+	public ActorRestrictionsInformations() {}
+
+
+	public ActorRestrictionsInformations InitActorRestrictionsInformations(bool CantBeAggressed, bool CantBeChallenged, bool CantTrade, bool CantBeAttackedByMutant, bool CantRun, bool ForceSlowWalk, bool CantMinimize, bool CantMove)
+	{
+		this.CantBeAggressed = CantBeAggressed;
+		this.CantBeChallenged = CantBeChallenged;
+		this.CantTrade = CantTrade;
+		this.CantBeAttackedByMutant = CantBeAttackedByMutant;
+		this.CantRun = CantRun;
+		this.ForceSlowWalk = ForceSlowWalk;
+		this.CantMinimize = CantMinimize;
+		this.CantMove = CantMove;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, CantBeAggressed);
+		box = BooleanByteWrapper.SetFlag(box, 1, CantBeChallenged);
+		box = BooleanByteWrapper.SetFlag(box, 2, CantTrade);
+		box = BooleanByteWrapper.SetFlag(box, 3, CantBeAttackedByMutant);
+		box = BooleanByteWrapper.SetFlag(box, 4, CantRun);
+		box = BooleanByteWrapper.SetFlag(box, 5, ForceSlowWalk);
+		box = BooleanByteWrapper.SetFlag(box, 6, CantMinimize);
+		box = BooleanByteWrapper.SetFlag(box, 7, CantMove);
+		writer.WriteByte(box);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.CantBeAggressed = BooleanByteWrapper.GetFlag(box, 0);
+		this.CantBeChallenged = BooleanByteWrapper.GetFlag(box, 1);
+		this.CantTrade = BooleanByteWrapper.GetFlag(box, 2);
+		this.CantBeAttackedByMutant = BooleanByteWrapper.GetFlag(box, 3);
+		this.CantRun = BooleanByteWrapper.GetFlag(box, 4);
+		this.ForceSlowWalk = BooleanByteWrapper.GetFlag(box, 5);
+		this.CantMinimize = BooleanByteWrapper.GetFlag(box, 6);
+		this.CantMove = BooleanByteWrapper.GetFlag(box, 7);
+	}
 }
-
-public bool cantBeAggressed;
-        public bool cantBeChallenged;
-        public bool cantTrade;
-        public bool cantBeAttackedByMutant;
-        public bool cantRun;
-        public bool forceSlowWalk;
-        public bool cantMinimize;
-        public bool cantMove;
-        public bool cantAggress;
-        public bool cantChallenge;
-        public bool cantExchange;
-        public bool cantAttack;
-        public bool cantChat;
-        public bool cantBeMerchant;
-        public bool cantUseObject;
-        public bool cantUseTaxCollector;
-        public bool cantUseInteractive;
-        public bool cantSpeakToNPC;
-        public bool cantChangeZone;
-        public bool cantAttackMonster;
-        public bool cantWalk8Directions;
-        
-
-public ActorRestrictionsInformations()
-{
-}
-
-public ActorRestrictionsInformations(bool cantBeAggressed, bool cantBeChallenged, bool cantTrade, bool cantBeAttackedByMutant, bool cantRun, bool forceSlowWalk, bool cantMinimize, bool cantMove, bool cantAggress, bool cantChallenge, bool cantExchange, bool cantAttack, bool cantChat, bool cantBeMerchant, bool cantUseObject, bool cantUseTaxCollector, bool cantUseInteractive, bool cantSpeakToNPC, bool cantChangeZone, bool cantAttackMonster, bool cantWalk8Directions)
-        {
-            this.cantBeAggressed = cantBeAggressed;
-            this.cantBeChallenged = cantBeChallenged;
-            this.cantTrade = cantTrade;
-            this.cantBeAttackedByMutant = cantBeAttackedByMutant;
-            this.cantRun = cantRun;
-            this.forceSlowWalk = forceSlowWalk;
-            this.cantMinimize = cantMinimize;
-            this.cantMove = cantMove;
-            this.cantAggress = cantAggress;
-            this.cantChallenge = cantChallenge;
-            this.cantExchange = cantExchange;
-            this.cantAttack = cantAttack;
-            this.cantChat = cantChat;
-            this.cantBeMerchant = cantBeMerchant;
-            this.cantUseObject = cantUseObject;
-            this.cantUseTaxCollector = cantUseTaxCollector;
-            this.cantUseInteractive = cantUseInteractive;
-            this.cantSpeakToNPC = cantSpeakToNPC;
-            this.cantChangeZone = cantChangeZone;
-            this.cantAttackMonster = cantAttackMonster;
-            this.cantWalk8Directions = cantWalk8Directions;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, cantBeAggressed);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, cantBeChallenged);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, cantTrade);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, cantBeAttackedByMutant);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 4, cantRun);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 5, forceSlowWalk);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 6, cantMinimize);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 7, cantMove);
-            writer.WriteByte(flag1);
-            byte flag2 = 0;
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 0, cantAggress);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 1, cantChallenge);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 2, cantExchange);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 3, cantAttack);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 4, cantChat);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 5, cantBeMerchant);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 6, cantUseObject);
-            flag2 = BooleanByteWrapper.SetFlag(flag2, 7, cantUseTaxCollector);
-            writer.WriteByte(flag2);
-            byte flag3 = 0;
-            flag3 = BooleanByteWrapper.SetFlag(flag3, 0, cantUseInteractive);
-            flag3 = BooleanByteWrapper.SetFlag(flag3, 1, cantSpeakToNPC);
-            flag3 = BooleanByteWrapper.SetFlag(flag3, 2, cantChangeZone);
-            flag3 = BooleanByteWrapper.SetFlag(flag3, 3, cantAttackMonster);
-            flag3 = BooleanByteWrapper.SetFlag(flag3, 4, cantWalk8Directions);
-            writer.WriteByte(flag3);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-byte flag1 = reader.ReadByte();
-            cantBeAggressed = BooleanByteWrapper.GetFlag(flag1, 0);
-            cantBeChallenged = BooleanByteWrapper.GetFlag(flag1, 1);
-            cantTrade = BooleanByteWrapper.GetFlag(flag1, 2);
-            cantBeAttackedByMutant = BooleanByteWrapper.GetFlag(flag1, 3);
-            cantRun = BooleanByteWrapper.GetFlag(flag1, 4);
-            forceSlowWalk = BooleanByteWrapper.GetFlag(flag1, 5);
-            cantMinimize = BooleanByteWrapper.GetFlag(flag1, 6);
-            cantMove = BooleanByteWrapper.GetFlag(flag1, 7);
-            byte flag2 = reader.ReadByte();
-            cantAggress = BooleanByteWrapper.GetFlag(flag2, 0);
-            cantChallenge = BooleanByteWrapper.GetFlag(flag2, 1);
-            cantExchange = BooleanByteWrapper.GetFlag(flag2, 2);
-            cantAttack = BooleanByteWrapper.GetFlag(flag2, 3);
-            cantChat = BooleanByteWrapper.GetFlag(flag2, 4);
-            cantBeMerchant = BooleanByteWrapper.GetFlag(flag2, 5);
-            cantUseObject = BooleanByteWrapper.GetFlag(flag2, 6);
-            cantUseTaxCollector = BooleanByteWrapper.GetFlag(flag2, 7);
-            byte flag3 = reader.ReadByte();
-            cantUseInteractive = BooleanByteWrapper.GetFlag(flag3, 0);
-            cantSpeakToNPC = BooleanByteWrapper.GetFlag(flag3, 1);
-            cantChangeZone = BooleanByteWrapper.GetFlag(flag3, 2);
-            cantAttackMonster = BooleanByteWrapper.GetFlag(flag3, 3);
-            cantWalk8Directions = BooleanByteWrapper.GetFlag(flag3, 4);
-            
-
-}
-
-
-}
-
-
 }

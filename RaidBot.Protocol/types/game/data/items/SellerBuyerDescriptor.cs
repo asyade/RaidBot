@@ -1,123 +1,83 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class SellerBuyerDescriptor : NetworkType
 {
 
-public class SellerBuyerDescriptor
-{
+	public const uint Id = 121;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 121;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int[] Quantities { get; set; }
+	public int[] Types { get; set; }
+	public float TaxPercentage { get; set; }
+	public float TaxModificationPercentage { get; set; }
+	public byte MaxItemLevel { get; set; }
+	public int MaxItemPerAccount { get; set; }
+	public int NpcContextualId { get; set; }
+	public short UnsoldDelay { get; set; }
+
+	public SellerBuyerDescriptor() {}
+
+
+	public SellerBuyerDescriptor InitSellerBuyerDescriptor(int[] Quantities, int[] Types, float TaxPercentage, float TaxModificationPercentage, byte MaxItemLevel, int MaxItemPerAccount, int NpcContextualId, short UnsoldDelay)
+	{
+		this.Quantities = Quantities;
+		this.Types = Types;
+		this.TaxPercentage = TaxPercentage;
+		this.TaxModificationPercentage = TaxModificationPercentage;
+		this.MaxItemLevel = MaxItemLevel;
+		this.MaxItemPerAccount = MaxItemPerAccount;
+		this.NpcContextualId = NpcContextualId;
+		this.UnsoldDelay = UnsoldDelay;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Quantities.Length);
+		foreach (int item in this.Quantities)
+		{
+			writer.WriteVarInt(item);
+		}
+		writer.WriteShort(this.Types.Length);
+		foreach (int item in this.Types)
+		{
+			writer.WriteVarInt(item);
+		}
+		writer.WriteFloat(this.TaxPercentage);
+		writer.WriteFloat(this.TaxModificationPercentage);
+		writer.WriteByte(this.MaxItemLevel);
+		writer.WriteVarInt(this.MaxItemPerAccount);
+		writer.WriteInt(this.NpcContextualId);
+		writer.WriteVarShort(this.UnsoldDelay);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int QuantitiesLen = reader.ReadShort();
+		Quantities = new int[QuantitiesLen];
+		for (int i = 0; i < QuantitiesLen; i++)
+		{
+			this.Quantities[i] = reader.ReadVarInt();
+		}
+		int TypesLen = reader.ReadShort();
+		Types = new int[TypesLen];
+		for (int i = 0; i < TypesLen; i++)
+		{
+			this.Types[i] = reader.ReadVarInt();
+		}
+		this.TaxPercentage = reader.ReadFloat();
+		this.TaxModificationPercentage = reader.ReadFloat();
+		this.MaxItemLevel = reader.ReadByte();
+		this.MaxItemPerAccount = reader.ReadVarInt();
+		this.NpcContextualId = reader.ReadInt();
+		this.UnsoldDelay = reader.ReadVarShort();
+	}
 }
-
-public uint[] quantities;
-        public uint[] types;
-        public float taxPercentage;
-        public float taxModificationPercentage;
-        public byte maxItemLevel;
-        public uint maxItemPerAccount;
-        public int npcContextualId;
-        public ushort unsoldDelay;
-        
-
-public SellerBuyerDescriptor()
-{
-}
-
-public SellerBuyerDescriptor(uint[] quantities, uint[] types, float taxPercentage, float taxModificationPercentage, byte maxItemLevel, uint maxItemPerAccount, int npcContextualId, ushort unsoldDelay)
-        {
-            this.quantities = quantities;
-            this.types = types;
-            this.taxPercentage = taxPercentage;
-            this.taxModificationPercentage = taxModificationPercentage;
-            this.maxItemLevel = maxItemLevel;
-            this.maxItemPerAccount = maxItemPerAccount;
-            this.npcContextualId = npcContextualId;
-            this.unsoldDelay = unsoldDelay;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)quantities.Length);
-            foreach (var entry in quantities)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            writer.WriteUShort((ushort)types.Length);
-            foreach (var entry in types)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            writer.WriteFloat(taxPercentage);
-            writer.WriteFloat(taxModificationPercentage);
-            writer.WriteByte(maxItemLevel);
-            writer.WriteVaruhint(maxItemPerAccount);
-            writer.WriteInt(npcContextualId);
-            writer.WriteVaruhshort(unsoldDelay);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            quantities = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 quantities[i] = reader.ReadVaruhint();
-            }
-            limit = reader.ReadUShort();
-            types = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 types[i] = reader.ReadVaruhint();
-            }
-            taxPercentage = reader.ReadFloat();
-            taxModificationPercentage = reader.ReadFloat();
-            maxItemLevel = reader.ReadByte();
-            if (maxItemLevel < 0 || maxItemLevel > 255)
-                throw new Exception("Forbidden value on maxItemLevel = " + maxItemLevel + ", it doesn't respect the following condition : maxItemLevel < 0 || maxItemLevel > 255");
-            maxItemPerAccount = reader.ReadVaruhint();
-            if (maxItemPerAccount < 0)
-                throw new Exception("Forbidden value on maxItemPerAccount = " + maxItemPerAccount + ", it doesn't respect the following condition : maxItemPerAccount < 0");
-            npcContextualId = reader.ReadInt();
-            unsoldDelay = reader.ReadVaruhshort();
-            if (unsoldDelay < 0)
-                throw new Exception("Forbidden value on unsoldDelay = " + unsoldDelay + ", it doesn't respect the following condition : unsoldDelay < 0");
-            
-
-}
-
-
-}
-
-
 }

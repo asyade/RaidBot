@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ShortcutSpell : Shortcut
 {
 
-public const short Id = 368;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 368;
+	public override uint MessageId { get { return Id; } }
+
+	public short SpellId { get; set; }
+
+	public ShortcutSpell() {}
+
+
+	public ShortcutSpell InitShortcutSpell(short SpellId)
+	{
+		this.SpellId = SpellId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.SpellId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.SpellId = reader.ReadVarShort();
+	}
 }
-
-public ushort spellId;
-        
-
-public ShortcutSpell()
-{
-}
-
-public ShortcutSpell(sbyte slot, ushort spellId)
-         : base(slot)
-        {
-            this.spellId = spellId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(spellId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            spellId = reader.ReadVaruhshort();
-            if (spellId < 0)
-                throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
-            
-
-}
-
-
-}
-
-
 }

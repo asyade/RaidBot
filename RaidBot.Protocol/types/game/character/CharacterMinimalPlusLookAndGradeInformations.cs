@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharacterMinimalPlusLookAndGradeInformations : CharacterMinimalPlusLookInformations
 {
 
-public const short Id = 193;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 193;
+	public override uint MessageId { get { return Id; } }
+
+	public int Grade { get; set; }
+
+	public CharacterMinimalPlusLookAndGradeInformations() {}
+
+
+	public CharacterMinimalPlusLookAndGradeInformations InitCharacterMinimalPlusLookAndGradeInformations(int Grade)
+	{
+		this.Grade = Grade;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarInt(this.Grade);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Grade = reader.ReadVarInt();
+	}
 }
-
-public uint grade;
-        
-
-public CharacterMinimalPlusLookAndGradeInformations()
-{
-}
-
-public CharacterMinimalPlusLookAndGradeInformations(uint id, byte level, string name, Types.EntityLook entityLook, uint grade)
-         : base(id, level, name, entityLook)
-        {
-            this.grade = grade;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(grade);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            grade = reader.ReadVaruhint();
-            if (grade < 0)
-                throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0");
-            
-
-}
-
-
-}
-
-
 }

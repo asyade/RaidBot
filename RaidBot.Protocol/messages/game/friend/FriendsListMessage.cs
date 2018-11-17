@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:36
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class FriendsListMessage : NetworkMessage
 {
 
-public const uint Id = 4002;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 4002;
+	public override uint MessageId { get { return Id; } }
+
+	public FriendInformations[] FriendsList { get; set; }
+
+	public FriendsListMessage() {}
+
+
+	public FriendsListMessage InitFriendsListMessage(FriendInformations[] FriendsList)
+	{
+		this.FriendsList = FriendsList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.FriendsList.Length);
+		foreach (FriendInformations item in this.FriendsList)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int FriendsListLen = reader.ReadShort();
+		FriendsList = new FriendInformations[FriendsListLen];
+		for (int i = 0; i < FriendsListLen; i++)
+		{
+			this.FriendsList[i] = ProtocolTypeManager.GetInstance<FriendInformations>(reader.ReadShort());
+			this.FriendsList[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.FriendInformations[] friendsList;
-        
-
-public FriendsListMessage()
-{
-}
-
-public FriendsListMessage(Types.FriendInformations[] friendsList)
-        {
-            this.friendsList = friendsList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)friendsList.Length);
-            foreach (var entry in friendsList)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            friendsList = new Types.FriendInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 friendsList[i] = Types.ProtocolTypeManager.GetInstance<Types.FriendInformations>(reader.ReadShort());
-                 friendsList[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

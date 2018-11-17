@@ -1,90 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightOptionStateUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 5927;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5927;
+	public override uint MessageId { get { return Id; } }
+
+	public short FightId { get; set; }
+	public byte TeamId { get; set; }
+	public byte Option { get; set; }
+	public bool State { get; set; }
+
+	public GameFightOptionStateUpdateMessage() {}
+
+
+	public GameFightOptionStateUpdateMessage InitGameFightOptionStateUpdateMessage(short FightId, byte TeamId, byte Option, bool State)
+	{
+		this.FightId = FightId;
+		this.TeamId = TeamId;
+		this.Option = Option;
+		this.State = State;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.FightId);
+		writer.WriteByte(this.TeamId);
+		writer.WriteByte(this.Option);
+		writer.WriteBoolean(this.State);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.FightId = reader.ReadVarShort();
+		this.TeamId = reader.ReadByte();
+		this.Option = reader.ReadByte();
+		this.State = reader.ReadBoolean();
+	}
 }
-
-public short fightId;
-        public sbyte teamId;
-        public sbyte option;
-        public bool state;
-        
-
-public GameFightOptionStateUpdateMessage()
-{
-}
-
-public GameFightOptionStateUpdateMessage(short fightId, sbyte teamId, sbyte option, bool state)
-        {
-            this.fightId = fightId;
-            this.teamId = teamId;
-            this.option = option;
-            this.state = state;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteShort(fightId);
-            writer.WriteSByte(teamId);
-            writer.WriteSByte(option);
-            writer.WriteBoolean(state);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-fightId = reader.ReadShort();
-            if (fightId < 0)
-                throw new Exception("Forbidden value on fightId = " + fightId + ", it doesn't respect the following condition : fightId < 0");
-            teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
-            option = reader.ReadSByte();
-            if (option < 0)
-                throw new Exception("Forbidden value on option = " + option + ", it doesn't respect the following condition : option < 0");
-            state = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

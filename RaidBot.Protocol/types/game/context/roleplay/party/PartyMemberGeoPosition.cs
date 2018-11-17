@@ -1,95 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PartyMemberGeoPosition : NetworkType
 {
 
-public class PartyMemberGeoPosition
-{
+	public const uint Id = 378;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 378;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int MemberId { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public double MapId { get; set; }
+	public short SubAreaId { get; set; }
+
+	public PartyMemberGeoPosition() {}
+
+
+	public PartyMemberGeoPosition InitPartyMemberGeoPosition(int MemberId, short WorldX, short WorldY, double MapId, short SubAreaId)
+	{
+		this.MemberId = MemberId;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.MapId = MapId;
+		this.SubAreaId = SubAreaId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.MemberId);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarShort(this.SubAreaId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MemberId = reader.ReadInt();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.MapId = reader.ReadDouble();
+		this.SubAreaId = reader.ReadVarShort();
+	}
 }
-
-public int memberId;
-        public short worldX;
-        public short worldY;
-        public int mapId;
-        public ushort subAreaId;
-        
-
-public PartyMemberGeoPosition()
-{
-}
-
-public PartyMemberGeoPosition(int memberId, short worldX, short worldY, int mapId, ushort subAreaId)
-        {
-            this.memberId = memberId;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.mapId = mapId;
-            this.subAreaId = subAreaId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(memberId);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhshort(subAreaId);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-memberId = reader.ReadInt();
-            if (memberId < 0)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            mapId = reader.ReadInt();
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            
-
-}
-
-
-}
-
-
 }

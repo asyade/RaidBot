@@ -1,119 +1,83 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class FightCommonInformations : NetworkType
 {
 
-public class FightCommonInformations
-{
+	public const uint Id = 43;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 43;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short FightId { get; set; }
+	public byte FightType { get; set; }
+	public FightTeamInformations[] FightTeams { get; set; }
+	public short[] FightTeamsPositions { get; set; }
+	public FightOptionsInformations[] FightTeamsOptions { get; set; }
+
+	public FightCommonInformations() {}
+
+
+	public FightCommonInformations InitFightCommonInformations(short FightId, byte FightType, FightTeamInformations[] FightTeams, short[] FightTeamsPositions, FightOptionsInformations[] FightTeamsOptions)
+	{
+		this.FightId = FightId;
+		this.FightType = FightType;
+		this.FightTeams = FightTeams;
+		this.FightTeamsPositions = FightTeamsPositions;
+		this.FightTeamsOptions = FightTeamsOptions;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.FightId);
+		writer.WriteByte(this.FightType);
+		writer.WriteShort(this.FightTeams.Length);
+		foreach (FightTeamInformations item in this.FightTeams)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.FightTeamsPositions.Length);
+		foreach (short item in this.FightTeamsPositions)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.FightTeamsOptions.Length);
+		foreach (FightOptionsInformations item in this.FightTeamsOptions)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.FightId = reader.ReadVarShort();
+		this.FightType = reader.ReadByte();
+		int FightTeamsLen = reader.ReadShort();
+		FightTeams = new FightTeamInformations[FightTeamsLen];
+		for (int i = 0; i < FightTeamsLen; i++)
+		{
+			this.FightTeams[i] = ProtocolTypeManager.GetInstance<FightTeamInformations>(reader.ReadShort());
+			this.FightTeams[i].Deserialize(reader);
+		}
+		int FightTeamsPositionsLen = reader.ReadShort();
+		FightTeamsPositions = new short[FightTeamsPositionsLen];
+		for (int i = 0; i < FightTeamsPositionsLen; i++)
+		{
+			this.FightTeamsPositions[i] = reader.ReadVarShort();
+		}
+		int FightTeamsOptionsLen = reader.ReadShort();
+		FightTeamsOptions = new FightOptionsInformations[FightTeamsOptionsLen];
+		for (int i = 0; i < FightTeamsOptionsLen; i++)
+		{
+			this.FightTeamsOptions[i] = new FightOptionsInformations();
+			this.FightTeamsOptions[i].Deserialize(reader);
+		}
+	}
 }
-
-public int fightId;
-        public sbyte fightType;
-        public Types.FightTeamInformations[] fightTeams;
-        public ushort[] fightTeamsPositions;
-        public Types.FightOptionsInformations[] fightTeamsOptions;
-        
-
-public FightCommonInformations()
-{
-}
-
-public FightCommonInformations(int fightId, sbyte fightType, Types.FightTeamInformations[] fightTeams, ushort[] fightTeamsPositions, Types.FightOptionsInformations[] fightTeamsOptions)
-        {
-            this.fightId = fightId;
-            this.fightType = fightType;
-            this.fightTeams = fightTeams;
-            this.fightTeamsPositions = fightTeamsPositions;
-            this.fightTeamsOptions = fightTeamsOptions;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(fightId);
-            writer.WriteSByte(fightType);
-            writer.WriteUShort((ushort)fightTeams.Length);
-            foreach (var entry in fightTeams)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)fightTeamsPositions.Length);
-            foreach (var entry in fightTeamsPositions)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)fightTeamsOptions.Length);
-            foreach (var entry in fightTeamsOptions)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-fightId = reader.ReadInt();
-            fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
-            var limit = reader.ReadUShort();
-            fightTeams = new Types.FightTeamInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightTeams[i] = Types.ProtocolTypeManager.GetInstance<Types.FightTeamInformations>(reader.ReadShort());
-                 fightTeams[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            fightTeamsPositions = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightTeamsPositions[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            fightTeamsOptions = new Types.FightOptionsInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightTeamsOptions[i] = new Types.FightOptionsInformations();
-                 fightTeamsOptions[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

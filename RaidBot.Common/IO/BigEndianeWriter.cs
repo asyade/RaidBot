@@ -104,6 +104,16 @@ namespace RaidBot.Common.IO
             WriteBigEndianBytes(BitConverter.GetBytes(@short));
         }
 
+        public void WriteShort(int @short)
+        {
+            WriteShort((short)@short);
+        }
+
+        public void WriteShort(uint @short)
+        {
+            WriteShort((short)@short);
+        }
+
         /// <summary>
         ///   Write a int into the buffer
         /// </summary>
@@ -138,6 +148,11 @@ namespace RaidBot.Common.IO
         public void WriteUInt(UInt32 @uint)
         {
             WriteBigEndianBytes(BitConverter.GetBytes(@uint));
+        }
+
+        public void WriteUnsignedInt(uint i)
+        {
+            WriteUInt(i);
         }
 
         /// <summary>

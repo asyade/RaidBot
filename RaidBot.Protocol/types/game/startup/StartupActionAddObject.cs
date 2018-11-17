@@ -1,103 +1,67 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class StartupActionAddObject : NetworkType
 {
 
-public class StartupActionAddObject
-{
+	public const uint Id = 52;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 52;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int Uid { get; set; }
+	public String Title { get; set; }
+	public String Text { get; set; }
+	public String DescUrl { get; set; }
+	public String PictureUrl { get; set; }
+	public ObjectItemInformationWithQuantity[] Items { get; set; }
+
+	public StartupActionAddObject() {}
+
+
+	public StartupActionAddObject InitStartupActionAddObject(int Uid, String Title, String Text, String DescUrl, String PictureUrl, ObjectItemInformationWithQuantity[] Items)
+	{
+		this.Uid = Uid;
+		this.Title = Title;
+		this.Text = Text;
+		this.DescUrl = DescUrl;
+		this.PictureUrl = PictureUrl;
+		this.Items = Items;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.Uid);
+		writer.WriteUTF(this.Title);
+		writer.WriteUTF(this.Text);
+		writer.WriteUTF(this.DescUrl);
+		writer.WriteUTF(this.PictureUrl);
+		writer.WriteShort(this.Items.Length);
+		foreach (ObjectItemInformationWithQuantity item in this.Items)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Uid = reader.ReadInt();
+		this.Title = reader.ReadUTF();
+		this.Text = reader.ReadUTF();
+		this.DescUrl = reader.ReadUTF();
+		this.PictureUrl = reader.ReadUTF();
+		int ItemsLen = reader.ReadShort();
+		Items = new ObjectItemInformationWithQuantity[ItemsLen];
+		for (int i = 0; i < ItemsLen; i++)
+		{
+			this.Items[i] = new ObjectItemInformationWithQuantity();
+			this.Items[i].Deserialize(reader);
+		}
+	}
 }
-
-public int uid;
-        public string title;
-        public string text;
-        public string descUrl;
-        public string pictureUrl;
-        public Types.ObjectItemInformationWithQuantity[] items;
-        
-
-public StartupActionAddObject()
-{
-}
-
-public StartupActionAddObject(int uid, string title, string text, string descUrl, string pictureUrl, Types.ObjectItemInformationWithQuantity[] items)
-        {
-            this.uid = uid;
-            this.title = title;
-            this.text = text;
-            this.descUrl = descUrl;
-            this.pictureUrl = pictureUrl;
-            this.items = items;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(uid);
-            writer.WriteUTF(title);
-            writer.WriteUTF(text);
-            writer.WriteUTF(descUrl);
-            writer.WriteUTF(pictureUrl);
-            writer.WriteUShort((ushort)items.Length);
-            foreach (var entry in items)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-uid = reader.ReadInt();
-            if (uid < 0)
-                throw new Exception("Forbidden value on uid = " + uid + ", it doesn't respect the following condition : uid < 0");
-            title = reader.ReadUTF();
-            text = reader.ReadUTF();
-            descUrl = reader.ReadUTF();
-            pictureUrl = reader.ReadUTF();
-            var limit = reader.ReadUShort();
-            items = new Types.ObjectItemInformationWithQuantity[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 items[i] = new Types.ObjectItemInformationWithQuantity();
-                 items[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

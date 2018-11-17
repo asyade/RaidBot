@@ -1,77 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AdditionalTaxCollectorInformations : NetworkType
 {
 
-public class AdditionalTaxCollectorInformations
-{
+	public const uint Id = 165;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 165;
-public virtual short TypeId
-{
-    get { return Id; }
+	public String CollectorCallerName { get; set; }
+	public int Date { get; set; }
+
+	public AdditionalTaxCollectorInformations() {}
+
+
+	public AdditionalTaxCollectorInformations InitAdditionalTaxCollectorInformations(String CollectorCallerName, int Date)
+	{
+		this.CollectorCallerName = CollectorCallerName;
+		this.Date = Date;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.CollectorCallerName);
+		writer.WriteInt(this.Date);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CollectorCallerName = reader.ReadUTF();
+		this.Date = reader.ReadInt();
+	}
 }
-
-public string collectorCallerName;
-        public int date;
-        
-
-public AdditionalTaxCollectorInformations()
-{
-}
-
-public AdditionalTaxCollectorInformations(string collectorCallerName, int date)
-        {
-            this.collectorCallerName = collectorCallerName;
-            this.date = date;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(collectorCallerName);
-            writer.WriteInt(date);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-collectorCallerName = reader.ReadUTF();
-            date = reader.ReadInt();
-            if (date < 0)
-                throw new Exception("Forbidden value on date = " + date + ", it doesn't respect the following condition : date < 0");
-            
-
-}
-
-
-}
-
-
 }

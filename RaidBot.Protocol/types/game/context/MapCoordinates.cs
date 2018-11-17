@@ -1,79 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class MapCoordinates : NetworkType
 {
 
-public class MapCoordinates
-{
+	public const uint Id = 174;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 174;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+
+	public MapCoordinates() {}
+
+
+	public MapCoordinates InitMapCoordinates(short WorldX, short WorldY)
+	{
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+	}
 }
-
-public short worldX;
-        public short worldY;
-        
-
-public MapCoordinates()
-{
-}
-
-public MapCoordinates(short worldX, short worldY)
-        {
-            this.worldX = worldX;
-            this.worldY = worldY;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            
-
-}
-
-
-}
-
-
 }

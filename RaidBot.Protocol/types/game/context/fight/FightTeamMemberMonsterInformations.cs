@@ -1,80 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTeamMemberMonsterInformations : FightTeamMemberInformations
 {
 
-public const short Id = 6;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 6;
+	public override uint MessageId { get { return Id; } }
+
+	public int MonsterId { get; set; }
+	public byte Grade { get; set; }
+
+	public FightTeamMemberMonsterInformations() {}
+
+
+	public FightTeamMemberMonsterInformations InitFightTeamMemberMonsterInformations(int MonsterId, byte Grade)
+	{
+		this.MonsterId = MonsterId;
+		this.Grade = Grade;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteInt(this.MonsterId);
+		writer.WriteByte(this.Grade);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.MonsterId = reader.ReadInt();
+		this.Grade = reader.ReadByte();
+	}
 }
-
-public int monsterId;
-        public sbyte grade;
-        
-
-public FightTeamMemberMonsterInformations()
-{
-}
-
-public FightTeamMemberMonsterInformations(int id, int monsterId, sbyte grade)
-         : base(id)
-        {
-            this.monsterId = monsterId;
-            this.grade = grade;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(monsterId);
-            writer.WriteSByte(grade);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            monsterId = reader.ReadInt();
-            grade = reader.ReadSByte();
-            if (grade < 0)
-                throw new Exception("Forbidden value on grade = " + grade + ", it doesn't respect the following condition : grade < 0");
-            
-
-}
-
-
-}
-
-
 }

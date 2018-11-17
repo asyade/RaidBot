@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:49
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeTypesExchangerDescriptionForUserMessage : NetworkMessage
 {
 
-public const uint Id = 5765;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5765;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] TypeDescription { get; set; }
+
+	public ExchangeTypesExchangerDescriptionForUserMessage() {}
+
+
+	public ExchangeTypesExchangerDescriptionForUserMessage InitExchangeTypesExchangerDescriptionForUserMessage(int[] TypeDescription)
+	{
+		this.TypeDescription = TypeDescription;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.TypeDescription.Length);
+		foreach (int item in this.TypeDescription)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int TypeDescriptionLen = reader.ReadShort();
+		TypeDescription = new int[TypeDescriptionLen];
+		for (int i = 0; i < TypeDescriptionLen; i++)
+		{
+			this.TypeDescription[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public uint[] typeDescription;
-        
-
-public ExchangeTypesExchangerDescriptionForUserMessage()
-{
-}
-
-public ExchangeTypesExchangerDescriptionForUserMessage(uint[] typeDescription)
-        {
-            this.typeDescription = typeDescription;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)typeDescription.Length);
-            foreach (var entry in typeDescription)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            typeDescription = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 typeDescription[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

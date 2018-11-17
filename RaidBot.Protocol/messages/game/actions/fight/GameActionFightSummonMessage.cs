@@ -1,77 +1,50 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameActionFightSummonMessage : AbstractGameActionMessage
 {
 
-public const uint Id = 5825;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5825;
+	public override uint MessageId { get { return Id; } }
+
+	public GameFightFighterInformations[] Summons { get; set; }
+
+	public GameActionFightSummonMessage() {}
+
+
+	public GameActionFightSummonMessage InitGameActionFightSummonMessage(GameFightFighterInformations[] Summons)
+	{
+		this.Summons = Summons;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Summons.Length);
+		foreach (GameFightFighterInformations item in this.Summons)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int SummonsLen = reader.ReadShort();
+		Summons = new GameFightFighterInformations[SummonsLen];
+		for (int i = 0; i < SummonsLen; i++)
+		{
+			this.Summons[i] = ProtocolTypeManager.GetInstance<GameFightFighterInformations>(reader.ReadShort());
+			this.Summons[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.GameFightFighterInformations summon;
-        
-
-public GameActionFightSummonMessage()
-{
-}
-
-public GameActionFightSummonMessage(ushort actionId, int sourceId, Types.GameFightFighterInformations summon)
-         : base(actionId, sourceId)
-        {
-            this.summon = summon;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteShort(summon.TypeId);
-            summon.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            summon = Types.ProtocolTypeManager.GetInstance<Types.GameFightFighterInformations>(reader.ReadShort());
-            summon.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

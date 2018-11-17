@@ -1,75 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GoldItem : Item
 {
 
-public const short Id = 123;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 123;
+	public override uint MessageId { get { return Id; } }
+
+	public long Sum { get; set; }
+
+	public GoldItem() {}
+
+
+	public GoldItem InitGoldItem(long Sum)
+	{
+		this.Sum = Sum;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarLong(this.Sum);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Sum = reader.ReadVarLong();
+	}
 }
-
-public uint sum;
-        
-
-public GoldItem()
-{
-}
-
-public GoldItem(uint sum)
-        {
-            this.sum = sum;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(sum);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            sum = reader.ReadVaruhint();
-            if (sum < 0)
-                throw new Exception("Forbidden value on sum = " + sum + ", it doesn't respect the following condition : sum < 0");
-            
-
-}
-
-
-}
-
-
 }

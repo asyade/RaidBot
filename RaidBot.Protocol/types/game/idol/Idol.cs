@@ -1,85 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class Idol : NetworkType
 {
 
-public class Idol
-{
+	public const uint Id = 489;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 489;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short Id_ { get; set; }
+	public short XpBonusPercent { get; set; }
+	public short DropBonusPercent { get; set; }
+
+	public Idol() {}
+
+
+	public Idol InitIdol(short Id_, short XpBonusPercent, short DropBonusPercent)
+	{
+		this.Id_ = Id_;
+		this.XpBonusPercent = XpBonusPercent;
+		this.DropBonusPercent = DropBonusPercent;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.Id_);
+		writer.WriteVarShort(this.XpBonusPercent);
+		writer.WriteVarShort(this.DropBonusPercent);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Id_ = reader.ReadVarShort();
+		this.XpBonusPercent = reader.ReadVarShort();
+		this.DropBonusPercent = reader.ReadVarShort();
+	}
 }
-
-public ushort id;
-        public ushort xpBonusPercent;
-        public ushort dropBonusPercent;
-        
-
-public Idol()
-{
-}
-
-public Idol(ushort id, ushort xpBonusPercent, ushort dropBonusPercent)
-        {
-            this.id = id;
-            this.xpBonusPercent = xpBonusPercent;
-            this.dropBonusPercent = dropBonusPercent;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(id);
-            writer.WriteVaruhshort(xpBonusPercent);
-            writer.WriteVaruhshort(dropBonusPercent);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-id = reader.ReadVaruhshort();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            xpBonusPercent = reader.ReadVaruhshort();
-            if (xpBonusPercent < 0)
-                throw new Exception("Forbidden value on xpBonusPercent = " + xpBonusPercent + ", it doesn't respect the following condition : xpBonusPercent < 0");
-            dropBonusPercent = reader.ReadVaruhshort();
-            if (dropBonusPercent < 0)
-                throw new Exception("Forbidden value on dropBonusPercent = " + dropBonusPercent + ", it doesn't respect the following condition : dropBonusPercent < 0");
-            
-
-}
-
-
-}
-
-
 }

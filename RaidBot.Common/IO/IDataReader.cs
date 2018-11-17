@@ -49,6 +49,7 @@ namespace RaidBot.Common.IO
         /// </summary>
         /// <returns></returns>
         UInt32 ReadUInt();
+        uint ReadUnsignedInt();
 
         /// <summary>
         ///   Read a long from the Buffer

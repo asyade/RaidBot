@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectEffectLadder : ObjectEffectCreature
 {
 
-public const short Id = 81;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 81;
+	public override uint MessageId { get { return Id; } }
+
+	public int MonsterCount { get; set; }
+
+	public ObjectEffectLadder() {}
+
+
+	public ObjectEffectLadder InitObjectEffectLadder(int MonsterCount)
+	{
+		this.MonsterCount = MonsterCount;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarInt(this.MonsterCount);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.MonsterCount = reader.ReadVarInt();
+	}
 }
-
-public uint monsterCount;
-        
-
-public ObjectEffectLadder()
-{
-}
-
-public ObjectEffectLadder(ushort actionId, ushort monsterFamilyId, uint monsterCount)
-         : base(actionId, monsterFamilyId)
-        {
-            this.monsterCount = monsterCount;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(monsterCount);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            monsterCount = reader.ReadVaruhint();
-            if (monsterCount < 0)
-                throw new Exception("Forbidden value on monsterCount = " + monsterCount + ", it doesn't respect the following condition : monsterCount < 0");
-            
-
-}
-
-
-}
-
-
 }

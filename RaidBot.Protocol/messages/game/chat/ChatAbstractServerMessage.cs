@@ -1,88 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChatAbstractServerMessage : NetworkMessage
 {
 
-public const uint Id = 880;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 880;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Channel { get; set; }
+	public String Content { get; set; }
+	public int Timestamp { get; set; }
+	public String Fingerprint { get; set; }
+
+	public ChatAbstractServerMessage() {}
+
+
+	public ChatAbstractServerMessage InitChatAbstractServerMessage(byte Channel, String Content, int Timestamp, String Fingerprint)
+	{
+		this.Channel = Channel;
+		this.Content = Content;
+		this.Timestamp = Timestamp;
+		this.Fingerprint = Fingerprint;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.Channel);
+		writer.WriteUTF(this.Content);
+		writer.WriteInt(this.Timestamp);
+		writer.WriteUTF(this.Fingerprint);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Channel = reader.ReadByte();
+		this.Content = reader.ReadUTF();
+		this.Timestamp = reader.ReadInt();
+		this.Fingerprint = reader.ReadUTF();
+	}
 }
-
-public sbyte channel;
-        public string content;
-        public int timestamp;
-        public string fingerprint;
-        
-
-public ChatAbstractServerMessage()
-{
-}
-
-public ChatAbstractServerMessage(sbyte channel, string content, int timestamp, string fingerprint)
-        {
-            this.channel = channel;
-            this.content = content;
-            this.timestamp = timestamp;
-            this.fingerprint = fingerprint;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(channel);
-            writer.WriteUTF(content);
-            writer.WriteInt(timestamp);
-            writer.WriteUTF(fingerprint);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-channel = reader.ReadSByte();
-            if (channel < 0)
-                throw new Exception("Forbidden value on channel = " + channel + ", it doesn't respect the following condition : channel < 0");
-            content = reader.ReadUTF();
-            timestamp = reader.ReadInt();
-            if (timestamp < 0)
-                throw new Exception("Forbidden value on timestamp = " + timestamp + ", it doesn't respect the following condition : timestamp < 0");
-            fingerprint = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

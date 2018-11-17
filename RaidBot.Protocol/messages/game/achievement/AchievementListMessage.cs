@@ -1,95 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AchievementListMessage : NetworkMessage
 {
 
-public const uint Id = 6205;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6205;
+	public override uint MessageId { get { return Id; } }
+
+	public AchievementAchieved[] FinishedAchievements { get; set; }
+
+	public AchievementListMessage() {}
+
+
+	public AchievementListMessage InitAchievementListMessage(AchievementAchieved[] FinishedAchievements)
+	{
+		this.FinishedAchievements = FinishedAchievements;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.FinishedAchievements.Length);
+		foreach (AchievementAchieved item in this.FinishedAchievements)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int FinishedAchievementsLen = reader.ReadShort();
+		FinishedAchievements = new AchievementAchieved[FinishedAchievementsLen];
+		for (int i = 0; i < FinishedAchievementsLen; i++)
+		{
+			this.FinishedAchievements[i] = ProtocolTypeManager.GetInstance<AchievementAchieved>(reader.ReadShort());
+			this.FinishedAchievements[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort[] finishedAchievementsIds;
-        public Types.AchievementRewardable[] rewardableAchievements;
-        
-
-public AchievementListMessage()
-{
-}
-
-public AchievementListMessage(ushort[] finishedAchievementsIds, Types.AchievementRewardable[] rewardableAchievements)
-        {
-            this.finishedAchievementsIds = finishedAchievementsIds;
-            this.rewardableAchievements = rewardableAchievements;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)finishedAchievementsIds.Length);
-            foreach (var entry in finishedAchievementsIds)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)rewardableAchievements.Length);
-            foreach (var entry in rewardableAchievements)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            finishedAchievementsIds = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 finishedAchievementsIds[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            rewardableAchievements = new Types.AchievementRewardable[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 rewardableAchievements[i] = new Types.AchievementRewardable();
-                 rewardableAchievements[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

@@ -1,73 +1,38 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameEntityDispositionMessage : NetworkMessage
 {
 
-public const uint Id = 5693;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5693;
+	public override uint MessageId { get { return Id; } }
+
+	public IdentifiedEntityDispositionInformations Disposition { get; set; }
+
+	public GameEntityDispositionMessage() {}
+
+
+	public GameEntityDispositionMessage InitGameEntityDispositionMessage(IdentifiedEntityDispositionInformations Disposition)
+	{
+		this.Disposition = Disposition;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.Disposition.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Disposition = new IdentifiedEntityDispositionInformations();
+		this.Disposition.Deserialize(reader);
+	}
 }
-
-public Types.IdentifiedEntityDispositionInformations disposition;
-        
-
-public GameEntityDispositionMessage()
-{
-}
-
-public GameEntityDispositionMessage(Types.IdentifiedEntityDispositionInformations disposition)
-        {
-            this.disposition = disposition;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-disposition.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-disposition = new Types.IdentifiedEntityDispositionInformations();
-            disposition.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

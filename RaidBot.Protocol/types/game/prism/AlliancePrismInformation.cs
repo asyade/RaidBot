@@ -1,75 +1,40 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class AlliancePrismInformation : PrismInformation
 {
 
-public const short Id = 427;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 427;
+	public override uint MessageId { get { return Id; } }
+
+	public AllianceInformations Alliance { get; set; }
+
+	public AlliancePrismInformation() {}
+
+
+	public AlliancePrismInformation InitAlliancePrismInformation(AllianceInformations Alliance)
+	{
+		this.Alliance = Alliance;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		this.Alliance.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Alliance = new AllianceInformations();
+		this.Alliance.Deserialize(reader);
+	}
 }
-
-public Types.AllianceInformations alliance;
-        
-
-public AlliancePrismInformation()
-{
-}
-
-public AlliancePrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, uint rewardTokenCount, Types.AllianceInformations alliance)
-         : base(typeId, state, nextVulnerabilityDate, placementDate, rewardTokenCount)
-        {
-            this.alliance = alliance;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            alliance.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            alliance = new Types.AllianceInformations();
-            alliance.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

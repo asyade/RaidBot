@@ -1,80 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectItemToSellInNpcShop : ObjectItemMinimalInformation
 {
 
-public const short Id = 352;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 352;
+	public override uint MessageId { get { return Id; } }
+
+	public long ObjectPrice { get; set; }
+	public String BuyCriterion { get; set; }
+
+	public ObjectItemToSellInNpcShop() {}
+
+
+	public ObjectItemToSellInNpcShop InitObjectItemToSellInNpcShop(long ObjectPrice, String BuyCriterion)
+	{
+		this.ObjectPrice = ObjectPrice;
+		this.BuyCriterion = BuyCriterion;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarLong(this.ObjectPrice);
+		writer.WriteUTF(this.BuyCriterion);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.ObjectPrice = reader.ReadVarLong();
+		this.BuyCriterion = reader.ReadUTF();
+	}
 }
-
-public uint objectPrice;
-        public string buyCriterion;
-        
-
-public ObjectItemToSellInNpcShop()
-{
-}
-
-public ObjectItemToSellInNpcShop(ushort objectGID, Types.ObjectEffect[] effects, uint objectPrice, string buyCriterion)
-         : base(objectGID, effects)
-        {
-            this.objectPrice = objectPrice;
-            this.buyCriterion = buyCriterion;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(objectPrice);
-            writer.WriteUTF(buyCriterion);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            objectPrice = reader.ReadVaruhint();
-            if (objectPrice < 0)
-                throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0");
-            buyCriterion = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

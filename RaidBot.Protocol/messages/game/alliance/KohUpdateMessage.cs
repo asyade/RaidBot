@@ -1,144 +1,112 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class KohUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 6439;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6439;
+	public override uint MessageId { get { return Id; } }
+
+	public AllianceInformations[] Alliances { get; set; }
+	public short[] AllianceNbMembers { get; set; }
+	public int[] AllianceRoundWeigth { get; set; }
+	public byte[] AllianceMatchScore { get; set; }
+	public BasicAllianceInformations[] AllianceMapWinners { get; set; }
+	public int AllianceMapWinnerScore { get; set; }
+	public int AllianceMapMyAllianceScore { get; set; }
+	public double NextTickTime { get; set; }
+
+	public KohUpdateMessage() {}
+
+
+	public KohUpdateMessage InitKohUpdateMessage(AllianceInformations[] Alliances, short[] AllianceNbMembers, int[] AllianceRoundWeigth, byte[] AllianceMatchScore, BasicAllianceInformations[] AllianceMapWinners, int AllianceMapWinnerScore, int AllianceMapMyAllianceScore, double NextTickTime)
+	{
+		this.Alliances = Alliances;
+		this.AllianceNbMembers = AllianceNbMembers;
+		this.AllianceRoundWeigth = AllianceRoundWeigth;
+		this.AllianceMatchScore = AllianceMatchScore;
+		this.AllianceMapWinners = AllianceMapWinners;
+		this.AllianceMapWinnerScore = AllianceMapWinnerScore;
+		this.AllianceMapMyAllianceScore = AllianceMapMyAllianceScore;
+		this.NextTickTime = NextTickTime;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Alliances.Length);
+		foreach (AllianceInformations item in this.Alliances)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.AllianceNbMembers.Length);
+		foreach (short item in this.AllianceNbMembers)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.AllianceRoundWeigth.Length);
+		foreach (int item in this.AllianceRoundWeigth)
+		{
+			writer.WriteVarInt(item);
+		}
+		writer.WriteShort(this.AllianceMatchScore.Length);
+		foreach (byte item in this.AllianceMatchScore)
+		{
+			writer.WriteByte(item);
+		}
+		writer.WriteShort(this.AllianceMapWinners.Length);
+		foreach (BasicAllianceInformations item in this.AllianceMapWinners)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteVarInt(this.AllianceMapWinnerScore);
+		writer.WriteVarInt(this.AllianceMapMyAllianceScore);
+		writer.WriteDouble(this.NextTickTime);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int AlliancesLen = reader.ReadShort();
+		Alliances = new AllianceInformations[AlliancesLen];
+		for (int i = 0; i < AlliancesLen; i++)
+		{
+			this.Alliances[i] = new AllianceInformations();
+			this.Alliances[i].Deserialize(reader);
+		}
+		int AllianceNbMembersLen = reader.ReadShort();
+		AllianceNbMembers = new short[AllianceNbMembersLen];
+		for (int i = 0; i < AllianceNbMembersLen; i++)
+		{
+			this.AllianceNbMembers[i] = reader.ReadVarShort();
+		}
+		int AllianceRoundWeigthLen = reader.ReadShort();
+		AllianceRoundWeigth = new int[AllianceRoundWeigthLen];
+		for (int i = 0; i < AllianceRoundWeigthLen; i++)
+		{
+			this.AllianceRoundWeigth[i] = reader.ReadVarInt();
+		}
+		int AllianceMatchScoreLen = reader.ReadShort();
+		AllianceMatchScore = new byte[AllianceMatchScoreLen];
+		for (int i = 0; i < AllianceMatchScoreLen; i++)
+		{
+			this.AllianceMatchScore[i] = reader.ReadByte();
+		}
+		int AllianceMapWinnersLen = reader.ReadShort();
+		AllianceMapWinners = new BasicAllianceInformations[AllianceMapWinnersLen];
+		for (int i = 0; i < AllianceMapWinnersLen; i++)
+		{
+			this.AllianceMapWinners[i] = new BasicAllianceInformations();
+			this.AllianceMapWinners[i].Deserialize(reader);
+		}
+		this.AllianceMapWinnerScore = reader.ReadVarInt();
+		this.AllianceMapMyAllianceScore = reader.ReadVarInt();
+		this.NextTickTime = reader.ReadDouble();
+	}
 }
-
-public Types.AllianceInformations[] alliances;
-        public ushort[] allianceNbMembers;
-        public uint[] allianceRoundWeigth;
-        public sbyte[] allianceMatchScore;
-        public Types.BasicAllianceInformations allianceMapWinner;
-        public uint allianceMapWinnerScore;
-        public uint allianceMapMyAllianceScore;
-        public double nextTickTime;
-        
-
-public KohUpdateMessage()
-{
-}
-
-public KohUpdateMessage(Types.AllianceInformations[] alliances, ushort[] allianceNbMembers, uint[] allianceRoundWeigth, sbyte[] allianceMatchScore, Types.BasicAllianceInformations allianceMapWinner, uint allianceMapWinnerScore, uint allianceMapMyAllianceScore, double nextTickTime)
-        {
-            this.alliances = alliances;
-            this.allianceNbMembers = allianceNbMembers;
-            this.allianceRoundWeigth = allianceRoundWeigth;
-            this.allianceMatchScore = allianceMatchScore;
-            this.allianceMapWinner = allianceMapWinner;
-            this.allianceMapWinnerScore = allianceMapWinnerScore;
-            this.allianceMapMyAllianceScore = allianceMapMyAllianceScore;
-            this.nextTickTime = nextTickTime;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)alliances.Length);
-            foreach (var entry in alliances)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)allianceNbMembers.Length);
-            foreach (var entry in allianceNbMembers)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)allianceRoundWeigth.Length);
-            foreach (var entry in allianceRoundWeigth)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            writer.WriteUShort((ushort)allianceMatchScore.Length);
-            foreach (var entry in allianceMatchScore)
-            {
-                 writer.WriteSByte(entry);
-            }
-            allianceMapWinner.Serialize(writer);
-            writer.WriteVaruhint(allianceMapWinnerScore);
-            writer.WriteVaruhint(allianceMapMyAllianceScore);
-            writer.WriteDouble(nextTickTime);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            alliances = new Types.AllianceInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 alliances[i] = new Types.AllianceInformations();
-                 alliances[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            allianceNbMembers = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 allianceNbMembers[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            allianceRoundWeigth = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 allianceRoundWeigth[i] = reader.ReadVaruhint();
-            }
-            limit = reader.ReadUShort();
-            allianceMatchScore = new sbyte[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 allianceMatchScore[i] = reader.ReadSByte();
-            }
-            allianceMapWinner = new Types.BasicAllianceInformations();
-            allianceMapWinner.Deserialize(reader);
-            allianceMapWinnerScore = reader.ReadVaruhint();
-            if (allianceMapWinnerScore < 0)
-                throw new Exception("Forbidden value on allianceMapWinnerScore = " + allianceMapWinnerScore + ", it doesn't respect the following condition : allianceMapWinnerScore < 0");
-            allianceMapMyAllianceScore = reader.ReadVaruhint();
-            if (allianceMapMyAllianceScore < 0)
-                throw new Exception("Forbidden value on allianceMapMyAllianceScore = " + allianceMapMyAllianceScore + ", it doesn't respect the following condition : allianceMapMyAllianceScore < 0");
-            nextTickTime = reader.ReadDouble();
-            if (nextTickTime < 0 || nextTickTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on nextTickTime = " + nextTickTime + ", it doesn't respect the following condition : nextTickTime < 0 || nextTickTime > 9.007199254740992E15");
-            
-
-}
-
-
-}
-
-
 }

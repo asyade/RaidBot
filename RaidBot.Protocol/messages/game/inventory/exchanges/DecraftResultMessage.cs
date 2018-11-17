@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:43
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class DecraftResultMessage : NetworkMessage
 {
 
-public const uint Id = 6569;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6569;
+	public override uint MessageId { get { return Id; } }
+
+	public DecraftedItemStackInfo[] Results { get; set; }
+
+	public DecraftResultMessage() {}
+
+
+	public DecraftResultMessage InitDecraftResultMessage(DecraftedItemStackInfo[] Results)
+	{
+		this.Results = Results;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Results.Length);
+		foreach (DecraftedItemStackInfo item in this.Results)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ResultsLen = reader.ReadShort();
+		Results = new DecraftedItemStackInfo[ResultsLen];
+		for (int i = 0; i < ResultsLen; i++)
+		{
+			this.Results[i] = new DecraftedItemStackInfo();
+			this.Results[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.DecraftedItemStackInfo[] results;
-        
-
-public DecraftResultMessage()
-{
-}
-
-public DecraftResultMessage(Types.DecraftedItemStackInfo[] results)
-        {
-            this.results = results;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)results.Length);
-            foreach (var entry in results)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            results = new Types.DecraftedItemStackInfo[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 results[i] = new Types.DecraftedItemStackInfo();
-                 results[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

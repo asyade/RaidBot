@@ -1,84 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TaxCollectorStaticInformations : NetworkType
 {
 
-public class TaxCollectorStaticInformations
-{
+	public const uint Id = 147;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 147;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short FirstNameId { get; set; }
+	public short LastNameId { get; set; }
+	public GuildInformations GuildIdentity { get; set; }
+
+	public TaxCollectorStaticInformations() {}
+
+
+	public TaxCollectorStaticInformations InitTaxCollectorStaticInformations(short FirstNameId, short LastNameId, GuildInformations GuildIdentity)
+	{
+		this.FirstNameId = FirstNameId;
+		this.LastNameId = LastNameId;
+		this.GuildIdentity = GuildIdentity;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.FirstNameId);
+		writer.WriteVarShort(this.LastNameId);
+		this.GuildIdentity.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.FirstNameId = reader.ReadVarShort();
+		this.LastNameId = reader.ReadVarShort();
+		this.GuildIdentity = new GuildInformations();
+		this.GuildIdentity.Deserialize(reader);
+	}
 }
-
-public ushort firstNameId;
-        public ushort lastNameId;
-        public Types.GuildInformations guildIdentity;
-        
-
-public TaxCollectorStaticInformations()
-{
-}
-
-public TaxCollectorStaticInformations(ushort firstNameId, ushort lastNameId, Types.GuildInformations guildIdentity)
-        {
-            this.firstNameId = firstNameId;
-            this.lastNameId = lastNameId;
-            this.guildIdentity = guildIdentity;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(firstNameId);
-            writer.WriteVaruhshort(lastNameId);
-            guildIdentity.Serialize(writer);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-firstNameId = reader.ReadVaruhshort();
-            if (firstNameId < 0)
-                throw new Exception("Forbidden value on firstNameId = " + firstNameId + ", it doesn't respect the following condition : firstNameId < 0");
-            lastNameId = reader.ReadVaruhshort();
-            if (lastNameId < 0)
-                throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            guildIdentity = new Types.GuildInformations();
-            guildIdentity.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

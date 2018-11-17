@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class JobExperienceMultiUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 5809;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5809;
+	public override uint MessageId { get { return Id; } }
+
+	public JobExperience[] ExperiencesUpdate { get; set; }
+
+	public JobExperienceMultiUpdateMessage() {}
+
+
+	public JobExperienceMultiUpdateMessage InitJobExperienceMultiUpdateMessage(JobExperience[] ExperiencesUpdate)
+	{
+		this.ExperiencesUpdate = ExperiencesUpdate;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ExperiencesUpdate.Length);
+		foreach (JobExperience item in this.ExperiencesUpdate)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ExperiencesUpdateLen = reader.ReadShort();
+		ExperiencesUpdate = new JobExperience[ExperiencesUpdateLen];
+		for (int i = 0; i < ExperiencesUpdateLen; i++)
+		{
+			this.ExperiencesUpdate[i] = new JobExperience();
+			this.ExperiencesUpdate[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.JobExperience[] experiencesUpdate;
-        
-
-public JobExperienceMultiUpdateMessage()
-{
-}
-
-public JobExperienceMultiUpdateMessage(Types.JobExperience[] experiencesUpdate)
-        {
-            this.experiencesUpdate = experiencesUpdate;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)experiencesUpdate.Length);
-            foreach (var entry in experiencesUpdate)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            experiencesUpdate = new Types.JobExperience[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 experiencesUpdate[i] = new Types.JobExperience();
-                 experiencesUpdate[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

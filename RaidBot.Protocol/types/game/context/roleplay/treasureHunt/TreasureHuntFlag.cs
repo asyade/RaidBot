@@ -1,77 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TreasureHuntFlag : NetworkType
 {
 
-public class TreasureHuntFlag
-{
+	public const uint Id = 473;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 473;
-public virtual short TypeId
-{
-    get { return Id; }
+	public double MapId { get; set; }
+	public byte State { get; set; }
+
+	public TreasureHuntFlag() {}
+
+
+	public TreasureHuntFlag InitTreasureHuntFlag(double MapId, byte State)
+	{
+		this.MapId = MapId;
+		this.State = State;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MapId);
+		writer.WriteByte(this.State);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MapId = reader.ReadDouble();
+		this.State = reader.ReadByte();
+	}
 }
-
-public int mapId;
-        public sbyte state;
-        
-
-public TreasureHuntFlag()
-{
-}
-
-public TreasureHuntFlag(int mapId, sbyte state)
-        {
-            this.mapId = mapId;
-            this.state = state;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(mapId);
-            writer.WriteSByte(state);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-mapId = reader.ReadInt();
-            state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
-            
-
-}
-
-
-}
-
-
 }

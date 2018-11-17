@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AccountHouseMessage : NetworkMessage
 {
 
-public const uint Id = 6315;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6315;
+	public override uint MessageId { get { return Id; } }
+
+	public AccountHouseInformations[] Houses { get; set; }
+
+	public AccountHouseMessage() {}
+
+
+	public AccountHouseMessage InitAccountHouseMessage(AccountHouseInformations[] Houses)
+	{
+		this.Houses = Houses;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Houses.Length);
+		foreach (AccountHouseInformations item in this.Houses)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int HousesLen = reader.ReadShort();
+		Houses = new AccountHouseInformations[HousesLen];
+		for (int i = 0; i < HousesLen; i++)
+		{
+			this.Houses[i] = new AccountHouseInformations();
+			this.Houses[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.AccountHouseInformations[] houses;
-        
-
-public AccountHouseMessage()
-{
-}
-
-public AccountHouseMessage(Types.AccountHouseInformations[] houses)
-        {
-            this.houses = houses;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)houses.Length);
-            foreach (var entry in houses)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            houses = new Types.AccountHouseInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 houses[i] = new Types.AccountHouseInformations();
-                 houses[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

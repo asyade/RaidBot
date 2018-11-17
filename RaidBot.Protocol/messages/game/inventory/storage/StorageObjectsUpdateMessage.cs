@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class StorageObjectsUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 6036;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6036;
+	public override uint MessageId { get { return Id; } }
+
+	public ObjectItem[] ObjectList { get; set; }
+
+	public StorageObjectsUpdateMessage() {}
+
+
+	public StorageObjectsUpdateMessage InitStorageObjectsUpdateMessage(ObjectItem[] ObjectList)
+	{
+		this.ObjectList = ObjectList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ObjectList.Length);
+		foreach (ObjectItem item in this.ObjectList)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectListLen = reader.ReadShort();
+		ObjectList = new ObjectItem[ObjectListLen];
+		for (int i = 0; i < ObjectListLen; i++)
+		{
+			this.ObjectList[i] = new ObjectItem();
+			this.ObjectList[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ObjectItem[] objectList;
-        
-
-public StorageObjectsUpdateMessage()
-{
-}
-
-public StorageObjectsUpdateMessage(Types.ObjectItem[] objectList)
-        {
-            this.objectList = objectList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)objectList.Length);
-            foreach (var entry in objectList)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            objectList = new Types.ObjectItem[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectList[i] = new Types.ObjectItem();
-                 objectList[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

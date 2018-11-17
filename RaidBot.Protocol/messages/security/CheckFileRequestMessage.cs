@@ -1,78 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class CheckFileRequestMessage : NetworkMessage
 {
 
-public const uint Id = 6154;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6154;
+	public override uint MessageId { get { return Id; } }
+
+	public String Filename { get; set; }
+	public byte Type { get; set; }
+
+	public CheckFileRequestMessage() {}
+
+
+	public CheckFileRequestMessage InitCheckFileRequestMessage(String Filename, byte Type)
+	{
+		this.Filename = Filename;
+		this.Type = Type;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.Filename);
+		writer.WriteByte(this.Type);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Filename = reader.ReadUTF();
+		this.Type = reader.ReadByte();
+	}
 }
-
-public string filename;
-        public sbyte type;
-        
-
-public CheckFileRequestMessage()
-{
-}
-
-public CheckFileRequestMessage(string filename, sbyte type)
-        {
-            this.filename = filename;
-            this.type = type;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(filename);
-            writer.WriteSByte(type);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-filename = reader.ReadUTF();
-            type = reader.ReadSByte();
-            if (type < 0)
-                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
-            
-
-}
-
-
-}
-
-
 }

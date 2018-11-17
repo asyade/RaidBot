@@ -1,86 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildInAllianceInformations : GuildInformations
 {
 
-public const short Id = 420;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 420;
+	public override uint MessageId { get { return Id; } }
+
+	public byte NbMembers { get; set; }
+	public int JoinDate { get; set; }
+
+	public GuildInAllianceInformations() {}
+
+
+	public GuildInAllianceInformations InitGuildInAllianceInformations(byte NbMembers, int JoinDate)
+	{
+		this.NbMembers = NbMembers;
+		this.JoinDate = JoinDate;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.NbMembers);
+		writer.WriteInt(this.JoinDate);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.NbMembers = reader.ReadByte();
+		this.JoinDate = reader.ReadInt();
+	}
 }
-
-public byte guildLevel;
-        public byte nbMembers;
-        public bool enabled;
-        
-
-public GuildInAllianceInformations()
-{
-}
-
-public GuildInAllianceInformations(uint guildId, string guildName, Types.GuildEmblem guildEmblem, byte guildLevel, byte nbMembers, bool enabled)
-         : base(guildId, guildName, guildEmblem)
-        {
-            this.guildLevel = guildLevel;
-            this.nbMembers = nbMembers;
-            this.enabled = enabled;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(guildLevel);
-            writer.WriteByte(nbMembers);
-            writer.WriteBoolean(enabled);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            guildLevel = reader.ReadByte();
-            if (guildLevel < 1 || guildLevel > 200)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 1 || guildLevel > 200");
-            nbMembers = reader.ReadByte();
-            if (nbMembers < 1 || nbMembers > 240)
-                throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
-            enabled = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

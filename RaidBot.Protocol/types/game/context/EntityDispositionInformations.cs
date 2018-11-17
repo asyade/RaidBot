@@ -1,79 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class EntityDispositionInformations : NetworkType
 {
 
-public class EntityDispositionInformations
-{
+	public const uint Id = 60;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 60;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short CellId { get; set; }
+	public byte Direction { get; set; }
+
+	public EntityDispositionInformations() {}
+
+
+	public EntityDispositionInformations InitEntityDispositionInformations(short CellId, byte Direction)
+	{
+		this.CellId = CellId;
+		this.Direction = Direction;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.CellId);
+		writer.WriteByte(this.Direction);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CellId = reader.ReadShort();
+		this.Direction = reader.ReadByte();
+	}
 }
-
-public short cellId;
-        public sbyte direction;
-        
-
-public EntityDispositionInformations()
-{
-}
-
-public EntityDispositionInformations(short cellId, sbyte direction)
-        {
-            this.cellId = cellId;
-            this.direction = direction;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteShort(cellId);
-            writer.WriteSByte(direction);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-cellId = reader.ReadShort();
-            if (cellId < -1 || cellId > 559)
-                throw new Exception("Forbidden value on cellId = " + cellId + ", it doesn't respect the following condition : cellId < -1 || cellId > 559");
-            direction = reader.ReadSByte();
-            if (direction < 0)
-                throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
-            
-
-}
-
-
-}
-
-
 }

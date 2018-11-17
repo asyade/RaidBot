@@ -1,81 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class TreasureHuntStepFollowDirectionToPOI : TreasureHuntStep
 {
 
-public const short Id = 461;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 461;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Direction { get; set; }
+	public short PoiLabelId { get; set; }
+
+	public TreasureHuntStepFollowDirectionToPOI() {}
+
+
+	public TreasureHuntStepFollowDirectionToPOI InitTreasureHuntStepFollowDirectionToPOI(byte Direction, short PoiLabelId)
+	{
+		this.Direction = Direction;
+		this.PoiLabelId = PoiLabelId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.Direction);
+		writer.WriteVarShort(this.PoiLabelId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Direction = reader.ReadByte();
+		this.PoiLabelId = reader.ReadVarShort();
+	}
 }
-
-public sbyte direction;
-        public ushort poiLabelId;
-        
-
-public TreasureHuntStepFollowDirectionToPOI()
-{
-}
-
-public TreasureHuntStepFollowDirectionToPOI(sbyte direction, ushort poiLabelId)
-        {
-            this.direction = direction;
-            this.poiLabelId = poiLabelId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(direction);
-            writer.WriteVaruhshort(poiLabelId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            direction = reader.ReadSByte();
-            if (direction < 0)
-                throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
-            poiLabelId = reader.ReadVaruhshort();
-            if (poiLabelId < 0)
-                throw new Exception("Forbidden value on poiLabelId = " + poiLabelId + ", it doesn't respect the following condition : poiLabelId < 0");
-            
-
-}
-
-
-}
-
-
 }

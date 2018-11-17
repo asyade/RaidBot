@@ -1,75 +1,40 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class AllianceInformations : BasicNamedAllianceInformations
 {
 
-public const short Id = 417;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 417;
+	public override uint MessageId { get { return Id; } }
+
+	public GuildEmblem AllianceEmblem { get; set; }
+
+	public AllianceInformations() {}
+
+
+	public AllianceInformations InitAllianceInformations(GuildEmblem AllianceEmblem)
+	{
+		this.AllianceEmblem = AllianceEmblem;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		this.AllianceEmblem.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.AllianceEmblem = new GuildEmblem();
+		this.AllianceEmblem.Deserialize(reader);
+	}
 }
-
-public Types.GuildEmblem allianceEmblem;
-        
-
-public AllianceInformations()
-{
-}
-
-public AllianceInformations(uint allianceId, string allianceTag, string allianceName, Types.GuildEmblem allianceEmblem)
-         : base(allianceId, allianceTag, allianceName)
-        {
-            this.allianceEmblem = allianceEmblem;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            allianceEmblem.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            allianceEmblem = new Types.GuildEmblem();
-            allianceEmblem.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

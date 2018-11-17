@@ -1,73 +1,38 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeStartedBidBuyerMessage : NetworkMessage
 {
 
-public const uint Id = 5904;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5904;
+	public override uint MessageId { get { return Id; } }
+
+	public SellerBuyerDescriptor BuyerDescriptor { get; set; }
+
+	public ExchangeStartedBidBuyerMessage() {}
+
+
+	public ExchangeStartedBidBuyerMessage InitExchangeStartedBidBuyerMessage(SellerBuyerDescriptor BuyerDescriptor)
+	{
+		this.BuyerDescriptor = BuyerDescriptor;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.BuyerDescriptor.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.BuyerDescriptor = new SellerBuyerDescriptor();
+		this.BuyerDescriptor.Deserialize(reader);
+	}
 }
-
-public Types.SellerBuyerDescriptor buyerDescriptor;
-        
-
-public ExchangeStartedBidBuyerMessage()
-{
-}
-
-public ExchangeStartedBidBuyerMessage(Types.SellerBuyerDescriptor buyerDescriptor)
-        {
-            this.buyerDescriptor = buyerDescriptor;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-buyerDescriptor.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-buyerDescriptor = new Types.SellerBuyerDescriptor();
-            buyerDescriptor.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

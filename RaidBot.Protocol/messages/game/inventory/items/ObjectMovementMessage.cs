@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectMovementMessage : NetworkMessage
 {
 
-public const uint Id = 3010;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 3010;
+	public override uint MessageId { get { return Id; } }
+
+	public int ObjectUID { get; set; }
+	public short Position { get; set; }
+
+	public ObjectMovementMessage() {}
+
+
+	public ObjectMovementMessage InitObjectMovementMessage(int ObjectUID, short Position)
+	{
+		this.ObjectUID = ObjectUID;
+		this.Position = Position;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.ObjectUID);
+		writer.WriteShort(this.Position);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ObjectUID = reader.ReadVarInt();
+		this.Position = reader.ReadShort();
+	}
 }
-
-public uint objectUID;
-        public byte position;
-        
-
-public ObjectMovementMessage()
-{
-}
-
-public ObjectMovementMessage(uint objectUID, byte position)
-        {
-            this.objectUID = objectUID;
-            this.position = position;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(objectUID);
-            writer.WriteByte(position);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-objectUID = reader.ReadVaruhint();
-            if (objectUID < 0)
-                throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            position = reader.ReadByte();
-            if (position < 0 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
-            
-
-}
-
-
-}
-
-
 }

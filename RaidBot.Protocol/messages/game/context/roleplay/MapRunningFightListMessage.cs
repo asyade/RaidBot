@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MapRunningFightListMessage : NetworkMessage
 {
 
-public const uint Id = 5743;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5743;
+	public override uint MessageId { get { return Id; } }
+
+	public FightExternalInformations[] Fights { get; set; }
+
+	public MapRunningFightListMessage() {}
+
+
+	public MapRunningFightListMessage InitMapRunningFightListMessage(FightExternalInformations[] Fights)
+	{
+		this.Fights = Fights;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Fights.Length);
+		foreach (FightExternalInformations item in this.Fights)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int FightsLen = reader.ReadShort();
+		Fights = new FightExternalInformations[FightsLen];
+		for (int i = 0; i < FightsLen; i++)
+		{
+			this.Fights[i] = new FightExternalInformations();
+			this.Fights[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.FightExternalInformations[] fights;
-        
-
-public MapRunningFightListMessage()
-{
-}
-
-public MapRunningFightListMessage(Types.FightExternalInformations[] fights)
-        {
-            this.fights = fights;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)fights.Length);
-            foreach (var entry in fights)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            fights = new Types.FightExternalInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fights[i] = new Types.FightExternalInformations();
-                 fights[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

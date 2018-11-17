@@ -1,75 +1,40 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class MonsterInGroupInformations : MonsterInGroupLightInformations
 {
 
-public const short Id = 144;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 144;
+	public override uint MessageId { get { return Id; } }
+
+	public EntityLook Look { get; set; }
+
+	public MonsterInGroupInformations() {}
+
+
+	public MonsterInGroupInformations InitMonsterInGroupInformations(EntityLook Look)
+	{
+		this.Look = Look;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		this.Look.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Look = new EntityLook();
+		this.Look.Deserialize(reader);
+	}
 }
-
-public Types.EntityLook look;
-        
-
-public MonsterInGroupInformations()
-{
-}
-
-public MonsterInGroupInformations(int creatureGenericId, sbyte grade, Types.EntityLook look)
-         : base(creatureGenericId, grade)
-        {
-            this.look = look;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            look.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            look = new Types.EntityLook();
-            look.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class JobDescriptionMessage : NetworkMessage
 {
 
-public const uint Id = 5655;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5655;
+	public override uint MessageId { get { return Id; } }
+
+	public JobDescription[] JobsDescription { get; set; }
+
+	public JobDescriptionMessage() {}
+
+
+	public JobDescriptionMessage InitJobDescriptionMessage(JobDescription[] JobsDescription)
+	{
+		this.JobsDescription = JobsDescription;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.JobsDescription.Length);
+		foreach (JobDescription item in this.JobsDescription)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int JobsDescriptionLen = reader.ReadShort();
+		JobsDescription = new JobDescription[JobsDescriptionLen];
+		for (int i = 0; i < JobsDescriptionLen; i++)
+		{
+			this.JobsDescription[i] = new JobDescription();
+			this.JobsDescription[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.JobDescription[] jobsDescription;
-        
-
-public JobDescriptionMessage()
-{
-}
-
-public JobDescriptionMessage(Types.JobDescription[] jobsDescription)
-        {
-            this.jobsDescription = jobsDescription;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)jobsDescription.Length);
-            foreach (var entry in jobsDescription)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            jobsDescription = new Types.JobDescription[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 jobsDescription[i] = new Types.JobDescription();
-                 jobsDescription[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

@@ -1,80 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTeamMemberCharacterInformations : FightTeamMemberInformations
 {
 
-public const short Id = 13;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 13;
+	public override uint MessageId { get { return Id; } }
+
+	public String Name { get; set; }
+	public short Level { get; set; }
+
+	public FightTeamMemberCharacterInformations() {}
+
+
+	public FightTeamMemberCharacterInformations InitFightTeamMemberCharacterInformations(String Name, short Level)
+	{
+		this.Name = Name;
+		this.Level = Level;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteUTF(this.Name);
+		writer.WriteVarShort(this.Level);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Name = reader.ReadUTF();
+		this.Level = reader.ReadVarShort();
+	}
 }
-
-public string name;
-        public byte level;
-        
-
-public FightTeamMemberCharacterInformations()
-{
-}
-
-public FightTeamMemberCharacterInformations(int id, string name, byte level)
-         : base(id)
-        {
-            this.name = name;
-            this.level = level;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUTF(name);
-            writer.WriteByte(level);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            name = reader.ReadUTF();
-            level = reader.ReadByte();
-            if (level < 0 || level > 255)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 255");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,101 +1,67 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TaxCollectorFightersInformation : NetworkType
 {
 
-public class TaxCollectorFightersInformation
-{
+	public const uint Id = 169;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 169;
-public virtual short TypeId
-{
-    get { return Id; }
+	public double CollectorId { get; set; }
+	public CharacterMinimalPlusLookInformations[] AllyCharactersInformations { get; set; }
+	public CharacterMinimalPlusLookInformations[] EnemyCharactersInformations { get; set; }
+
+	public TaxCollectorFightersInformation() {}
+
+
+	public TaxCollectorFightersInformation InitTaxCollectorFightersInformation(double CollectorId, CharacterMinimalPlusLookInformations[] AllyCharactersInformations, CharacterMinimalPlusLookInformations[] EnemyCharactersInformations)
+	{
+		this.CollectorId = CollectorId;
+		this.AllyCharactersInformations = AllyCharactersInformations;
+		this.EnemyCharactersInformations = EnemyCharactersInformations;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.CollectorId);
+		writer.WriteShort(this.AllyCharactersInformations.Length);
+		foreach (CharacterMinimalPlusLookInformations item in this.AllyCharactersInformations)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.EnemyCharactersInformations.Length);
+		foreach (CharacterMinimalPlusLookInformations item in this.EnemyCharactersInformations)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CollectorId = reader.ReadDouble();
+		int AllyCharactersInformationsLen = reader.ReadShort();
+		AllyCharactersInformations = new CharacterMinimalPlusLookInformations[AllyCharactersInformationsLen];
+		for (int i = 0; i < AllyCharactersInformationsLen; i++)
+		{
+			this.AllyCharactersInformations[i] = ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
+			this.AllyCharactersInformations[i].Deserialize(reader);
+		}
+		int EnemyCharactersInformationsLen = reader.ReadShort();
+		EnemyCharactersInformations = new CharacterMinimalPlusLookInformations[EnemyCharactersInformationsLen];
+		for (int i = 0; i < EnemyCharactersInformationsLen; i++)
+		{
+			this.EnemyCharactersInformations[i] = ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
+			this.EnemyCharactersInformations[i].Deserialize(reader);
+		}
+	}
 }
-
-public int collectorId;
-        public Types.CharacterMinimalPlusLookInformations[] allyCharactersInformations;
-        public Types.CharacterMinimalPlusLookInformations[] enemyCharactersInformations;
-        
-
-public TaxCollectorFightersInformation()
-{
-}
-
-public TaxCollectorFightersInformation(int collectorId, Types.CharacterMinimalPlusLookInformations[] allyCharactersInformations, Types.CharacterMinimalPlusLookInformations[] enemyCharactersInformations)
-        {
-            this.collectorId = collectorId;
-            this.allyCharactersInformations = allyCharactersInformations;
-            this.enemyCharactersInformations = enemyCharactersInformations;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(collectorId);
-            writer.WriteUShort((ushort)allyCharactersInformations.Length);
-            foreach (var entry in allyCharactersInformations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)enemyCharactersInformations.Length);
-            foreach (var entry in enemyCharactersInformations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-collectorId = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            allyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 allyCharactersInformations[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 allyCharactersInformations[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            enemyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 enemyCharactersInformations[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 enemyCharactersInformations[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

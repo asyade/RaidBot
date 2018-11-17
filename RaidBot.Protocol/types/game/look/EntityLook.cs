@@ -1,126 +1,90 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class EntityLook : NetworkType
 {
 
-public class EntityLook
-{
+	public const uint Id = 55;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 55;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short BonesId { get; set; }
+	public short[] Skins { get; set; }
+	public int[] IndexedColors { get; set; }
+	public short[] Scales { get; set; }
+	public SubEntity[] Subentities { get; set; }
+
+	public EntityLook() {}
+
+
+	public EntityLook InitEntityLook(short BonesId, short[] Skins, int[] IndexedColors, short[] Scales, SubEntity[] Subentities)
+	{
+		this.BonesId = BonesId;
+		this.Skins = Skins;
+		this.IndexedColors = IndexedColors;
+		this.Scales = Scales;
+		this.Subentities = Subentities;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.BonesId);
+		writer.WriteShort(this.Skins.Length);
+		foreach (short item in this.Skins)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.IndexedColors.Length);
+		foreach (int item in this.IndexedColors)
+		{
+			writer.WriteInt(item);
+		}
+		writer.WriteShort(this.Scales.Length);
+		foreach (short item in this.Scales)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.Subentities.Length);
+		foreach (SubEntity item in this.Subentities)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.BonesId = reader.ReadVarShort();
+		int SkinsLen = reader.ReadShort();
+		Skins = new short[SkinsLen];
+		for (int i = 0; i < SkinsLen; i++)
+		{
+			this.Skins[i] = reader.ReadVarShort();
+		}
+		int IndexedColorsLen = reader.ReadShort();
+		IndexedColors = new int[IndexedColorsLen];
+		for (int i = 0; i < IndexedColorsLen; i++)
+		{
+			this.IndexedColors[i] = reader.ReadInt();
+		}
+		int ScalesLen = reader.ReadShort();
+		Scales = new short[ScalesLen];
+		for (int i = 0; i < ScalesLen; i++)
+		{
+			this.Scales[i] = reader.ReadVarShort();
+		}
+		int SubentitiesLen = reader.ReadShort();
+		Subentities = new SubEntity[SubentitiesLen];
+		for (int i = 0; i < SubentitiesLen; i++)
+		{
+			this.Subentities[i] = new SubEntity();
+			this.Subentities[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort bonesId;
-        public ushort[] skins;
-        public int[] indexedColors;
-        public short[] scales;
-        public Types.SubEntity[] subentities;
-        
-
-public EntityLook()
-{
-}
-
-public EntityLook(ushort bonesId, ushort[] skins, int[] indexedColors, short[] scales, Types.SubEntity[] subentities)
-        {
-            this.bonesId = bonesId;
-            this.skins = skins;
-            this.indexedColors = indexedColors;
-            this.scales = scales;
-            this.subentities = subentities;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(bonesId);
-            writer.WriteUShort((ushort)skins.Length);
-            foreach (var entry in skins)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)indexedColors.Length);
-            foreach (var entry in indexedColors)
-            {
-                 writer.WriteInt(entry);
-            }
-            writer.WriteUShort((ushort)scales.Length);
-            foreach (var entry in scales)
-            {
-                 writer.WriteVarshort(entry);
-            }
-            writer.WriteUShort((ushort)subentities.Length);
-            foreach (var entry in subentities)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-bonesId = reader.ReadVaruhshort();
-            if (bonesId < 0)
-                throw new Exception("Forbidden value on bonesId = " + bonesId + ", it doesn't respect the following condition : bonesId < 0");
-            var limit = reader.ReadUShort();
-            skins = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 skins[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            indexedColors = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 indexedColors[i] = reader.ReadInt();
-            }
-            limit = reader.ReadUShort();
-            scales = new short[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 scales[i] = reader.ReadVarshort();
-            }
-            limit = reader.ReadUShort();
-            subentities = new Types.SubEntity[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 subentities[i] = new Types.SubEntity();
-                 subentities[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

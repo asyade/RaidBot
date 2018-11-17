@@ -1,109 +1,74 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class IdolListMessage : NetworkMessage
 {
 
-public const uint Id = 6585;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6585;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] ChosenIdols { get; set; }
+	public short[] PartyChosenIdols { get; set; }
+	public PartyIdol[] PartyIdols { get; set; }
+
+	public IdolListMessage() {}
+
+
+	public IdolListMessage InitIdolListMessage(short[] ChosenIdols, short[] PartyChosenIdols, PartyIdol[] PartyIdols)
+	{
+		this.ChosenIdols = ChosenIdols;
+		this.PartyChosenIdols = PartyChosenIdols;
+		this.PartyIdols = PartyIdols;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ChosenIdols.Length);
+		foreach (short item in this.ChosenIdols)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.PartyChosenIdols.Length);
+		foreach (short item in this.PartyChosenIdols)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.PartyIdols.Length);
+		foreach (PartyIdol item in this.PartyIdols)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ChosenIdolsLen = reader.ReadShort();
+		ChosenIdols = new short[ChosenIdolsLen];
+		for (int i = 0; i < ChosenIdolsLen; i++)
+		{
+			this.ChosenIdols[i] = reader.ReadVarShort();
+		}
+		int PartyChosenIdolsLen = reader.ReadShort();
+		PartyChosenIdols = new short[PartyChosenIdolsLen];
+		for (int i = 0; i < PartyChosenIdolsLen; i++)
+		{
+			this.PartyChosenIdols[i] = reader.ReadVarShort();
+		}
+		int PartyIdolsLen = reader.ReadShort();
+		PartyIdols = new PartyIdol[PartyIdolsLen];
+		for (int i = 0; i < PartyIdolsLen; i++)
+		{
+			this.PartyIdols[i] = ProtocolTypeManager.GetInstance<PartyIdol>(reader.ReadShort());
+			this.PartyIdols[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort[] chosenIdols;
-        public ushort[] partyChosenIdols;
-        public Types.PartyIdol[] partyIdols;
-        
-
-public IdolListMessage()
-{
-}
-
-public IdolListMessage(ushort[] chosenIdols, ushort[] partyChosenIdols, Types.PartyIdol[] partyIdols)
-        {
-            this.chosenIdols = chosenIdols;
-            this.partyChosenIdols = partyChosenIdols;
-            this.partyIdols = partyIdols;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)chosenIdols.Length);
-            foreach (var entry in chosenIdols)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)partyChosenIdols.Length);
-            foreach (var entry in partyChosenIdols)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)partyIdols.Length);
-            foreach (var entry in partyIdols)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            chosenIdols = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 chosenIdols[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            partyChosenIdols = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 partyChosenIdols[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            partyIdols = new Types.PartyIdol[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 partyIdols[i] = Types.ProtocolTypeManager.GetInstance<Types.PartyIdol>(reader.ReadShort());
-                 partyIdols[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

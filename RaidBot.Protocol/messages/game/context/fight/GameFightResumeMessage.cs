@@ -1,97 +1,57 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightResumeMessage : GameFightSpectateMessage
 {
 
-public const uint Id = 6067;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6067;
+	public override uint MessageId { get { return Id; } }
+
+	public GameFightSpellCooldown[] SpellCooldowns { get; set; }
+	public byte SummonCount { get; set; }
+	public byte BombCount { get; set; }
+
+	public GameFightResumeMessage() {}
+
+
+	public GameFightResumeMessage InitGameFightResumeMessage(GameFightSpellCooldown[] SpellCooldowns, byte SummonCount, byte BombCount)
+	{
+		this.SpellCooldowns = SpellCooldowns;
+		this.SummonCount = SummonCount;
+		this.BombCount = BombCount;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.SpellCooldowns.Length);
+		foreach (GameFightSpellCooldown item in this.SpellCooldowns)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteByte(this.SummonCount);
+		writer.WriteByte(this.BombCount);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int SpellCooldownsLen = reader.ReadShort();
+		SpellCooldowns = new GameFightSpellCooldown[SpellCooldownsLen];
+		for (int i = 0; i < SpellCooldownsLen; i++)
+		{
+			this.SpellCooldowns[i] = new GameFightSpellCooldown();
+			this.SpellCooldowns[i].Deserialize(reader);
+		}
+		this.SummonCount = reader.ReadByte();
+		this.BombCount = reader.ReadByte();
+	}
 }
-
-public Types.GameFightSpellCooldown[] spellCooldowns;
-        public sbyte summonCount;
-        public sbyte bombCount;
-        
-
-public GameFightResumeMessage()
-{
-}
-
-public GameFightResumeMessage(Types.FightDispellableEffectExtendedInformations[] effects, Types.GameActionMark[] marks, ushort gameTurn, int fightStart, Types.Idol[] idols, Types.GameFightSpellCooldown[] spellCooldowns, sbyte summonCount, sbyte bombCount)
-         : base(effects, marks, gameTurn, fightStart, idols)
-        {
-            this.spellCooldowns = spellCooldowns;
-            this.summonCount = summonCount;
-            this.bombCount = bombCount;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)spellCooldowns.Length);
-            foreach (var entry in spellCooldowns)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteSByte(summonCount);
-            writer.WriteSByte(bombCount);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            spellCooldowns = new Types.GameFightSpellCooldown[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 spellCooldowns[i] = new Types.GameFightSpellCooldown();
-                 spellCooldowns[i].Deserialize(reader);
-            }
-            summonCount = reader.ReadSByte();
-            if (summonCount < 0)
-                throw new Exception("Forbidden value on summonCount = " + summonCount + ", it doesn't respect the following condition : summonCount < 0");
-            bombCount = reader.ReadSByte();
-            if (bombCount < 0)
-                throw new Exception("Forbidden value on bombCount = " + bombCount + ", it doesn't respect the following condition : bombCount < 0");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,81 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class CompassUpdatePvpSeekMessage : CompassUpdateMessage
 {
 
-public const uint Id = 6013;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6013;
+	public override uint MessageId { get { return Id; } }
+
+	public long MemberId { get; set; }
+	public String MemberName { get; set; }
+
+	public CompassUpdatePvpSeekMessage() {}
+
+
+	public CompassUpdatePvpSeekMessage InitCompassUpdatePvpSeekMessage(long MemberId, String MemberName)
+	{
+		this.MemberId = MemberId;
+		this.MemberName = MemberName;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarLong(this.MemberId);
+		writer.WriteUTF(this.MemberName);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.MemberId = reader.ReadVarLong();
+		this.MemberName = reader.ReadUTF();
+	}
 }
-
-public uint memberId;
-        public string memberName;
-        
-
-public CompassUpdatePvpSeekMessage()
-{
-}
-
-public CompassUpdatePvpSeekMessage(sbyte type, Types.MapCoordinates coords, uint memberId, string memberName)
-         : base(type, coords)
-        {
-            this.memberId = memberId;
-            this.memberName = memberName;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(memberId);
-            writer.WriteUTF(memberName);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            memberId = reader.ReadVaruhint();
-            if (memberId < 0)
-                throw new Exception("Forbidden value on memberId = " + memberId + ", it doesn't respect the following condition : memberId < 0");
-            memberName = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

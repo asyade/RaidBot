@@ -1,111 +1,74 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightEndMessage : NetworkMessage
 {
 
-public const uint Id = 720;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 720;
+	public override uint MessageId { get { return Id; } }
+
+	public int Duration { get; set; }
+	public short AgeBonus { get; set; }
+	public short LootShareLimitMalus { get; set; }
+	public FightResultListEntry[] Results { get; set; }
+	public NamedPartyTeamWithOutcome[] NamedPartyTeamsOutcomes { get; set; }
+
+	public GameFightEndMessage() {}
+
+
+	public GameFightEndMessage InitGameFightEndMessage(int Duration, short AgeBonus, short LootShareLimitMalus, FightResultListEntry[] Results, NamedPartyTeamWithOutcome[] NamedPartyTeamsOutcomes)
+	{
+		this.Duration = Duration;
+		this.AgeBonus = AgeBonus;
+		this.LootShareLimitMalus = LootShareLimitMalus;
+		this.Results = Results;
+		this.NamedPartyTeamsOutcomes = NamedPartyTeamsOutcomes;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.Duration);
+		writer.WriteShort(this.AgeBonus);
+		writer.WriteShort(this.LootShareLimitMalus);
+		writer.WriteShort(this.Results.Length);
+		foreach (FightResultListEntry item in this.Results)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.NamedPartyTeamsOutcomes.Length);
+		foreach (NamedPartyTeamWithOutcome item in this.NamedPartyTeamsOutcomes)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Duration = reader.ReadInt();
+		this.AgeBonus = reader.ReadShort();
+		this.LootShareLimitMalus = reader.ReadShort();
+		int ResultsLen = reader.ReadShort();
+		Results = new FightResultListEntry[ResultsLen];
+		for (int i = 0; i < ResultsLen; i++)
+		{
+			this.Results[i] = ProtocolTypeManager.GetInstance<FightResultListEntry>(reader.ReadShort());
+			this.Results[i].Deserialize(reader);
+		}
+		int NamedPartyTeamsOutcomesLen = reader.ReadShort();
+		NamedPartyTeamsOutcomes = new NamedPartyTeamWithOutcome[NamedPartyTeamsOutcomesLen];
+		for (int i = 0; i < NamedPartyTeamsOutcomesLen; i++)
+		{
+			this.NamedPartyTeamsOutcomes[i] = new NamedPartyTeamWithOutcome();
+			this.NamedPartyTeamsOutcomes[i].Deserialize(reader);
+		}
+	}
 }
-
-public int duration;
-        public short ageBonus;
-        public short lootShareLimitMalus;
-        public Types.FightResultListEntry[] results;
-        public Types.NamedPartyTeamWithOutcome[] namedPartyTeamsOutcomes;
-        
-
-public GameFightEndMessage()
-{
-}
-
-public GameFightEndMessage(int duration, short ageBonus, short lootShareLimitMalus, Types.FightResultListEntry[] results, Types.NamedPartyTeamWithOutcome[] namedPartyTeamsOutcomes)
-        {
-            this.duration = duration;
-            this.ageBonus = ageBonus;
-            this.lootShareLimitMalus = lootShareLimitMalus;
-            this.results = results;
-            this.namedPartyTeamsOutcomes = namedPartyTeamsOutcomes;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(duration);
-            writer.WriteShort(ageBonus);
-            writer.WriteShort(lootShareLimitMalus);
-            writer.WriteUShort((ushort)results.Length);
-            foreach (var entry in results)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)namedPartyTeamsOutcomes.Length);
-            foreach (var entry in namedPartyTeamsOutcomes)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-duration = reader.ReadInt();
-            if (duration < 0)
-                throw new Exception("Forbidden value on duration = " + duration + ", it doesn't respect the following condition : duration < 0");
-            ageBonus = reader.ReadShort();
-            lootShareLimitMalus = reader.ReadShort();
-            var limit = reader.ReadUShort();
-            results = new Types.FightResultListEntry[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 results[i] = Types.ProtocolTypeManager.GetInstance<Types.FightResultListEntry>(reader.ReadShort());
-                 results[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            namedPartyTeamsOutcomes = new Types.NamedPartyTeamWithOutcome[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 namedPartyTeamsOutcomes[i] = new Types.NamedPartyTeamWithOutcome();
-                 namedPartyTeamsOutcomes[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

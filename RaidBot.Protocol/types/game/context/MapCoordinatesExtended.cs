@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class MapCoordinatesExtended : MapCoordinatesAndId
 {
 
-public const short Id = 176;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 176;
+	public override uint MessageId { get { return Id; } }
+
+	public short SubAreaId { get; set; }
+
+	public MapCoordinatesExtended() {}
+
+
+	public MapCoordinatesExtended InitMapCoordinatesExtended(short SubAreaId)
+	{
+		this.SubAreaId = SubAreaId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.SubAreaId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.SubAreaId = reader.ReadVarShort();
+	}
 }
-
-public ushort subAreaId;
-        
-
-public MapCoordinatesExtended()
-{
-}
-
-public MapCoordinatesExtended(short worldX, short worldY, int mapId, ushort subAreaId)
-         : base(worldX, worldY, mapId)
-        {
-            this.subAreaId = subAreaId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(subAreaId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            
-
-}
-
-
-}
-
-
 }

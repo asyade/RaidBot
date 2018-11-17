@@ -1,85 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class HouseGuildRightsMessage : NetworkMessage
 {
 
-public const uint Id = 5703;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5703;
+	public override uint MessageId { get { return Id; } }
+
+	public int HouseId { get; set; }
+	public int InstanceId { get; set; }
+	public bool SecondHand { get; set; }
+	public GuildInformations GuildInfo { get; set; }
+	public int Rights { get; set; }
+
+	public HouseGuildRightsMessage() {}
+
+
+	public HouseGuildRightsMessage InitHouseGuildRightsMessage(int HouseId, int InstanceId, bool SecondHand, GuildInformations GuildInfo, int Rights)
+	{
+		this.HouseId = HouseId;
+		this.InstanceId = InstanceId;
+		this.SecondHand = SecondHand;
+		this.GuildInfo = GuildInfo;
+		this.Rights = Rights;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.HouseId);
+		writer.WriteInt(this.InstanceId);
+		writer.WriteBoolean(this.SecondHand);
+		this.GuildInfo.Serialize(writer);
+		writer.WriteVarInt(this.Rights);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.HouseId = reader.ReadVarInt();
+		this.InstanceId = reader.ReadInt();
+		this.SecondHand = reader.ReadBoolean();
+		this.GuildInfo = new GuildInformations();
+		this.GuildInfo.Deserialize(reader);
+		this.Rights = reader.ReadVarInt();
+	}
 }
-
-public uint houseId;
-        public Types.GuildInformations guildInfo;
-        public uint rights;
-        
-
-public HouseGuildRightsMessage()
-{
-}
-
-public HouseGuildRightsMessage(uint houseId, Types.GuildInformations guildInfo, uint rights)
-        {
-            this.houseId = houseId;
-            this.guildInfo = guildInfo;
-            this.rights = rights;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(houseId);
-            guildInfo.Serialize(writer);
-            writer.WriteVaruhint(rights);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-houseId = reader.ReadVaruhint();
-            if (houseId < 0)
-                throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
-            guildInfo = new Types.GuildInformations();
-            guildInfo.Deserialize(reader);
-            rights = reader.ReadVaruhint();
-            if (rights < 0)
-                throw new Exception("Forbidden value on rights = " + rights + ", it doesn't respect the following condition : rights < 0");
-            
-
-}
-
-
-}
-
-
 }

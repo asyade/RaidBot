@@ -1,85 +1,51 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AlternativeMonstersInGroupLightInformations : NetworkType
 {
 
-public class AlternativeMonstersInGroupLightInformations
-{
+	public const uint Id = 394;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 394;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int PlayerCount { get; set; }
+	public MonsterInGroupLightInformations[] Monsters { get; set; }
+
+	public AlternativeMonstersInGroupLightInformations() {}
+
+
+	public AlternativeMonstersInGroupLightInformations InitAlternativeMonstersInGroupLightInformations(int PlayerCount, MonsterInGroupLightInformations[] Monsters)
+	{
+		this.PlayerCount = PlayerCount;
+		this.Monsters = Monsters;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.PlayerCount);
+		writer.WriteShort(this.Monsters.Length);
+		foreach (MonsterInGroupLightInformations item in this.Monsters)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.PlayerCount = reader.ReadInt();
+		int MonstersLen = reader.ReadShort();
+		Monsters = new MonsterInGroupLightInformations[MonstersLen];
+		for (int i = 0; i < MonstersLen; i++)
+		{
+			this.Monsters[i] = new MonsterInGroupLightInformations();
+			this.Monsters[i].Deserialize(reader);
+		}
+	}
 }
-
-public int playerCount;
-        public Types.MonsterInGroupLightInformations[] monsters;
-        
-
-public AlternativeMonstersInGroupLightInformations()
-{
-}
-
-public AlternativeMonstersInGroupLightInformations(int playerCount, Types.MonsterInGroupLightInformations[] monsters)
-        {
-            this.playerCount = playerCount;
-            this.monsters = monsters;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(playerCount);
-            writer.WriteUShort((ushort)monsters.Length);
-            foreach (var entry in monsters)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-playerCount = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            monsters = new Types.MonsterInGroupLightInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 monsters[i] = new Types.MonsterInGroupLightInformations();
-                 monsters[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

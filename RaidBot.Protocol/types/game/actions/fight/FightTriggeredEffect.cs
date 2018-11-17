@@ -1,86 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTriggeredEffect : AbstractFightDispellableEffect
 {
 
-public const short Id = 210;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 210;
+	public override uint MessageId { get { return Id; } }
+
+	public short Delay { get; set; }
+
+	public FightTriggeredEffect() {}
+
+
+	public FightTriggeredEffect InitFightTriggeredEffect(short Delay)
+	{
+		this.Delay = Delay;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Delay);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Delay = reader.ReadShort();
+	}
 }
-
-public int arg1;
-        public int arg2;
-        public int arg3;
-        public short delay;
-        
-
-public FightTriggeredEffect()
-{
-}
-
-public FightTriggeredEffect(uint uid, int targetId, short turnDuration, sbyte dispelable, ushort spellId, uint effectId, uint parentBoostUid, int arg1, int arg2, int arg3, short delay)
-         : base(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid)
-        {
-            this.arg1 = arg1;
-            this.arg2 = arg2;
-            this.arg3 = arg3;
-            this.delay = delay;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(arg1);
-            writer.WriteInt(arg2);
-            writer.WriteInt(arg3);
-            writer.WriteShort(delay);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            arg1 = reader.ReadInt();
-            arg2 = reader.ReadInt();
-            arg3 = reader.ReadInt();
-            delay = reader.ReadShort();
-            
-
-}
-
-
-}
-
-
 }

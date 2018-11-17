@@ -1,94 +1,59 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:18
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChallengeTargetsListMessage : NetworkMessage
 {
 
-public const uint Id = 5613;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5613;
+	public override uint MessageId { get { return Id; } }
+
+	public double[] TargetIds { get; set; }
+	public short[] TargetCells { get; set; }
+
+	public ChallengeTargetsListMessage() {}
+
+
+	public ChallengeTargetsListMessage InitChallengeTargetsListMessage(double[] TargetIds, short[] TargetCells)
+	{
+		this.TargetIds = TargetIds;
+		this.TargetCells = TargetCells;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.TargetIds.Length);
+		foreach (double item in this.TargetIds)
+		{
+			writer.WriteDouble(item);
+		}
+		writer.WriteShort(this.TargetCells.Length);
+		foreach (short item in this.TargetCells)
+		{
+			writer.WriteShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int TargetIdsLen = reader.ReadShort();
+		TargetIds = new double[TargetIdsLen];
+		for (int i = 0; i < TargetIdsLen; i++)
+		{
+			this.TargetIds[i] = reader.ReadDouble();
+		}
+		int TargetCellsLen = reader.ReadShort();
+		TargetCells = new short[TargetCellsLen];
+		for (int i = 0; i < TargetCellsLen; i++)
+		{
+			this.TargetCells[i] = reader.ReadShort();
+		}
+	}
 }
-
-public int[] targetIds;
-        public short[] targetCells;
-        
-
-public ChallengeTargetsListMessage()
-{
-}
-
-public ChallengeTargetsListMessage(int[] targetIds, short[] targetCells)
-        {
-            this.targetIds = targetIds;
-            this.targetCells = targetCells;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)targetIds.Length);
-            foreach (var entry in targetIds)
-            {
-                 writer.WriteInt(entry);
-            }
-            writer.WriteUShort((ushort)targetCells.Length);
-            foreach (var entry in targetCells)
-            {
-                 writer.WriteShort(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            targetIds = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 targetIds[i] = reader.ReadInt();
-            }
-            limit = reader.ReadUShort();
-            targetCells = new short[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 targetCells[i] = reader.ReadShort();
-            }
-            
-
-}
-
-
-}
-
-
 }

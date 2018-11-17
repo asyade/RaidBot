@@ -1,100 +1,63 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightPlacementPossiblePositionsMessage : NetworkMessage
 {
 
-public const uint Id = 703;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 703;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] PositionsForChallengers { get; set; }
+	public short[] PositionsForDefenders { get; set; }
+	public byte TeamNumber { get; set; }
+
+	public GameFightPlacementPossiblePositionsMessage() {}
+
+
+	public GameFightPlacementPossiblePositionsMessage InitGameFightPlacementPossiblePositionsMessage(short[] PositionsForChallengers, short[] PositionsForDefenders, byte TeamNumber)
+	{
+		this.PositionsForChallengers = PositionsForChallengers;
+		this.PositionsForDefenders = PositionsForDefenders;
+		this.TeamNumber = TeamNumber;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.PositionsForChallengers.Length);
+		foreach (short item in this.PositionsForChallengers)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.PositionsForDefenders.Length);
+		foreach (short item in this.PositionsForDefenders)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteByte(this.TeamNumber);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int PositionsForChallengersLen = reader.ReadShort();
+		PositionsForChallengers = new short[PositionsForChallengersLen];
+		for (int i = 0; i < PositionsForChallengersLen; i++)
+		{
+			this.PositionsForChallengers[i] = reader.ReadVarShort();
+		}
+		int PositionsForDefendersLen = reader.ReadShort();
+		PositionsForDefenders = new short[PositionsForDefendersLen];
+		for (int i = 0; i < PositionsForDefendersLen; i++)
+		{
+			this.PositionsForDefenders[i] = reader.ReadVarShort();
+		}
+		this.TeamNumber = reader.ReadByte();
+	}
 }
-
-public ushort[] positionsForChallengers;
-        public ushort[] positionsForDefenders;
-        public sbyte teamNumber;
-        
-
-public GameFightPlacementPossiblePositionsMessage()
-{
-}
-
-public GameFightPlacementPossiblePositionsMessage(ushort[] positionsForChallengers, ushort[] positionsForDefenders, sbyte teamNumber)
-        {
-            this.positionsForChallengers = positionsForChallengers;
-            this.positionsForDefenders = positionsForDefenders;
-            this.teamNumber = teamNumber;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)positionsForChallengers.Length);
-            foreach (var entry in positionsForChallengers)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)positionsForDefenders.Length);
-            foreach (var entry in positionsForDefenders)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteSByte(teamNumber);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            positionsForChallengers = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 positionsForChallengers[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            positionsForDefenders = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 positionsForDefenders[i] = reader.ReadVaruhshort();
-            }
-            teamNumber = reader.ReadSByte();
-            if (teamNumber < 0)
-                throw new Exception("Forbidden value on teamNumber = " + teamNumber + ", it doesn't respect the following condition : teamNumber < 0");
-            
-
-}
-
-
-}
-
-
 }

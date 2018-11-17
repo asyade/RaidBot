@@ -1,85 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameActionMarkedCell : NetworkType
 {
 
-public class GameActionMarkedCell
-{
+	public const uint Id = 85;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 85;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short CellId { get; set; }
+	public byte ZoneSize { get; set; }
+	public int CellColor { get; set; }
+	public byte CellsType { get; set; }
+
+	public GameActionMarkedCell() {}
+
+
+	public GameActionMarkedCell InitGameActionMarkedCell(short CellId, byte ZoneSize, int CellColor, byte CellsType)
+	{
+		this.CellId = CellId;
+		this.ZoneSize = ZoneSize;
+		this.CellColor = CellColor;
+		this.CellsType = CellsType;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.CellId);
+		writer.WriteByte(this.ZoneSize);
+		writer.WriteInt(this.CellColor);
+		writer.WriteByte(this.CellsType);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CellId = reader.ReadVarShort();
+		this.ZoneSize = reader.ReadByte();
+		this.CellColor = reader.ReadInt();
+		this.CellsType = reader.ReadByte();
+	}
 }
-
-public ushort cellId;
-        public sbyte zoneSize;
-        public int cellColor;
-        public sbyte cellsType;
-        
-
-public GameActionMarkedCell()
-{
-}
-
-public GameActionMarkedCell(ushort cellId, sbyte zoneSize, int cellColor, sbyte cellsType)
-        {
-            this.cellId = cellId;
-            this.zoneSize = zoneSize;
-            this.cellColor = cellColor;
-            this.cellsType = cellsType;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(cellId);
-            writer.WriteSByte(zoneSize);
-            writer.WriteInt(cellColor);
-            writer.WriteSByte(cellsType);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-cellId = reader.ReadVaruhshort();
-            if (cellId < 0 || cellId > 559)
-                throw new Exception("Forbidden value on cellId = " + cellId + ", it doesn't respect the following condition : cellId < 0 || cellId > 559");
-            zoneSize = reader.ReadSByte();
-            cellColor = reader.ReadInt();
-            cellsType = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

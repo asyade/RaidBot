@@ -1,92 +1,55 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeStartOkNpcShopMessage : NetworkMessage
 {
 
-public const uint Id = 5761;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5761;
+	public override uint MessageId { get { return Id; } }
+
+	public double NpcSellerId { get; set; }
+	public short TokenId { get; set; }
+	public ObjectItemToSellInNpcShop[] ObjectsInfos { get; set; }
+
+	public ExchangeStartOkNpcShopMessage() {}
+
+
+	public ExchangeStartOkNpcShopMessage InitExchangeStartOkNpcShopMessage(double NpcSellerId, short TokenId, ObjectItemToSellInNpcShop[] ObjectsInfos)
+	{
+		this.NpcSellerId = NpcSellerId;
+		this.TokenId = TokenId;
+		this.ObjectsInfos = ObjectsInfos;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.NpcSellerId);
+		writer.WriteVarShort(this.TokenId);
+		writer.WriteShort(this.ObjectsInfos.Length);
+		foreach (ObjectItemToSellInNpcShop item in this.ObjectsInfos)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.NpcSellerId = reader.ReadDouble();
+		this.TokenId = reader.ReadVarShort();
+		int ObjectsInfosLen = reader.ReadShort();
+		ObjectsInfos = new ObjectItemToSellInNpcShop[ObjectsInfosLen];
+		for (int i = 0; i < ObjectsInfosLen; i++)
+		{
+			this.ObjectsInfos[i] = new ObjectItemToSellInNpcShop();
+			this.ObjectsInfos[i].Deserialize(reader);
+		}
+	}
 }
-
-public int npcSellerId;
-        public ushort tokenId;
-        public Types.ObjectItemToSellInNpcShop[] objectsInfos;
-        
-
-public ExchangeStartOkNpcShopMessage()
-{
-}
-
-public ExchangeStartOkNpcShopMessage(int npcSellerId, ushort tokenId, Types.ObjectItemToSellInNpcShop[] objectsInfos)
-        {
-            this.npcSellerId = npcSellerId;
-            this.tokenId = tokenId;
-            this.objectsInfos = objectsInfos;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(npcSellerId);
-            writer.WriteVaruhshort(tokenId);
-            writer.WriteUShort((ushort)objectsInfos.Length);
-            foreach (var entry in objectsInfos)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-npcSellerId = reader.ReadInt();
-            tokenId = reader.ReadVaruhshort();
-            if (tokenId < 0)
-                throw new Exception("Forbidden value on tokenId = " + tokenId + ", it doesn't respect the following condition : tokenId < 0");
-            var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemToSellInNpcShop[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectsInfos[i] = new Types.ObjectItemToSellInNpcShop();
-                 objectsInfos[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

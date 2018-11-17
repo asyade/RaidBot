@@ -1,73 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class SkillActionDescription : NetworkType
 {
 
-public class SkillActionDescription
-{
+	public const uint Id = 102;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 102;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short SkillId { get; set; }
+
+	public SkillActionDescription() {}
+
+
+	public SkillActionDescription InitSkillActionDescription(short SkillId)
+	{
+		this.SkillId = SkillId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.SkillId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SkillId = reader.ReadVarShort();
+	}
 }
-
-public ushort skillId;
-        
-
-public SkillActionDescription()
-{
-}
-
-public SkillActionDescription(ushort skillId)
-        {
-            this.skillId = skillId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(skillId);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-skillId = reader.ReadVaruhshort();
-            if (skillId < 0)
-                throw new Exception("Forbidden value on skillId = " + skillId + ", it doesn't respect the following condition : skillId < 0");
-            
-
-}
-
-
-}
-
-
 }

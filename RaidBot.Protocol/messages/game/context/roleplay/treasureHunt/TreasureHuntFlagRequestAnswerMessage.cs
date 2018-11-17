@@ -1,86 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:35
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TreasureHuntFlagRequestAnswerMessage : NetworkMessage
 {
 
-public const uint Id = 6507;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6507;
+	public override uint MessageId { get { return Id; } }
+
+	public byte QuestType { get; set; }
+	public byte Result { get; set; }
+	public byte Index { get; set; }
+
+	public TreasureHuntFlagRequestAnswerMessage() {}
+
+
+	public TreasureHuntFlagRequestAnswerMessage InitTreasureHuntFlagRequestAnswerMessage(byte QuestType, byte Result, byte Index)
+	{
+		this.QuestType = QuestType;
+		this.Result = Result;
+		this.Index = Index;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.QuestType);
+		writer.WriteByte(this.Result);
+		writer.WriteByte(this.Index);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.QuestType = reader.ReadByte();
+		this.Result = reader.ReadByte();
+		this.Index = reader.ReadByte();
+	}
 }
-
-public sbyte questType;
-        public sbyte result;
-        public sbyte index;
-        
-
-public TreasureHuntFlagRequestAnswerMessage()
-{
-}
-
-public TreasureHuntFlagRequestAnswerMessage(sbyte questType, sbyte result, sbyte index)
-        {
-            this.questType = questType;
-            this.result = result;
-            this.index = index;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(questType);
-            writer.WriteSByte(result);
-            writer.WriteSByte(index);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-questType = reader.ReadSByte();
-            if (questType < 0)
-                throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");
-            result = reader.ReadSByte();
-            if (result < 0)
-                throw new Exception("Forbidden value on result = " + result + ", it doesn't respect the following condition : result < 0");
-            index = reader.ReadSByte();
-            if (index < 0)
-                throw new Exception("Forbidden value on index = " + index + ", it doesn't respect the following condition : index < 0");
-            
-
-}
-
-
-}
-
-
 }

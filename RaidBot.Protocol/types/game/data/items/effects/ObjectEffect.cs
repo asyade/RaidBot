@@ -1,73 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class ObjectEffect : NetworkType
 {
 
-public class ObjectEffect
-{
+	public const uint Id = 76;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 76;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short ActionId { get; set; }
+
+	public ObjectEffect() {}
+
+
+	public ObjectEffect InitObjectEffect(short ActionId)
+	{
+		this.ActionId = ActionId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ActionId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ActionId = reader.ReadVarShort();
+	}
 }
-
-public ushort actionId;
-        
-
-public ObjectEffect()
-{
-}
-
-public ObjectEffect(ushort actionId)
-        {
-            this.actionId = actionId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(actionId);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-actionId = reader.ReadVaruhshort();
-            if (actionId < 0)
-                throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            
-
-}
-
-
-}
-
-
 }

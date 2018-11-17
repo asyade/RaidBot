@@ -1,88 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeMountsTakenFromPaddockMessage : NetworkMessage
 {
 
-public const uint Id = 6554;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6554;
+	public override uint MessageId { get { return Id; } }
+
+	public String Name { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public String Ownername { get; set; }
+
+	public ExchangeMountsTakenFromPaddockMessage() {}
+
+
+	public ExchangeMountsTakenFromPaddockMessage InitExchangeMountsTakenFromPaddockMessage(String Name, short WorldX, short WorldY, String Ownername)
+	{
+		this.Name = Name;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.Ownername = Ownername;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.Name);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteUTF(this.Ownername);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Name = reader.ReadUTF();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.Ownername = reader.ReadUTF();
+	}
 }
-
-public string name;
-        public short worldX;
-        public short worldY;
-        public string ownername;
-        
-
-public ExchangeMountsTakenFromPaddockMessage()
-{
-}
-
-public ExchangeMountsTakenFromPaddockMessage(string name, short worldX, short worldY, string ownername)
-        {
-            this.name = name;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.ownername = ownername;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(name);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteUTF(ownername);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-name = reader.ReadUTF();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            ownername = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

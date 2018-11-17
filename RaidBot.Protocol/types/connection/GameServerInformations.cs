@@ -1,90 +1,72 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameServerInformations : NetworkType
 {
 
-    public class GameServerInformations
-    {
+	public const uint Id = 25;
+	public override uint MessageId { get { return Id; } }
 
-        public const short Id = 25;
-        public virtual short TypeId
-        {
-            get { return Id; }
-        }
+	public bool IsMonoAccount { get; set; }
+	public bool IsSelectable { get; set; }
+	public short Id_ { get; set; }
+	public byte Type { get; set; }
+	public byte Status { get; set; }
+	public byte Completion { get; set; }
+	public byte CharactersCount { get; set; }
+	public byte CharactersSlots { get; set; }
+	public double Date { get; set; }
 
-        public short id;
-        public sbyte type;
-        public bool isMonoAccount;
-        public sbyte status;
-        public sbyte completion;
-        public bool isSelectable;
-        public sbyte charactersCount;
-        public sbyte charactersSlots;
-        public double date;
+	public GameServerInformations() {}
 
 
-        public GameServerInformations()
-        {
-        }
+	public GameServerInformations InitGameServerInformations(bool IsMonoAccount, bool IsSelectable, short Id_, byte Type, byte Status, byte Completion, byte CharactersCount, byte CharactersSlots, double Date)
+	{
+		this.IsMonoAccount = IsMonoAccount;
+		this.IsSelectable = IsSelectable;
+		this.Id_ = Id_;
+		this.Type = Type;
+		this.Status = Status;
+		this.Completion = Completion;
+		this.CharactersCount = CharactersCount;
+		this.CharactersSlots = CharactersSlots;
+		this.Date = Date;
+		return (this);
+	}
 
-        public GameServerInformations(short id, sbyte status, sbyte completion, bool isSelectable, sbyte charactersCount, double date)
-        {
-            this.id = id;
-            this.status = status;
-            this.completion = completion;
-            this.isSelectable = isSelectable;
-            this.charactersCount = charactersCount;
-            this.date = date;
-        }
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, IsMonoAccount);
+		box = BooleanByteWrapper.SetFlag(box, 1, IsSelectable);
+		writer.WriteByte(box);
+		writer.WriteVarShort(this.Id_);
+		writer.WriteByte(this.Type);
+		writer.WriteByte(this.Status);
+		writer.WriteByte(this.Completion);
+		writer.WriteByte(this.CharactersCount);
+		writer.WriteByte(this.CharactersSlots);
+		writer.WriteDouble(this.Date);
+	}
 
-
-        public virtual void Serialize(ICustomDataWriter writer)
-        {
-            byte flags = 0;
-            BooleanByteWrapper.SetFlag(flags, 0, this.isMonoAccount);
-            BooleanByteWrapper.SetFlag(flags, 1, this.isSelectable);
-            writer.WriteVarshort(id);
-            writer.WriteSByte(type);
-            writer.WriteSByte(status);
-            writer.WriteSByte(completion);
-            writer.WriteSByte(charactersCount);
-            writer.WriteDouble(date);
-        }
-
-        public virtual void Deserialize(ICustomDataReader reader)
-        {
-            byte flags = reader.ReadByte();
-            this.isMonoAccount = BooleanByteWrapper.GetFlag(flags, 0);
-            this.isSelectable= BooleanByteWrapper.GetFlag(flags, 1);
-            id = reader.ReadVarshort();
-            type = reader.ReadSByte();
-            status = reader.ReadSByte();
-            completion = reader.ReadSByte();
-            charactersCount = reader.ReadSByte();
-            date = reader.ReadDouble();
-        }
-    }
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.IsMonoAccount = BooleanByteWrapper.GetFlag(box, 0);
+		this.IsSelectable = BooleanByteWrapper.GetFlag(box, 1);
+		this.Id_ = reader.ReadVarShort();
+		this.Type = reader.ReadByte();
+		this.Status = reader.ReadByte();
+		this.Completion = reader.ReadByte();
+		this.CharactersCount = reader.ReadByte();
+		this.CharactersSlots = reader.ReadByte();
+		this.Date = reader.ReadDouble();
+	}
+}
 }

@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class JobCrafterDirectoryRemoveMessage : NetworkMessage
 {
 
-public const uint Id = 5653;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5653;
+	public override uint MessageId { get { return Id; } }
+
+	public byte JobId { get; set; }
+	public long PlayerId { get; set; }
+
+	public JobCrafterDirectoryRemoveMessage() {}
+
+
+	public JobCrafterDirectoryRemoveMessage InitJobCrafterDirectoryRemoveMessage(byte JobId, long PlayerId)
+	{
+		this.JobId = JobId;
+		this.PlayerId = PlayerId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.JobId);
+		writer.WriteVarLong(this.PlayerId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.JobId = reader.ReadByte();
+		this.PlayerId = reader.ReadVarLong();
+	}
 }
-
-public sbyte jobId;
-        public uint playerId;
-        
-
-public JobCrafterDirectoryRemoveMessage()
-{
-}
-
-public JobCrafterDirectoryRemoveMessage(sbyte jobId, uint playerId)
-        {
-            this.jobId = jobId;
-            this.playerId = playerId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(jobId);
-            writer.WriteVaruhint(playerId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-jobId = reader.ReadSByte();
-            if (jobId < 0)
-                throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            
-
-}
-
-
-}
-
-
 }

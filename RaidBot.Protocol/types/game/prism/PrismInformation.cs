@@ -1,97 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PrismInformation : NetworkType
 {
 
-public class PrismInformation
-{
+	public const uint Id = 428;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 428;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte TypeId { get; set; }
+	public byte State { get; set; }
+	public int NextVulnerabilityDate { get; set; }
+	public int PlacementDate { get; set; }
+	public int RewardTokenCount { get; set; }
+
+	public PrismInformation() {}
+
+
+	public PrismInformation InitPrismInformation(byte TypeId, byte State, int NextVulnerabilityDate, int PlacementDate, int RewardTokenCount)
+	{
+		this.TypeId = TypeId;
+		this.State = State;
+		this.NextVulnerabilityDate = NextVulnerabilityDate;
+		this.PlacementDate = PlacementDate;
+		this.RewardTokenCount = RewardTokenCount;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.TypeId);
+		writer.WriteByte(this.State);
+		writer.WriteInt(this.NextVulnerabilityDate);
+		writer.WriteInt(this.PlacementDate);
+		writer.WriteVarInt(this.RewardTokenCount);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.TypeId = reader.ReadByte();
+		this.State = reader.ReadByte();
+		this.NextVulnerabilityDate = reader.ReadInt();
+		this.PlacementDate = reader.ReadInt();
+		this.RewardTokenCount = reader.ReadVarInt();
+	}
 }
-
-public sbyte typeId;
-        public sbyte state;
-        public int nextVulnerabilityDate;
-        public int placementDate;
-        public uint rewardTokenCount;
-        
-
-public PrismInformation()
-{
-}
-
-public PrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, uint rewardTokenCount)
-        {
-            this.typeId = typeId;
-            this.state = state;
-            this.nextVulnerabilityDate = nextVulnerabilityDate;
-            this.placementDate = placementDate;
-            this.rewardTokenCount = rewardTokenCount;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(typeId);
-            writer.WriteSByte(state);
-            writer.WriteInt(nextVulnerabilityDate);
-            writer.WriteInt(placementDate);
-            writer.WriteVaruhint(rewardTokenCount);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-typeId = reader.ReadSByte();
-            if (typeId < 0)
-                throw new Exception("Forbidden value on typeId = " + typeId + ", it doesn't respect the following condition : typeId < 0");
-            state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
-            nextVulnerabilityDate = reader.ReadInt();
-            if (nextVulnerabilityDate < 0)
-                throw new Exception("Forbidden value on nextVulnerabilityDate = " + nextVulnerabilityDate + ", it doesn't respect the following condition : nextVulnerabilityDate < 0");
-            placementDate = reader.ReadInt();
-            if (placementDate < 0)
-                throw new Exception("Forbidden value on placementDate = " + placementDate + ", it doesn't respect the following condition : placementDate < 0");
-            rewardTokenCount = reader.ReadVaruhint();
-            if (rewardTokenCount < 0)
-                throw new Exception("Forbidden value on rewardTokenCount = " + rewardTokenCount + ", it doesn't respect the following condition : rewardTokenCount < 0");
-            
-
-}
-
-
-}
-
-
 }

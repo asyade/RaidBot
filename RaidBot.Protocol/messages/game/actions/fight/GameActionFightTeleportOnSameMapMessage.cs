@@ -1,81 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameActionFightTeleportOnSameMapMessage : AbstractGameActionMessage
 {
 
-public const uint Id = 5528;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5528;
+	public override uint MessageId { get { return Id; } }
+
+	public double TargetId { get; set; }
+	public short CellId { get; set; }
+
+	public GameActionFightTeleportOnSameMapMessage() {}
+
+
+	public GameActionFightTeleportOnSameMapMessage InitGameActionFightTeleportOnSameMapMessage(double TargetId, short CellId)
+	{
+		this.TargetId = TargetId;
+		this.CellId = CellId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.TargetId);
+		writer.WriteShort(this.CellId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.TargetId = reader.ReadDouble();
+		this.CellId = reader.ReadShort();
+	}
 }
-
-public int targetId;
-        public short cellId;
-        
-
-public GameActionFightTeleportOnSameMapMessage()
-{
-}
-
-public GameActionFightTeleportOnSameMapMessage(ushort actionId, int sourceId, int targetId, short cellId)
-         : base(actionId, sourceId)
-        {
-            this.targetId = targetId;
-            this.cellId = cellId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(targetId);
-            writer.WriteShort(cellId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            targetId = reader.ReadInt();
-            cellId = reader.ReadShort();
-            if (cellId < -1 || cellId > 559)
-                throw new Exception("Forbidden value on cellId = " + cellId + ", it doesn't respect the following condition : cellId < -1 || cellId > 559");
-            
-
-}
-
-
-}
-
-
 }

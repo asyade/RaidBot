@@ -1,94 +1,59 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class DungeonKeyRingMessage : NetworkMessage
 {
 
-public const uint Id = 6299;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6299;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] Availables { get; set; }
+	public short[] Unavailables { get; set; }
+
+	public DungeonKeyRingMessage() {}
+
+
+	public DungeonKeyRingMessage InitDungeonKeyRingMessage(short[] Availables, short[] Unavailables)
+	{
+		this.Availables = Availables;
+		this.Unavailables = Unavailables;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Availables.Length);
+		foreach (short item in this.Availables)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.Unavailables.Length);
+		foreach (short item in this.Unavailables)
+		{
+			writer.WriteVarShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int AvailablesLen = reader.ReadShort();
+		Availables = new short[AvailablesLen];
+		for (int i = 0; i < AvailablesLen; i++)
+		{
+			this.Availables[i] = reader.ReadVarShort();
+		}
+		int UnavailablesLen = reader.ReadShort();
+		Unavailables = new short[UnavailablesLen];
+		for (int i = 0; i < UnavailablesLen; i++)
+		{
+			this.Unavailables[i] = reader.ReadVarShort();
+		}
+	}
 }
-
-public ushort[] availables;
-        public ushort[] unavailables;
-        
-
-public DungeonKeyRingMessage()
-{
-}
-
-public DungeonKeyRingMessage(ushort[] availables, ushort[] unavailables)
-        {
-            this.availables = availables;
-            this.unavailables = unavailables;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)availables.Length);
-            foreach (var entry in availables)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)unavailables.Length);
-            foreach (var entry in unavailables)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            availables = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 availables[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            unavailables = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 unavailables[i] = reader.ReadVaruhshort();
-            }
-            
-
-}
-
-
-}
-
-
 }

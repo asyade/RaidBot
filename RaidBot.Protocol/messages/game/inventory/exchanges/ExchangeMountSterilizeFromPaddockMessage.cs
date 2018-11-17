@@ -1,88 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeMountSterilizeFromPaddockMessage : NetworkMessage
 {
 
-public const uint Id = 6056;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6056;
+	public override uint MessageId { get { return Id; } }
+
+	public String Name { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public String Sterilizator { get; set; }
+
+	public ExchangeMountSterilizeFromPaddockMessage() {}
+
+
+	public ExchangeMountSterilizeFromPaddockMessage InitExchangeMountSterilizeFromPaddockMessage(String Name, short WorldX, short WorldY, String Sterilizator)
+	{
+		this.Name = Name;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.Sterilizator = Sterilizator;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.Name);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteUTF(this.Sterilizator);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Name = reader.ReadUTF();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.Sterilizator = reader.ReadUTF();
+	}
 }
-
-public string name;
-        public short worldX;
-        public short worldY;
-        public string sterilizator;
-        
-
-public ExchangeMountSterilizeFromPaddockMessage()
-{
-}
-
-public ExchangeMountSterilizeFromPaddockMessage(string name, short worldX, short worldY, string sterilizator)
-        {
-            this.name = name;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.sterilizator = sterilizator;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(name);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteUTF(sterilizator);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-name = reader.ReadUTF();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            sterilizator = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

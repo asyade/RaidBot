@@ -1,93 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TeleportBuddiesRequestedMessage : NetworkMessage
 {
 
-public const uint Id = 6302;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6302;
+	public override uint MessageId { get { return Id; } }
+
+	public short DungeonId { get; set; }
+	public long InviterId { get; set; }
+	public long[] InvalidBuddiesIds { get; set; }
+
+	public TeleportBuddiesRequestedMessage() {}
+
+
+	public TeleportBuddiesRequestedMessage InitTeleportBuddiesRequestedMessage(short DungeonId, long InviterId, long[] InvalidBuddiesIds)
+	{
+		this.DungeonId = DungeonId;
+		this.InviterId = InviterId;
+		this.InvalidBuddiesIds = InvalidBuddiesIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.DungeonId);
+		writer.WriteVarLong(this.InviterId);
+		writer.WriteShort(this.InvalidBuddiesIds.Length);
+		foreach (long item in this.InvalidBuddiesIds)
+		{
+			writer.WriteVarLong(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.DungeonId = reader.ReadVarShort();
+		this.InviterId = reader.ReadVarLong();
+		int InvalidBuddiesIdsLen = reader.ReadShort();
+		InvalidBuddiesIds = new long[InvalidBuddiesIdsLen];
+		for (int i = 0; i < InvalidBuddiesIdsLen; i++)
+		{
+			this.InvalidBuddiesIds[i] = reader.ReadVarLong();
+		}
+	}
 }
-
-public ushort dungeonId;
-        public uint inviterId;
-        public uint[] invalidBuddiesIds;
-        
-
-public TeleportBuddiesRequestedMessage()
-{
-}
-
-public TeleportBuddiesRequestedMessage(ushort dungeonId, uint inviterId, uint[] invalidBuddiesIds)
-        {
-            this.dungeonId = dungeonId;
-            this.inviterId = inviterId;
-            this.invalidBuddiesIds = invalidBuddiesIds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(dungeonId);
-            writer.WriteVaruhint(inviterId);
-            writer.WriteUShort((ushort)invalidBuddiesIds.Length);
-            foreach (var entry in invalidBuddiesIds)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-dungeonId = reader.ReadVaruhshort();
-            if (dungeonId < 0)
-                throw new Exception("Forbidden value on dungeonId = " + dungeonId + ", it doesn't respect the following condition : dungeonId < 0");
-            inviterId = reader.ReadVaruhint();
-            if (inviterId < 0)
-                throw new Exception("Forbidden value on inviterId = " + inviterId + ", it doesn't respect the following condition : inviterId < 0");
-            var limit = reader.ReadUShort();
-            invalidBuddiesIds = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 invalidBuddiesIds[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

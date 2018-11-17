@@ -1,74 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class HouseGuildNoneMessage : NetworkMessage
 {
 
-public const uint Id = 5701;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5701;
+	public override uint MessageId { get { return Id; } }
+
+	public int HouseId { get; set; }
+	public int InstanceId { get; set; }
+	public bool SecondHand { get; set; }
+
+	public HouseGuildNoneMessage() {}
+
+
+	public HouseGuildNoneMessage InitHouseGuildNoneMessage(int HouseId, int InstanceId, bool SecondHand)
+	{
+		this.HouseId = HouseId;
+		this.InstanceId = InstanceId;
+		this.SecondHand = SecondHand;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.HouseId);
+		writer.WriteInt(this.InstanceId);
+		writer.WriteBoolean(this.SecondHand);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.HouseId = reader.ReadVarInt();
+		this.InstanceId = reader.ReadInt();
+		this.SecondHand = reader.ReadBoolean();
+	}
 }
-
-public uint houseId;
-        
-
-public HouseGuildNoneMessage()
-{
-}
-
-public HouseGuildNoneMessage(uint houseId)
-        {
-            this.houseId = houseId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(houseId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-houseId = reader.ReadVaruhint();
-            if (houseId < 0)
-                throw new Exception("Forbidden value on houseId = " + houseId + ", it doesn't respect the following condition : houseId < 0");
-            
-
-}
-
-
-}
-
-
 }

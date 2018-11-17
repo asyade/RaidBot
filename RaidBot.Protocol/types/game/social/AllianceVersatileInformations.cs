@@ -1,91 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AllianceVersatileInformations : NetworkType
 {
 
-public class AllianceVersatileInformations
-{
+	public const uint Id = 432;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 432;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int AllianceId { get; set; }
+	public short NbGuilds { get; set; }
+	public short NbMembers { get; set; }
+	public short NbSubarea { get; set; }
+
+	public AllianceVersatileInformations() {}
+
+
+	public AllianceVersatileInformations InitAllianceVersatileInformations(int AllianceId, short NbGuilds, short NbMembers, short NbSubarea)
+	{
+		this.AllianceId = AllianceId;
+		this.NbGuilds = NbGuilds;
+		this.NbMembers = NbMembers;
+		this.NbSubarea = NbSubarea;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.AllianceId);
+		writer.WriteVarShort(this.NbGuilds);
+		writer.WriteVarShort(this.NbMembers);
+		writer.WriteVarShort(this.NbSubarea);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.AllianceId = reader.ReadVarInt();
+		this.NbGuilds = reader.ReadVarShort();
+		this.NbMembers = reader.ReadVarShort();
+		this.NbSubarea = reader.ReadVarShort();
+	}
 }
-
-public uint allianceId;
-        public ushort nbGuilds;
-        public ushort nbMembers;
-        public ushort nbSubarea;
-        
-
-public AllianceVersatileInformations()
-{
-}
-
-public AllianceVersatileInformations(uint allianceId, ushort nbGuilds, ushort nbMembers, ushort nbSubarea)
-        {
-            this.allianceId = allianceId;
-            this.nbGuilds = nbGuilds;
-            this.nbMembers = nbMembers;
-            this.nbSubarea = nbSubarea;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(allianceId);
-            writer.WriteVaruhshort(nbGuilds);
-            writer.WriteVaruhshort(nbMembers);
-            writer.WriteVaruhshort(nbSubarea);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-allianceId = reader.ReadVaruhint();
-            if (allianceId < 0)
-                throw new Exception("Forbidden value on allianceId = " + allianceId + ", it doesn't respect the following condition : allianceId < 0");
-            nbGuilds = reader.ReadVaruhshort();
-            if (nbGuilds < 0)
-                throw new Exception("Forbidden value on nbGuilds = " + nbGuilds + ", it doesn't respect the following condition : nbGuilds < 0");
-            nbMembers = reader.ReadVaruhshort();
-            if (nbMembers < 0)
-                throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 0");
-            nbSubarea = reader.ReadVaruhshort();
-            if (nbSubarea < 0)
-                throw new Exception("Forbidden value on nbSubarea = " + nbSubarea + ", it doesn't respect the following condition : nbSubarea < 0");
-            
-
-}
-
-
-}
-
-
 }

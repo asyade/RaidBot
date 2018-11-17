@@ -1,73 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PlayerStatus : NetworkType
 {
 
-public class PlayerStatus
-{
+	public const uint Id = 415;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 415;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte StatusId { get; set; }
+
+	public PlayerStatus() {}
+
+
+	public PlayerStatus InitPlayerStatus(byte StatusId)
+	{
+		this.StatusId = StatusId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.StatusId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.StatusId = reader.ReadByte();
+	}
 }
-
-public sbyte statusId;
-        
-
-public PlayerStatus()
-{
-}
-
-public PlayerStatus(sbyte statusId)
-        {
-            this.statusId = statusId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(statusId);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-statusId = reader.ReadSByte();
-            if (statusId < 0)
-                throw new Exception("Forbidden value on statusId = " + statusId + ", it doesn't respect the following condition : statusId < 0");
-            
-
-}
-
-
-}
-
-
 }

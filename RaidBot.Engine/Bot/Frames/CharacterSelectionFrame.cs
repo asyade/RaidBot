@@ -1,4 +1,5 @@
-﻿using RaidBot.Engine.Dispatcher;
+﻿using Raidbot.Protocol.Messages;
+using RaidBot.Engine.Dispatcher;
 using RaidBot.Protocol.Messages;
 using System;
 using System.Collections.Generic;

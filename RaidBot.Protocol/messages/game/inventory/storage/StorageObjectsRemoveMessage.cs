@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:53
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class StorageObjectsRemoveMessage : NetworkMessage
 {
 
-public const uint Id = 6035;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6035;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] ObjectUIDList { get; set; }
+
+	public StorageObjectsRemoveMessage() {}
+
+
+	public StorageObjectsRemoveMessage InitStorageObjectsRemoveMessage(int[] ObjectUIDList)
+	{
+		this.ObjectUIDList = ObjectUIDList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ObjectUIDList.Length);
+		foreach (int item in this.ObjectUIDList)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectUIDListLen = reader.ReadShort();
+		ObjectUIDList = new int[ObjectUIDListLen];
+		for (int i = 0; i < ObjectUIDListLen; i++)
+		{
+			this.ObjectUIDList[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public uint[] objectUIDList;
-        
-
-public StorageObjectsRemoveMessage()
-{
-}
-
-public StorageObjectsRemoveMessage(uint[] objectUIDList)
-        {
-            this.objectUIDList = objectUIDList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)objectUIDList.Length);
-            foreach (var entry in objectUIDList)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            objectUIDList = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectUIDList[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

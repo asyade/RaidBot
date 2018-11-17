@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightEntityDispositionInformations : EntityDispositionInformations
 {
 
-public const short Id = 217;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 217;
+	public override uint MessageId { get { return Id; } }
+
+	public double CarryingCharacterId { get; set; }
+
+	public FightEntityDispositionInformations() {}
+
+
+	public FightEntityDispositionInformations InitFightEntityDispositionInformations(double CarryingCharacterId)
+	{
+		this.CarryingCharacterId = CarryingCharacterId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.CarryingCharacterId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.CarryingCharacterId = reader.ReadDouble();
+	}
 }
-
-public int carryingCharacterId;
-        
-
-public FightEntityDispositionInformations()
-{
-}
-
-public FightEntityDispositionInformations(short cellId, sbyte direction, int carryingCharacterId)
-         : base(cellId, direction)
-        {
-            this.carryingCharacterId = carryingCharacterId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(carryingCharacterId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            carryingCharacterId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

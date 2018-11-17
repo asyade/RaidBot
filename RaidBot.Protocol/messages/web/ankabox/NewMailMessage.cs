@@ -1,84 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class NewMailMessage : MailStatusMessage
 {
 
-public const uint Id = 6292;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6292;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] SendersAccountId { get; set; }
+
+	public NewMailMessage() {}
+
+
+	public NewMailMessage InitNewMailMessage(int[] SendersAccountId)
+	{
+		this.SendersAccountId = SendersAccountId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.SendersAccountId.Length);
+		foreach (int item in this.SendersAccountId)
+		{
+			writer.WriteInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int SendersAccountIdLen = reader.ReadShort();
+		SendersAccountId = new int[SendersAccountIdLen];
+		for (int i = 0; i < SendersAccountIdLen; i++)
+		{
+			this.SendersAccountId[i] = reader.ReadInt();
+		}
+	}
 }
-
-public int[] sendersAccountId;
-        
-
-public NewMailMessage()
-{
-}
-
-public NewMailMessage(ushort unread, ushort total, int[] sendersAccountId)
-         : base(unread, total)
-        {
-            this.sendersAccountId = sendersAccountId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)sendersAccountId.Length);
-            foreach (var entry in sendersAccountId)
-            {
-                 writer.WriteInt(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            sendersAccountId = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 sendersAccountId[i] = reader.ReadInt();
-            }
-            
-
-}
-
-
-}
-
-
 }

@@ -1,83 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class HumanOptionFollowers : HumanOption
 {
 
-public const short Id = 410;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 410;
+	public override uint MessageId { get { return Id; } }
+
+	public IndexedEntityLook[] FollowingCharactersLook { get; set; }
+
+	public HumanOptionFollowers() {}
+
+
+	public HumanOptionFollowers InitHumanOptionFollowers(IndexedEntityLook[] FollowingCharactersLook)
+	{
+		this.FollowingCharactersLook = FollowingCharactersLook;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.FollowingCharactersLook.Length);
+		foreach (IndexedEntityLook item in this.FollowingCharactersLook)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int FollowingCharactersLookLen = reader.ReadShort();
+		FollowingCharactersLook = new IndexedEntityLook[FollowingCharactersLookLen];
+		for (int i = 0; i < FollowingCharactersLookLen; i++)
+		{
+			this.FollowingCharactersLook[i] = new IndexedEntityLook();
+			this.FollowingCharactersLook[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.IndexedEntityLook[] followingCharactersLook;
-        
-
-public HumanOptionFollowers()
-{
-}
-
-public HumanOptionFollowers(Types.IndexedEntityLook[] followingCharactersLook)
-        {
-            this.followingCharactersLook = followingCharactersLook;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)followingCharactersLook.Length);
-            foreach (var entry in followingCharactersLook)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            followingCharactersLook = new Types.IndexedEntityLook[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 followingCharactersLook[i] = new Types.IndexedEntityLook();
-                 followingCharactersLook[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

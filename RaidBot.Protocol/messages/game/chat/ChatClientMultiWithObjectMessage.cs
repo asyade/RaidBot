@@ -1,85 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChatClientMultiWithObjectMessage : ChatClientMultiMessage
 {
 
-public const uint Id = 862;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 862;
+	public override uint MessageId { get { return Id; } }
+
+	public ObjectItem[] Objects { get; set; }
+
+	public ChatClientMultiWithObjectMessage() {}
+
+
+	public ChatClientMultiWithObjectMessage InitChatClientMultiWithObjectMessage(ObjectItem[] Objects)
+	{
+		this.Objects = Objects;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Objects.Length);
+		foreach (ObjectItem item in this.Objects)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int ObjectsLen = reader.ReadShort();
+		Objects = new ObjectItem[ObjectsLen];
+		for (int i = 0; i < ObjectsLen; i++)
+		{
+			this.Objects[i] = new ObjectItem();
+			this.Objects[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ObjectItem[] objects;
-        
-
-public ChatClientMultiWithObjectMessage()
-{
-}
-
-public ChatClientMultiWithObjectMessage(string content, sbyte channel, Types.ObjectItem[] objects)
-         : base(content, channel)
-        {
-            this.objects = objects;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)objects.Length);
-            foreach (var entry in objects)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            objects = new Types.ObjectItem[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objects[i] = new Types.ObjectItem();
-                 objects[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

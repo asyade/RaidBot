@@ -1,88 +1,52 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class JobDescription : NetworkType
 {
 
-public class JobDescription
-{
+	public const uint Id = 101;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 101;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte JobId { get; set; }
+	public SkillActionDescription[] Skills { get; set; }
+
+	public JobDescription() {}
+
+
+	public JobDescription InitJobDescription(byte JobId, SkillActionDescription[] Skills)
+	{
+		this.JobId = JobId;
+		this.Skills = Skills;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.JobId);
+		writer.WriteShort(this.Skills.Length);
+		foreach (SkillActionDescription item in this.Skills)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.JobId = reader.ReadByte();
+		int SkillsLen = reader.ReadShort();
+		Skills = new SkillActionDescription[SkillsLen];
+		for (int i = 0; i < SkillsLen; i++)
+		{
+			this.Skills[i] = ProtocolTypeManager.GetInstance<SkillActionDescription>(reader.ReadShort());
+			this.Skills[i].Deserialize(reader);
+		}
+	}
 }
-
-public sbyte jobId;
-        public Types.SkillActionDescription[] skills;
-        
-
-public JobDescription()
-{
-}
-
-public JobDescription(sbyte jobId, Types.SkillActionDescription[] skills)
-        {
-            this.jobId = jobId;
-            this.skills = skills;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(jobId);
-            writer.WriteUShort((ushort)skills.Length);
-            foreach (var entry in skills)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-jobId = reader.ReadSByte();
-            if (jobId < 0)
-                throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            var limit = reader.ReadUShort();
-            skills = new Types.SkillActionDescription[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 skills[i] = Types.ProtocolTypeManager.GetInstance<Types.SkillActionDescription>(reader.ReadShort());
-                 skills[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

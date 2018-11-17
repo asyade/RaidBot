@@ -1,73 +1,38 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GoldAddedMessage : NetworkMessage
 {
 
-public const uint Id = 6030;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6030;
+	public override uint MessageId { get { return Id; } }
+
+	public GoldItem Gold { get; set; }
+
+	public GoldAddedMessage() {}
+
+
+	public GoldAddedMessage InitGoldAddedMessage(GoldItem Gold)
+	{
+		this.Gold = Gold;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.Gold.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Gold = new GoldItem();
+		this.Gold.Deserialize(reader);
+	}
 }
-
-public Types.GoldItem gold;
-        
-
-public GoldAddedMessage()
-{
-}
-
-public GoldAddedMessage(Types.GoldItem gold)
-        {
-            this.gold = gold;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-gold.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-gold = new Types.GoldItem();
-            gold.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

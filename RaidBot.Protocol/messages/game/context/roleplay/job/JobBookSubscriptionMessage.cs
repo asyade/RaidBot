@@ -1,78 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class JobBookSubscriptionMessage : NetworkMessage
 {
 
-public const uint Id = 6593;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6593;
+	public override uint MessageId { get { return Id; } }
+
+	public JobBookSubscription[] Subscriptions { get; set; }
+
+	public JobBookSubscriptionMessage() {}
+
+
+	public JobBookSubscriptionMessage InitJobBookSubscriptionMessage(JobBookSubscription[] Subscriptions)
+	{
+		this.Subscriptions = Subscriptions;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Subscriptions.Length);
+		foreach (JobBookSubscription item in this.Subscriptions)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int SubscriptionsLen = reader.ReadShort();
+		Subscriptions = new JobBookSubscription[SubscriptionsLen];
+		for (int i = 0; i < SubscriptionsLen; i++)
+		{
+			this.Subscriptions[i] = new JobBookSubscription();
+			this.Subscriptions[i].Deserialize(reader);
+		}
+	}
 }
-
-public bool addedOrDeleted;
-        public sbyte jobId;
-        
-
-public JobBookSubscriptionMessage()
-{
-}
-
-public JobBookSubscriptionMessage(bool addedOrDeleted, sbyte jobId)
-        {
-            this.addedOrDeleted = addedOrDeleted;
-            this.jobId = jobId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteBoolean(addedOrDeleted);
-            writer.WriteSByte(jobId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-addedOrDeleted = reader.ReadBoolean();
-            jobId = reader.ReadSByte();
-            if (jobId < 0)
-                throw new Exception("Forbidden value on jobId = " + jobId + ", it doesn't respect the following condition : jobId < 0");
-            
-
-}
-
-
-}
-
-
 }

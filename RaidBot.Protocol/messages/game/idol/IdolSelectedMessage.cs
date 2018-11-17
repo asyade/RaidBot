@@ -1,85 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class IdolSelectedMessage : NetworkMessage
 {
 
-public const uint Id = 6581;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6581;
+	public override uint MessageId { get { return Id; } }
+
+	public bool Activate { get; set; }
+	public bool Party { get; set; }
+	public short IdolId { get; set; }
+
+	public IdolSelectedMessage() {}
+
+
+	public IdolSelectedMessage InitIdolSelectedMessage(bool Activate, bool Party, short IdolId)
+	{
+		this.Activate = Activate;
+		this.Party = Party;
+		this.IdolId = IdolId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, Activate);
+		box = BooleanByteWrapper.SetFlag(box, 1, Party);
+		writer.WriteByte(box);
+		writer.WriteVarShort(this.IdolId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.Activate = BooleanByteWrapper.GetFlag(box, 0);
+		this.Party = BooleanByteWrapper.GetFlag(box, 1);
+		this.IdolId = reader.ReadVarShort();
+	}
 }
-
-public bool activate;
-        public bool party;
-        public ushort idolId;
-        
-
-public IdolSelectedMessage()
-{
-}
-
-public IdolSelectedMessage(bool activate, bool party, ushort idolId)
-        {
-            this.activate = activate;
-            this.party = party;
-            this.idolId = idolId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, activate);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, party);
-            writer.WriteByte(flag1);
-            writer.WriteVaruhshort(idolId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-byte flag1 = reader.ReadByte();
-            activate = BooleanByteWrapper.GetFlag(flag1, 0);
-            party = BooleanByteWrapper.GetFlag(flag1, 1);
-            idolId = reader.ReadVaruhshort();
-            if (idolId < 0)
-                throw new Exception("Forbidden value on idolId = " + idolId + ", it doesn't respect the following condition : idolId < 0");
-            
-
-}
-
-
-}
-
-
 }

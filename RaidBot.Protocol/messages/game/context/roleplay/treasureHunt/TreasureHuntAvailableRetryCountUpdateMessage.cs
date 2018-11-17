@@ -1,78 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:34
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TreasureHuntAvailableRetryCountUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 6491;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6491;
+	public override uint MessageId { get { return Id; } }
+
+	public byte QuestType { get; set; }
+	public int AvailableRetryCount { get; set; }
+
+	public TreasureHuntAvailableRetryCountUpdateMessage() {}
+
+
+	public TreasureHuntAvailableRetryCountUpdateMessage InitTreasureHuntAvailableRetryCountUpdateMessage(byte QuestType, int AvailableRetryCount)
+	{
+		this.QuestType = QuestType;
+		this.AvailableRetryCount = AvailableRetryCount;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.QuestType);
+		writer.WriteInt(this.AvailableRetryCount);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.QuestType = reader.ReadByte();
+		this.AvailableRetryCount = reader.ReadInt();
+	}
 }
-
-public sbyte questType;
-        public int availableRetryCount;
-        
-
-public TreasureHuntAvailableRetryCountUpdateMessage()
-{
-}
-
-public TreasureHuntAvailableRetryCountUpdateMessage(sbyte questType, int availableRetryCount)
-        {
-            this.questType = questType;
-            this.availableRetryCount = availableRetryCount;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(questType);
-            writer.WriteInt(availableRetryCount);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-questType = reader.ReadSByte();
-            if (questType < 0)
-                throw new Exception("Forbidden value on questType = " + questType + ", it doesn't respect the following condition : questType < 0");
-            availableRetryCount = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

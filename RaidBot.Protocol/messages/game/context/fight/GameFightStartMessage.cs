@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:17
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightStartMessage : NetworkMessage
 {
 
-public const uint Id = 712;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 712;
+	public override uint MessageId { get { return Id; } }
+
+	public Idol[] Idols { get; set; }
+
+	public GameFightStartMessage() {}
+
+
+	public GameFightStartMessage InitGameFightStartMessage(Idol[] Idols)
+	{
+		this.Idols = Idols;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Idols.Length);
+		foreach (Idol item in this.Idols)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int IdolsLen = reader.ReadShort();
+		Idols = new Idol[IdolsLen];
+		for (int i = 0; i < IdolsLen; i++)
+		{
+			this.Idols[i] = new Idol();
+			this.Idols[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.Idol[] idols;
-        
-
-public GameFightStartMessage()
-{
-}
-
-public GameFightStartMessage(Types.Idol[] idols)
-        {
-            this.idols = idols;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)idols.Length);
-            foreach (var entry in idols)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            idols = new Types.Idol[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 idols[i] = new Types.Idol();
-                 idols[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

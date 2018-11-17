@@ -1,121 +1,79 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameActionMark : NetworkType
 {
 
-public class GameActionMark
-{
+	public const uint Id = 351;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 351;
-public virtual short TypeId
-{
-    get { return Id; }
+	public double MarkAuthorId { get; set; }
+	public byte MarkTeamId { get; set; }
+	public int MarkSpellId { get; set; }
+	public short MarkSpellLevel { get; set; }
+	public short MarkId { get; set; }
+	public byte MarkType { get; set; }
+	public short MarkimpactCell { get; set; }
+	public GameActionMarkedCell[] Cells { get; set; }
+	public bool Active { get; set; }
+
+	public GameActionMark() {}
+
+
+	public GameActionMark InitGameActionMark(double MarkAuthorId, byte MarkTeamId, int MarkSpellId, short MarkSpellLevel, short MarkId, byte MarkType, short MarkimpactCell, GameActionMarkedCell[] Cells, bool Active)
+	{
+		this.MarkAuthorId = MarkAuthorId;
+		this.MarkTeamId = MarkTeamId;
+		this.MarkSpellId = MarkSpellId;
+		this.MarkSpellLevel = MarkSpellLevel;
+		this.MarkId = MarkId;
+		this.MarkType = MarkType;
+		this.MarkimpactCell = MarkimpactCell;
+		this.Cells = Cells;
+		this.Active = Active;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MarkAuthorId);
+		writer.WriteByte(this.MarkTeamId);
+		writer.WriteInt(this.MarkSpellId);
+		writer.WriteShort(this.MarkSpellLevel);
+		writer.WriteShort(this.MarkId);
+		writer.WriteByte(this.MarkType);
+		writer.WriteShort(this.MarkimpactCell);
+		writer.WriteShort(this.Cells.Length);
+		foreach (GameActionMarkedCell item in this.Cells)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteBoolean(this.Active);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MarkAuthorId = reader.ReadDouble();
+		this.MarkTeamId = reader.ReadByte();
+		this.MarkSpellId = reader.ReadInt();
+		this.MarkSpellLevel = reader.ReadShort();
+		this.MarkId = reader.ReadShort();
+		this.MarkType = reader.ReadByte();
+		this.MarkimpactCell = reader.ReadShort();
+		int CellsLen = reader.ReadShort();
+		Cells = new GameActionMarkedCell[CellsLen];
+		for (int i = 0; i < CellsLen; i++)
+		{
+			this.Cells[i] = new GameActionMarkedCell();
+			this.Cells[i].Deserialize(reader);
+		}
+		this.Active = reader.ReadBoolean();
+	}
 }
-
-public int markAuthorId;
-        public sbyte markTeamId;
-        public int markSpellId;
-        public sbyte markSpellLevel;
-        public short markId;
-        public sbyte markType;
-        public short markimpactCell;
-        public Types.GameActionMarkedCell[] cells;
-        public bool active;
-        
-
-public GameActionMark()
-{
-}
-
-public GameActionMark(int markAuthorId, sbyte markTeamId, int markSpellId, sbyte markSpellLevel, short markId, sbyte markType, short markimpactCell, Types.GameActionMarkedCell[] cells, bool active)
-        {
-            this.markAuthorId = markAuthorId;
-            this.markTeamId = markTeamId;
-            this.markSpellId = markSpellId;
-            this.markSpellLevel = markSpellLevel;
-            this.markId = markId;
-            this.markType = markType;
-            this.markimpactCell = markimpactCell;
-            this.cells = cells;
-            this.active = active;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(markAuthorId);
-            writer.WriteSByte(markTeamId);
-            writer.WriteInt(markSpellId);
-            writer.WriteSByte(markSpellLevel);
-            writer.WriteShort(markId);
-            writer.WriteSByte(markType);
-            writer.WriteShort(markimpactCell);
-            writer.WriteUShort((ushort)cells.Length);
-            foreach (var entry in cells)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteBoolean(active);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-markAuthorId = reader.ReadInt();
-            markTeamId = reader.ReadSByte();
-            if (markTeamId < 0)
-                throw new Exception("Forbidden value on markTeamId = " + markTeamId + ", it doesn't respect the following condition : markTeamId < 0");
-            markSpellId = reader.ReadInt();
-            if (markSpellId < 0)
-                throw new Exception("Forbidden value on markSpellId = " + markSpellId + ", it doesn't respect the following condition : markSpellId < 0");
-            markSpellLevel = reader.ReadSByte();
-            if (markSpellLevel < 1 || markSpellLevel > 6)
-                throw new Exception("Forbidden value on markSpellLevel = " + markSpellLevel + ", it doesn't respect the following condition : markSpellLevel < 1 || markSpellLevel > 6");
-            markId = reader.ReadShort();
-            markType = reader.ReadSByte();
-            markimpactCell = reader.ReadShort();
-            if (markimpactCell < -1 || markimpactCell > 559)
-                throw new Exception("Forbidden value on markimpactCell = " + markimpactCell + ", it doesn't respect the following condition : markimpactCell < -1 || markimpactCell > 559");
-            var limit = reader.ReadUShort();
-            cells = new Types.GameActionMarkedCell[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 cells[i] = new Types.GameActionMarkedCell();
-                 cells[i].Deserialize(reader);
-            }
-            active = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

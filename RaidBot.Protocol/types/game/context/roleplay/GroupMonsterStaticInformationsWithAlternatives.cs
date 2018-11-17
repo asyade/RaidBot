@@ -1,84 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GroupMonsterStaticInformationsWithAlternatives : GroupMonsterStaticInformations
 {
 
-public const short Id = 396;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 396;
+	public override uint MessageId { get { return Id; } }
+
+	public AlternativeMonstersInGroupLightInformations[] Alternatives { get; set; }
+
+	public GroupMonsterStaticInformationsWithAlternatives() {}
+
+
+	public GroupMonsterStaticInformationsWithAlternatives InitGroupMonsterStaticInformationsWithAlternatives(AlternativeMonstersInGroupLightInformations[] Alternatives)
+	{
+		this.Alternatives = Alternatives;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Alternatives.Length);
+		foreach (AlternativeMonstersInGroupLightInformations item in this.Alternatives)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int AlternativesLen = reader.ReadShort();
+		Alternatives = new AlternativeMonstersInGroupLightInformations[AlternativesLen];
+		for (int i = 0; i < AlternativesLen; i++)
+		{
+			this.Alternatives[i] = new AlternativeMonstersInGroupLightInformations();
+			this.Alternatives[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.AlternativeMonstersInGroupLightInformations[] alternatives;
-        
-
-public GroupMonsterStaticInformationsWithAlternatives()
-{
-}
-
-public GroupMonsterStaticInformationsWithAlternatives(Types.MonsterInGroupLightInformations mainCreatureLightInfos, Types.MonsterInGroupInformations[] underlings, Types.AlternativeMonstersInGroupLightInformations[] alternatives)
-         : base(mainCreatureLightInfos, underlings)
-        {
-            this.alternatives = alternatives;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)alternatives.Length);
-            foreach (var entry in alternatives)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            alternatives = new Types.AlternativeMonstersInGroupLightInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 alternatives[i] = new Types.AlternativeMonstersInGroupLightInformations();
-                 alternatives[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

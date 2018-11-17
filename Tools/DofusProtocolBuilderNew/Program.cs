@@ -102,6 +102,11 @@ namespace DofusProtocolBuilder
 
                 foreach (string file in files)
                 {
+                    if (file.Contains("NetworkDataContainer"))
+                    {
+                        Console.WriteLine("{0} Skipped", file);
+                        continue;
+                    }
                     String output = file.Replace(parsingProfile.SourcePath, parsingProfile.OutPutPath).Replace(".as", ".cs");
                     string contents = File.ReadAllText(file);
                     Directory.CreateDirectory(Path.GetDirectoryName(output));

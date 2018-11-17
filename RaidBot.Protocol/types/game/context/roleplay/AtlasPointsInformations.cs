@@ -1,87 +1,51 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AtlasPointsInformations : NetworkType
 {
 
-public class AtlasPointsInformations
-{
+	public const uint Id = 175;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 175;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte Type { get; set; }
+	public MapCoordinatesExtended[] Coords { get; set; }
+
+	public AtlasPointsInformations() {}
+
+
+	public AtlasPointsInformations InitAtlasPointsInformations(byte Type, MapCoordinatesExtended[] Coords)
+	{
+		this.Type = Type;
+		this.Coords = Coords;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.Type);
+		writer.WriteShort(this.Coords.Length);
+		foreach (MapCoordinatesExtended item in this.Coords)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Type = reader.ReadByte();
+		int CoordsLen = reader.ReadShort();
+		Coords = new MapCoordinatesExtended[CoordsLen];
+		for (int i = 0; i < CoordsLen; i++)
+		{
+			this.Coords[i] = new MapCoordinatesExtended();
+			this.Coords[i].Deserialize(reader);
+		}
+	}
 }
-
-public sbyte type;
-        public Types.MapCoordinatesExtended[] coords;
-        
-
-public AtlasPointsInformations()
-{
-}
-
-public AtlasPointsInformations(sbyte type, Types.MapCoordinatesExtended[] coords)
-        {
-            this.type = type;
-            this.coords = coords;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(type);
-            writer.WriteUShort((ushort)coords.Length);
-            foreach (var entry in coords)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-type = reader.ReadSByte();
-            if (type < 0)
-                throw new Exception("Forbidden value on type = " + type + ", it doesn't respect the following condition : type < 0");
-            var limit = reader.ReadUShort();
-            coords = new Types.MapCoordinatesExtended[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 coords[i] = new Types.MapCoordinatesExtended();
-                 coords[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

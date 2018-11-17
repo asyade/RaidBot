@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ShortcutObjectPreset : ShortcutObject
 {
 
-public const short Id = 370;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 370;
+	public override uint MessageId { get { return Id; } }
+
+	public short PresetId { get; set; }
+
+	public ShortcutObjectPreset() {}
+
+
+	public ShortcutObjectPreset InitShortcutObjectPreset(short PresetId)
+	{
+		this.PresetId = PresetId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.PresetId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.PresetId = reader.ReadShort();
+	}
 }
-
-public sbyte presetId;
-        
-
-public ShortcutObjectPreset()
-{
-}
-
-public ShortcutObjectPreset(sbyte slot, sbyte presetId)
-         : base(slot)
-        {
-            this.presetId = presetId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(presetId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            presetId = reader.ReadSByte();
-            if (presetId < 0)
-                throw new Exception("Forbidden value on presetId = " + presetId + ", it doesn't respect the following condition : presetId < 0");
-            
-
-}
-
-
-}
-
-
 }

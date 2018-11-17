@@ -144,6 +144,11 @@ namespace RaidBot.Common.IO
             return BitConverter.ToUInt32(ReadBigEndianBytes(4), 0);
         }
 
+        public uint ReadUnsignedInt()
+        {
+            return ReadUInt();
+        }
+
         /// <summary>
         ///   Read a long from the Buffer
         /// </summary>

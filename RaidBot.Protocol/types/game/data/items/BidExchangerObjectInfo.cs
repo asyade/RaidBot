@@ -1,101 +1,65 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class BidExchangerObjectInfo : NetworkType
 {
 
-public class BidExchangerObjectInfo
-{
+	public const uint Id = 122;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 122;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int ObjectUID { get; set; }
+	public ObjectEffect[] Effects { get; set; }
+	public long[] Prices { get; set; }
+
+	public BidExchangerObjectInfo() {}
+
+
+	public BidExchangerObjectInfo InitBidExchangerObjectInfo(int ObjectUID, ObjectEffect[] Effects, long[] Prices)
+	{
+		this.ObjectUID = ObjectUID;
+		this.Effects = Effects;
+		this.Prices = Prices;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.ObjectUID);
+		writer.WriteShort(this.Effects.Length);
+		foreach (ObjectEffect item in this.Effects)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Prices.Length);
+		foreach (long item in this.Prices)
+		{
+			writer.WriteVarLong(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ObjectUID = reader.ReadVarInt();
+		int EffectsLen = reader.ReadShort();
+		Effects = new ObjectEffect[EffectsLen];
+		for (int i = 0; i < EffectsLen; i++)
+		{
+			this.Effects[i] = ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
+			this.Effects[i].Deserialize(reader);
+		}
+		int PricesLen = reader.ReadShort();
+		Prices = new long[PricesLen];
+		for (int i = 0; i < PricesLen; i++)
+		{
+			this.Prices[i] = reader.ReadVarLong();
+		}
+	}
 }
-
-public uint objectUID;
-        public Types.ObjectEffect[] effects;
-        public int[] prices;
-        
-
-public BidExchangerObjectInfo()
-{
-}
-
-public BidExchangerObjectInfo(uint objectUID, Types.ObjectEffect[] effects, int[] prices)
-        {
-            this.objectUID = objectUID;
-            this.effects = effects;
-            this.prices = prices;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(objectUID);
-            writer.WriteUShort((ushort)effects.Length);
-            foreach (var entry in effects)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)prices.Length);
-            foreach (var entry in prices)
-            {
-                 writer.WriteInt(entry);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-objectUID = reader.ReadVaruhint();
-            if (objectUID < 0)
-                throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 effects[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 effects[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            prices = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 prices[i] = reader.ReadInt();
-            }
-            
-
-}
-
-
-}
-
-
 }

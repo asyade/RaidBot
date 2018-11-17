@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildListMessage : NetworkMessage
 {
 
-public const uint Id = 6413;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6413;
+	public override uint MessageId { get { return Id; } }
+
+	public GuildInformations[] Guilds { get; set; }
+
+	public GuildListMessage() {}
+
+
+	public GuildListMessage InitGuildListMessage(GuildInformations[] Guilds)
+	{
+		this.Guilds = Guilds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Guilds.Length);
+		foreach (GuildInformations item in this.Guilds)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int GuildsLen = reader.ReadShort();
+		Guilds = new GuildInformations[GuildsLen];
+		for (int i = 0; i < GuildsLen; i++)
+		{
+			this.Guilds[i] = new GuildInformations();
+			this.Guilds[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.GuildInformations[] guilds;
-        
-
-public GuildListMessage()
-{
-}
-
-public GuildListMessage(Types.GuildInformations[] guilds)
-        {
-            this.guilds = guilds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)guilds.Length);
-            foreach (var entry in guilds)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            guilds = new Types.GuildInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 guilds[i] = new Types.GuildInformations();
-                 guilds[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

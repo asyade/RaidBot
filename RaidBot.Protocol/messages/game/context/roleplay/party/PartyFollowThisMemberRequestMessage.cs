@@ -1,75 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class PartyFollowThisMemberRequestMessage : PartyFollowMemberRequestMessage
 {
 
-public const uint Id = 5588;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5588;
+	public override uint MessageId { get { return Id; } }
+
+	public bool Enabled { get; set; }
+
+	public PartyFollowThisMemberRequestMessage() {}
+
+
+	public PartyFollowThisMemberRequestMessage InitPartyFollowThisMemberRequestMessage(bool Enabled)
+	{
+		this.Enabled = Enabled;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteBoolean(this.Enabled);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Enabled = reader.ReadBoolean();
+	}
 }
-
-public bool enabled;
-        
-
-public PartyFollowThisMemberRequestMessage()
-{
-}
-
-public PartyFollowThisMemberRequestMessage(uint partyId, uint playerId, bool enabled)
-         : base(partyId, playerId)
-        {
-            this.enabled = enabled;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteBoolean(enabled);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            enabled = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

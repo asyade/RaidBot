@@ -1,106 +1,67 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TitlesAndOrnamentsListMessage : NetworkMessage
 {
 
-public const uint Id = 6367;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6367;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] Titles { get; set; }
+	public short[] Ornaments { get; set; }
+	public short ActiveTitle { get; set; }
+	public short ActiveOrnament { get; set; }
+
+	public TitlesAndOrnamentsListMessage() {}
+
+
+	public TitlesAndOrnamentsListMessage InitTitlesAndOrnamentsListMessage(short[] Titles, short[] Ornaments, short ActiveTitle, short ActiveOrnament)
+	{
+		this.Titles = Titles;
+		this.Ornaments = Ornaments;
+		this.ActiveTitle = ActiveTitle;
+		this.ActiveOrnament = ActiveOrnament;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Titles.Length);
+		foreach (short item in this.Titles)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.Ornaments.Length);
+		foreach (short item in this.Ornaments)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteVarShort(this.ActiveTitle);
+		writer.WriteVarShort(this.ActiveOrnament);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int TitlesLen = reader.ReadShort();
+		Titles = new short[TitlesLen];
+		for (int i = 0; i < TitlesLen; i++)
+		{
+			this.Titles[i] = reader.ReadVarShort();
+		}
+		int OrnamentsLen = reader.ReadShort();
+		Ornaments = new short[OrnamentsLen];
+		for (int i = 0; i < OrnamentsLen; i++)
+		{
+			this.Ornaments[i] = reader.ReadVarShort();
+		}
+		this.ActiveTitle = reader.ReadVarShort();
+		this.ActiveOrnament = reader.ReadVarShort();
+	}
 }
-
-public ushort[] titles;
-        public ushort[] ornaments;
-        public ushort activeTitle;
-        public ushort activeOrnament;
-        
-
-public TitlesAndOrnamentsListMessage()
-{
-}
-
-public TitlesAndOrnamentsListMessage(ushort[] titles, ushort[] ornaments, ushort activeTitle, ushort activeOrnament)
-        {
-            this.titles = titles;
-            this.ornaments = ornaments;
-            this.activeTitle = activeTitle;
-            this.activeOrnament = activeOrnament;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)titles.Length);
-            foreach (var entry in titles)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)ornaments.Length);
-            foreach (var entry in ornaments)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteVaruhshort(activeTitle);
-            writer.WriteVaruhshort(activeOrnament);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            titles = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 titles[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            ornaments = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 ornaments[i] = reader.ReadVaruhshort();
-            }
-            activeTitle = reader.ReadVaruhshort();
-            if (activeTitle < 0)
-                throw new Exception("Forbidden value on activeTitle = " + activeTitle + ", it doesn't respect the following condition : activeTitle < 0");
-            activeOrnament = reader.ReadVaruhshort();
-            if (activeOrnament < 0)
-                throw new Exception("Forbidden value on activeOrnament = " + activeOrnament + ", it doesn't respect the following condition : activeOrnament < 0");
-            
-
-}
-
-
-}
-
-
 }

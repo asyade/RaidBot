@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTemporaryBoostEffect : AbstractFightDispellableEffect
 {
 
-public const short Id = 209;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 209;
+	public override uint MessageId { get { return Id; } }
+
+	public short Delta { get; set; }
+
+	public FightTemporaryBoostEffect() {}
+
+
+	public FightTemporaryBoostEffect InitFightTemporaryBoostEffect(short Delta)
+	{
+		this.Delta = Delta;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Delta);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Delta = reader.ReadShort();
+	}
 }
-
-public short delta;
-        
-
-public FightTemporaryBoostEffect()
-{
-}
-
-public FightTemporaryBoostEffect(uint uid, int targetId, short turnDuration, sbyte dispelable, ushort spellId, uint effectId, uint parentBoostUid, short delta)
-         : base(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid)
-        {
-            this.delta = delta;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteShort(delta);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            delta = reader.ReadShort();
-            
-
-}
-
-
-}
-
-
 }

@@ -1,87 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MimicryObjectFeedAndAssociateRequestMessage : SymbioticObjectAssociateRequestMessage
 {
 
-public const uint Id = 6460;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6460;
+	public override uint MessageId { get { return Id; } }
+
+	public int FoodUID { get; set; }
+	public byte FoodPos { get; set; }
+	public bool Preview { get; set; }
+
+	public MimicryObjectFeedAndAssociateRequestMessage() {}
+
+
+	public MimicryObjectFeedAndAssociateRequestMessage InitMimicryObjectFeedAndAssociateRequestMessage(int FoodUID, byte FoodPos, bool Preview)
+	{
+		this.FoodUID = FoodUID;
+		this.FoodPos = FoodPos;
+		this.Preview = Preview;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarInt(this.FoodUID);
+		writer.WriteByte(this.FoodPos);
+		writer.WriteBoolean(this.Preview);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.FoodUID = reader.ReadVarInt();
+		this.FoodPos = reader.ReadByte();
+		this.Preview = reader.ReadBoolean();
+	}
 }
-
-public uint foodUID;
-        public byte foodPos;
-        public bool preview;
-        
-
-public MimicryObjectFeedAndAssociateRequestMessage()
-{
-}
-
-public MimicryObjectFeedAndAssociateRequestMessage(uint symbioteUID, byte symbiotePos, uint hostUID, byte hostPos, uint foodUID, byte foodPos, bool preview)
-         : base(symbioteUID, symbiotePos, hostUID, hostPos)
-        {
-            this.foodUID = foodUID;
-            this.foodPos = foodPos;
-            this.preview = preview;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(foodUID);
-            writer.WriteByte(foodPos);
-            writer.WriteBoolean(preview);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            foodUID = reader.ReadVaruhint();
-            if (foodUID < 0)
-                throw new Exception("Forbidden value on foodUID = " + foodUID + ", it doesn't respect the following condition : foodUID < 0");
-            foodPos = reader.ReadByte();
-            if (foodPos < 0 || foodPos > 255)
-                throw new Exception("Forbidden value on foodPos = " + foodPos + ", it doesn't respect the following condition : foodPos < 0 || foodPos > 255");
-            preview = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

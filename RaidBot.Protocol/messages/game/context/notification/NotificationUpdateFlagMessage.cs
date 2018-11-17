@@ -1,74 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class NotificationUpdateFlagMessage : NetworkMessage
 {
 
-public const uint Id = 6090;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6090;
+	public override uint MessageId { get { return Id; } }
+
+	public short Index { get; set; }
+
+	public NotificationUpdateFlagMessage() {}
+
+
+	public NotificationUpdateFlagMessage InitNotificationUpdateFlagMessage(short Index)
+	{
+		this.Index = Index;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.Index);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Index = reader.ReadVarShort();
+	}
 }
-
-public ushort index;
-        
-
-public NotificationUpdateFlagMessage()
-{
-}
-
-public NotificationUpdateFlagMessage(ushort index)
-        {
-            this.index = index;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(index);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-index = reader.ReadVaruhshort();
-            if (index < 0)
-                throw new Exception("Forbidden value on index = " + index + ", it doesn't respect the following condition : index < 0");
-            
-
-}
-
-
-}
-
-
 }

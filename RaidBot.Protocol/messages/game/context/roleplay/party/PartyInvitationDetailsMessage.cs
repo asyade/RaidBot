@@ -1,125 +1,84 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:29
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class PartyInvitationDetailsMessage : AbstractPartyMessage
 {
 
-public const uint Id = 6263;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6263;
+	public override uint MessageId { get { return Id; } }
+
+	public byte PartyType { get; set; }
+	public String PartyName { get; set; }
+	public long FromId { get; set; }
+	public String FromName { get; set; }
+	public long LeaderId { get; set; }
+	public PartyInvitationMemberInformations[] Members { get; set; }
+	public PartyGuestInformations[] Guests { get; set; }
+
+	public PartyInvitationDetailsMessage() {}
+
+
+	public PartyInvitationDetailsMessage InitPartyInvitationDetailsMessage(byte PartyType, String PartyName, long FromId, String FromName, long LeaderId, PartyInvitationMemberInformations[] Members, PartyGuestInformations[] Guests)
+	{
+		this.PartyType = PartyType;
+		this.PartyName = PartyName;
+		this.FromId = FromId;
+		this.FromName = FromName;
+		this.LeaderId = LeaderId;
+		this.Members = Members;
+		this.Guests = Guests;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.PartyType);
+		writer.WriteUTF(this.PartyName);
+		writer.WriteVarLong(this.FromId);
+		writer.WriteUTF(this.FromName);
+		writer.WriteVarLong(this.LeaderId);
+		writer.WriteShort(this.Members.Length);
+		foreach (PartyInvitationMemberInformations item in this.Members)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Guests.Length);
+		foreach (PartyGuestInformations item in this.Guests)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.PartyType = reader.ReadByte();
+		this.PartyName = reader.ReadUTF();
+		this.FromId = reader.ReadVarLong();
+		this.FromName = reader.ReadUTF();
+		this.LeaderId = reader.ReadVarLong();
+		int MembersLen = reader.ReadShort();
+		Members = new PartyInvitationMemberInformations[MembersLen];
+		for (int i = 0; i < MembersLen; i++)
+		{
+			this.Members[i] = ProtocolTypeManager.GetInstance<PartyInvitationMemberInformations>(reader.ReadShort());
+			this.Members[i].Deserialize(reader);
+		}
+		int GuestsLen = reader.ReadShort();
+		Guests = new PartyGuestInformations[GuestsLen];
+		for (int i = 0; i < GuestsLen; i++)
+		{
+			this.Guests[i] = new PartyGuestInformations();
+			this.Guests[i].Deserialize(reader);
+		}
+	}
 }
-
-public sbyte partyType;
-        public string partyName;
-        public uint fromId;
-        public string fromName;
-        public uint leaderId;
-        public Types.PartyInvitationMemberInformations[] members;
-        public Types.PartyGuestInformations[] guests;
-        
-
-public PartyInvitationDetailsMessage()
-{
-}
-
-public PartyInvitationDetailsMessage(uint partyId, sbyte partyType, string partyName, uint fromId, string fromName, uint leaderId, Types.PartyInvitationMemberInformations[] members, Types.PartyGuestInformations[] guests)
-         : base(partyId)
-        {
-            this.partyType = partyType;
-            this.partyName = partyName;
-            this.fromId = fromId;
-            this.fromName = fromName;
-            this.leaderId = leaderId;
-            this.members = members;
-            this.guests = guests;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(partyType);
-            writer.WriteUTF(partyName);
-            writer.WriteVaruhint(fromId);
-            writer.WriteUTF(fromName);
-            writer.WriteVaruhint(leaderId);
-            writer.WriteUShort((ushort)members.Length);
-            foreach (var entry in members)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)guests.Length);
-            foreach (var entry in guests)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            partyType = reader.ReadSByte();
-            if (partyType < 0)
-                throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
-            partyName = reader.ReadUTF();
-            fromId = reader.ReadVaruhint();
-            if (fromId < 0)
-                throw new Exception("Forbidden value on fromId = " + fromId + ", it doesn't respect the following condition : fromId < 0");
-            fromName = reader.ReadUTF();
-            leaderId = reader.ReadVaruhint();
-            if (leaderId < 0)
-                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
-            var limit = reader.ReadUShort();
-            members = new Types.PartyInvitationMemberInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 members[i] = new Types.PartyInvitationMemberInformations();
-                 members[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            guests = new Types.PartyGuestInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 guests[i] = new Types.PartyGuestInformations();
-                 guests[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

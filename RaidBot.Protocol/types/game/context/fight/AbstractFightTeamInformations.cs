@@ -1,93 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class AbstractFightTeamInformations : NetworkType
 {
 
-public class AbstractFightTeamInformations
-{
+	public const uint Id = 116;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 116;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte TeamId { get; set; }
+	public double LeaderId { get; set; }
+	public byte TeamSide { get; set; }
+	public byte TeamTypeId { get; set; }
+	public byte NbWaves { get; set; }
+
+	public AbstractFightTeamInformations() {}
+
+
+	public AbstractFightTeamInformations InitAbstractFightTeamInformations(byte TeamId, double LeaderId, byte TeamSide, byte TeamTypeId, byte NbWaves)
+	{
+		this.TeamId = TeamId;
+		this.LeaderId = LeaderId;
+		this.TeamSide = TeamSide;
+		this.TeamTypeId = TeamTypeId;
+		this.NbWaves = NbWaves;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.TeamId);
+		writer.WriteDouble(this.LeaderId);
+		writer.WriteByte(this.TeamSide);
+		writer.WriteByte(this.TeamTypeId);
+		writer.WriteByte(this.NbWaves);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.TeamId = reader.ReadByte();
+		this.LeaderId = reader.ReadDouble();
+		this.TeamSide = reader.ReadByte();
+		this.TeamTypeId = reader.ReadByte();
+		this.NbWaves = reader.ReadByte();
+	}
 }
-
-public sbyte teamId;
-        public int leaderId;
-        public sbyte teamSide;
-        public sbyte teamTypeId;
-        public sbyte nbWaves;
-        
-
-public AbstractFightTeamInformations()
-{
-}
-
-public AbstractFightTeamInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves)
-        {
-            this.teamId = teamId;
-            this.leaderId = leaderId;
-            this.teamSide = teamSide;
-            this.teamTypeId = teamTypeId;
-            this.nbWaves = nbWaves;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(teamId);
-            writer.WriteInt(leaderId);
-            writer.WriteSByte(teamSide);
-            writer.WriteSByte(teamTypeId);
-            writer.WriteSByte(nbWaves);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
-            leaderId = reader.ReadInt();
-            teamSide = reader.ReadSByte();
-            teamTypeId = reader.ReadSByte();
-            if (teamTypeId < 0)
-                throw new Exception("Forbidden value on teamTypeId = " + teamTypeId + ", it doesn't respect the following condition : teamTypeId < 0");
-            nbWaves = reader.ReadSByte();
-            if (nbWaves < 0)
-                throw new Exception("Forbidden value on nbWaves = " + nbWaves + ", it doesn't respect the following condition : nbWaves < 0");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:40:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AcquaintanceServerListMessage : NetworkMessage
 {
 
-public const uint Id = 6142;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6142;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] Servers { get; set; }
+
+	public AcquaintanceServerListMessage() {}
+
+
+	public AcquaintanceServerListMessage InitAcquaintanceServerListMessage(short[] Servers)
+	{
+		this.Servers = Servers;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Servers.Length);
+		foreach (short item in this.Servers)
+		{
+			writer.WriteVarShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ServersLen = reader.ReadShort();
+		Servers = new short[ServersLen];
+		for (int i = 0; i < ServersLen; i++)
+		{
+			this.Servers[i] = reader.ReadVarShort();
+		}
+	}
 }
-
-public ushort[] servers;
-        
-
-public AcquaintanceServerListMessage()
-{
-}
-
-public AcquaintanceServerListMessage(ushort[] servers)
-        {
-            this.servers = servers;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)servers.Length);
-            foreach (var entry in servers)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            servers = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 servers[i] = reader.ReadVaruhshort();
-            }
-            
-
-}
-
-
-}
-
-
 }

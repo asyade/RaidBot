@@ -1,108 +1,66 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectItem : Item
 {
 
-public const short Id = 37;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 37;
+	public override uint MessageId { get { return Id; } }
+
+	public short Position { get; set; }
+	public short ObjectGID { get; set; }
+	public ObjectEffect[] Effects { get; set; }
+	public int ObjectUID { get; set; }
+	public int Quantity { get; set; }
+
+	public ObjectItem() {}
+
+
+	public ObjectItem InitObjectItem(short Position, short ObjectGID, ObjectEffect[] Effects, int ObjectUID, int Quantity)
+	{
+		this.Position = Position;
+		this.ObjectGID = ObjectGID;
+		this.Effects = Effects;
+		this.ObjectUID = ObjectUID;
+		this.Quantity = Quantity;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.Position);
+		writer.WriteVarShort(this.ObjectGID);
+		writer.WriteShort(this.Effects.Length);
+		foreach (ObjectEffect item in this.Effects)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteVarInt(this.ObjectUID);
+		writer.WriteVarInt(this.Quantity);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Position = reader.ReadShort();
+		this.ObjectGID = reader.ReadVarShort();
+		int EffectsLen = reader.ReadShort();
+		Effects = new ObjectEffect[EffectsLen];
+		for (int i = 0; i < EffectsLen; i++)
+		{
+			this.Effects[i] = ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
+			this.Effects[i].Deserialize(reader);
+		}
+		this.ObjectUID = reader.ReadVarInt();
+		this.Quantity = reader.ReadVarInt();
+	}
 }
-
-public byte position;
-        public ushort objectGID;
-        public Types.ObjectEffect[] effects;
-        public uint objectUID;
-        public uint quantity;
-        
-
-public ObjectItem()
-{
-}
-
-public ObjectItem(byte position, ushort objectGID, Types.ObjectEffect[] effects, uint objectUID, uint quantity)
-        {
-            this.position = position;
-            this.objectGID = objectGID;
-            this.effects = effects;
-            this.objectUID = objectUID;
-            this.quantity = quantity;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(position);
-            writer.WriteVaruhshort(objectGID);
-            writer.WriteUShort((ushort)effects.Length);
-            foreach (var entry in effects)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteVaruhint(objectUID);
-            writer.WriteVaruhint(quantity);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            position = reader.ReadByte();
-            if (position < 0 || position > 255)
-                throw new Exception("Forbidden value on position = " + position + ", it doesn't respect the following condition : position < 0 || position > 255");
-            objectGID = reader.ReadVaruhshort();
-            if (objectGID < 0)
-                throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 effects[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 effects[i].Deserialize(reader);
-            }
-            objectUID = reader.ReadVaruhint();
-            if (objectUID < 0)
-                throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            quantity = reader.ReadVaruhint();
-            if (quantity < 0)
-                throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            
-
-}
-
-
-}
-
-
 }

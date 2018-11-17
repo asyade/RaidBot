@@ -1,75 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameActionFightDeathMessage : AbstractGameActionMessage
 {
 
-public const uint Id = 1099;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 1099;
+	public override uint MessageId { get { return Id; } }
+
+	public double TargetId { get; set; }
+
+	public GameActionFightDeathMessage() {}
+
+
+	public GameActionFightDeathMessage InitGameActionFightDeathMessage(double TargetId)
+	{
+		this.TargetId = TargetId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.TargetId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.TargetId = reader.ReadDouble();
+	}
 }
-
-public int targetId;
-        
-
-public GameActionFightDeathMessage()
-{
-}
-
-public GameActionFightDeathMessage(ushort actionId, int sourceId, int targetId)
-         : base(actionId, sourceId)
-        {
-            this.targetId = targetId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(targetId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            targetId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class BasicNamedAllianceInformations : BasicAllianceInformations
 {
 
-public const short Id = 418;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 418;
+	public override uint MessageId { get { return Id; } }
+
+	public String AllianceName { get; set; }
+
+	public BasicNamedAllianceInformations() {}
+
+
+	public BasicNamedAllianceInformations InitBasicNamedAllianceInformations(String AllianceName)
+	{
+		this.AllianceName = AllianceName;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteUTF(this.AllianceName);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.AllianceName = reader.ReadUTF();
+	}
 }
-
-public string allianceName;
-        
-
-public BasicNamedAllianceInformations()
-{
-}
-
-public BasicNamedAllianceInformations(uint allianceId, string allianceTag, string allianceName)
-         : base(allianceId, allianceTag)
-        {
-            this.allianceName = allianceName;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUTF(allianceName);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            allianceName = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

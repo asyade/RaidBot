@@ -1,87 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GuildEmblem : NetworkType
 {
 
-public class GuildEmblem
-{
+	public const uint Id = 87;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 87;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short SymbolShape { get; set; }
+	public int SymbolColor { get; set; }
+	public byte BackgroundShape { get; set; }
+	public int BackgroundColor { get; set; }
+
+	public GuildEmblem() {}
+
+
+	public GuildEmblem InitGuildEmblem(short SymbolShape, int SymbolColor, byte BackgroundShape, int BackgroundColor)
+	{
+		this.SymbolShape = SymbolShape;
+		this.SymbolColor = SymbolColor;
+		this.BackgroundShape = BackgroundShape;
+		this.BackgroundColor = BackgroundColor;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.SymbolShape);
+		writer.WriteInt(this.SymbolColor);
+		writer.WriteByte(this.BackgroundShape);
+		writer.WriteInt(this.BackgroundColor);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SymbolShape = reader.ReadVarShort();
+		this.SymbolColor = reader.ReadInt();
+		this.BackgroundShape = reader.ReadByte();
+		this.BackgroundColor = reader.ReadInt();
+	}
 }
-
-public ushort symbolShape;
-        public int symbolColor;
-        public sbyte backgroundShape;
-        public int backgroundColor;
-        
-
-public GuildEmblem()
-{
-}
-
-public GuildEmblem(ushort symbolShape, int symbolColor, sbyte backgroundShape, int backgroundColor)
-        {
-            this.symbolShape = symbolShape;
-            this.symbolColor = symbolColor;
-            this.backgroundShape = backgroundShape;
-            this.backgroundColor = backgroundColor;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(symbolShape);
-            writer.WriteInt(symbolColor);
-            writer.WriteSByte(backgroundShape);
-            writer.WriteInt(backgroundColor);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-symbolShape = reader.ReadVaruhshort();
-            if (symbolShape < 0)
-                throw new Exception("Forbidden value on symbolShape = " + symbolShape + ", it doesn't respect the following condition : symbolShape < 0");
-            symbolColor = reader.ReadInt();
-            backgroundShape = reader.ReadSByte();
-            if (backgroundShape < 0)
-                throw new Exception("Forbidden value on backgroundShape = " + backgroundShape + ", it doesn't respect the following condition : backgroundShape < 0");
-            backgroundColor = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

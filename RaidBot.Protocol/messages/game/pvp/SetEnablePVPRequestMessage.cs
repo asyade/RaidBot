@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SetEnablePVPRequestMessage : NetworkMessage
 {
 
-public const uint Id = 1810;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 1810;
+	public override uint MessageId { get { return Id; } }
+
+	public bool Enable { get; set; }
+
+	public SetEnablePVPRequestMessage() {}
+
+
+	public SetEnablePVPRequestMessage InitSetEnablePVPRequestMessage(bool Enable)
+	{
+		this.Enable = Enable;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteBoolean(this.Enable);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Enable = reader.ReadBoolean();
+	}
 }
-
-public bool enable;
-        
-
-public SetEnablePVPRequestMessage()
-{
-}
-
-public SetEnablePVPRequestMessage(bool enable)
-        {
-            this.enable = enable;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteBoolean(enable);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-enable = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

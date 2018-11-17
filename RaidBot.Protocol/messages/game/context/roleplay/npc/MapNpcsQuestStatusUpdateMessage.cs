@@ -1,112 +1,77 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MapNpcsQuestStatusUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 5642;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5642;
+	public override uint MessageId { get { return Id; } }
+
+	public double MapId { get; set; }
+	public int[] NpcsIdsWithQuest { get; set; }
+	public GameRolePlayNpcQuestFlag[] QuestFlags { get; set; }
+	public int[] NpcsIdsWithoutQuest { get; set; }
+
+	public MapNpcsQuestStatusUpdateMessage() {}
+
+
+	public MapNpcsQuestStatusUpdateMessage InitMapNpcsQuestStatusUpdateMessage(double MapId, int[] NpcsIdsWithQuest, GameRolePlayNpcQuestFlag[] QuestFlags, int[] NpcsIdsWithoutQuest)
+	{
+		this.MapId = MapId;
+		this.NpcsIdsWithQuest = NpcsIdsWithQuest;
+		this.QuestFlags = QuestFlags;
+		this.NpcsIdsWithoutQuest = NpcsIdsWithoutQuest;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MapId);
+		writer.WriteShort(this.NpcsIdsWithQuest.Length);
+		foreach (int item in this.NpcsIdsWithQuest)
+		{
+			writer.WriteInt(item);
+		}
+		writer.WriteShort(this.QuestFlags.Length);
+		foreach (GameRolePlayNpcQuestFlag item in this.QuestFlags)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.NpcsIdsWithoutQuest.Length);
+		foreach (int item in this.NpcsIdsWithoutQuest)
+		{
+			writer.WriteInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MapId = reader.ReadDouble();
+		int NpcsIdsWithQuestLen = reader.ReadShort();
+		NpcsIdsWithQuest = new int[NpcsIdsWithQuestLen];
+		for (int i = 0; i < NpcsIdsWithQuestLen; i++)
+		{
+			this.NpcsIdsWithQuest[i] = reader.ReadInt();
+		}
+		int QuestFlagsLen = reader.ReadShort();
+		QuestFlags = new GameRolePlayNpcQuestFlag[QuestFlagsLen];
+		for (int i = 0; i < QuestFlagsLen; i++)
+		{
+			this.QuestFlags[i] = new GameRolePlayNpcQuestFlag();
+			this.QuestFlags[i].Deserialize(reader);
+		}
+		int NpcsIdsWithoutQuestLen = reader.ReadShort();
+		NpcsIdsWithoutQuest = new int[NpcsIdsWithoutQuestLen];
+		for (int i = 0; i < NpcsIdsWithoutQuestLen; i++)
+		{
+			this.NpcsIdsWithoutQuest[i] = reader.ReadInt();
+		}
+	}
 }
-
-public int mapId;
-        public int[] npcsIdsWithQuest;
-        public Types.GameRolePlayNpcQuestFlag[] questFlags;
-        public int[] npcsIdsWithoutQuest;
-        
-
-public MapNpcsQuestStatusUpdateMessage()
-{
-}
-
-public MapNpcsQuestStatusUpdateMessage(int mapId, int[] npcsIdsWithQuest, Types.GameRolePlayNpcQuestFlag[] questFlags, int[] npcsIdsWithoutQuest)
-        {
-            this.mapId = mapId;
-            this.npcsIdsWithQuest = npcsIdsWithQuest;
-            this.questFlags = questFlags;
-            this.npcsIdsWithoutQuest = npcsIdsWithoutQuest;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(mapId);
-            writer.WriteUShort((ushort)npcsIdsWithQuest.Length);
-            foreach (var entry in npcsIdsWithQuest)
-            {
-                 writer.WriteInt(entry);
-            }
-            writer.WriteUShort((ushort)questFlags.Length);
-            foreach (var entry in questFlags)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)npcsIdsWithoutQuest.Length);
-            foreach (var entry in npcsIdsWithoutQuest)
-            {
-                 writer.WriteInt(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-mapId = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            npcsIdsWithQuest = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 npcsIdsWithQuest[i] = reader.ReadInt();
-            }
-            limit = reader.ReadUShort();
-            questFlags = new Types.GameRolePlayNpcQuestFlag[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 questFlags[i] = new Types.GameRolePlayNpcQuestFlag();
-                 questFlags[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            npcsIdsWithoutQuest = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 npcsIdsWithoutQuest[i] = reader.ReadInt();
-            }
-            
-
-}
-
-
-}
-
-
 }

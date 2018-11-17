@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class NumericWhoIsMessage : NetworkMessage
 {
 
-public const uint Id = 6297;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6297;
+	public override uint MessageId { get { return Id; } }
+
+	public long PlayerId { get; set; }
+	public int AccountId { get; set; }
+
+	public NumericWhoIsMessage() {}
+
+
+	public NumericWhoIsMessage InitNumericWhoIsMessage(long PlayerId, int AccountId)
+	{
+		this.PlayerId = PlayerId;
+		this.AccountId = AccountId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.PlayerId);
+		writer.WriteInt(this.AccountId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.PlayerId = reader.ReadVarLong();
+		this.AccountId = reader.ReadInt();
+	}
 }
-
-public uint playerId;
-        public int accountId;
-        
-
-public NumericWhoIsMessage()
-{
-}
-
-public NumericWhoIsMessage(uint playerId, int accountId)
-        {
-            this.playerId = playerId;
-            this.accountId = accountId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(playerId);
-            writer.WriteInt(accountId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            accountId = reader.ReadInt();
-            if (accountId < 0)
-                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            
-
-}
-
-
-}
-
-
 }

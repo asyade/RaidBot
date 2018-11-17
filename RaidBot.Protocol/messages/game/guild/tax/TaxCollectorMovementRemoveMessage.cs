@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TaxCollectorMovementRemoveMessage : NetworkMessage
 {
 
-public const uint Id = 5915;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5915;
+	public override uint MessageId { get { return Id; } }
+
+	public double CollectorId { get; set; }
+
+	public TaxCollectorMovementRemoveMessage() {}
+
+
+	public TaxCollectorMovementRemoveMessage InitTaxCollectorMovementRemoveMessage(double CollectorId)
+	{
+		this.CollectorId = CollectorId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.CollectorId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CollectorId = reader.ReadDouble();
+	}
 }
-
-public int collectorId;
-        
-
-public TaxCollectorMovementRemoveMessage()
-{
-}
-
-public TaxCollectorMovementRemoveMessage(int collectorId)
-        {
-            this.collectorId = collectorId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(collectorId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-collectorId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PaddockBuyableInformations : NetworkType
 {
 
-public class PaddockBuyableInformations : PaddockInformations
-{
+	public const uint Id = 130;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 130;
-public override short TypeId
-{
-    get { return Id; }
+	public long Price { get; set; }
+	public bool Locked { get; set; }
+
+	public PaddockBuyableInformations() {}
+
+
+	public PaddockBuyableInformations InitPaddockBuyableInformations(long Price, bool Locked)
+	{
+		this.Price = Price;
+		this.Locked = Locked;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.Price);
+		writer.WriteBoolean(this.Locked);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Price = reader.ReadVarLong();
+		this.Locked = reader.ReadBoolean();
+	}
 }
-
-public uint price;
-        public bool locked;
-        
-
-public PaddockBuyableInformations()
-{
-}
-
-public PaddockBuyableInformations(ushort maxOutdoorMount, ushort maxItems, uint price, bool locked)
-         : base(maxOutdoorMount, maxItems)
-        {
-            this.price = price;
-            this.locked = locked;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(price);
-            writer.WriteBoolean(locked);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            price = reader.ReadVaruhint();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
-            locked = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

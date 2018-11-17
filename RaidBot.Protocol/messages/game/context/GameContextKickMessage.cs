@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameContextKickMessage : NetworkMessage
 {
 
-public const uint Id = 6081;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6081;
+	public override uint MessageId { get { return Id; } }
+
+	public double TargetId { get; set; }
+
+	public GameContextKickMessage() {}
+
+
+	public GameContextKickMessage InitGameContextKickMessage(double TargetId)
+	{
+		this.TargetId = TargetId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.TargetId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.TargetId = reader.ReadDouble();
+	}
 }
-
-public int targetId;
-        
-
-public GameContextKickMessage()
-{
-}
-
-public GameContextKickMessage(int targetId)
-        {
-            this.targetId = targetId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(targetId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-targetId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

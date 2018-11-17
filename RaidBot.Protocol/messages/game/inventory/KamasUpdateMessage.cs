@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class KamasUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 5537;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5537;
+	public override uint MessageId { get { return Id; } }
+
+	public long KamasTotal { get; set; }
+
+	public KamasUpdateMessage() {}
+
+
+	public KamasUpdateMessage InitKamasUpdateMessage(long KamasTotal)
+	{
+		this.KamasTotal = KamasTotal;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.KamasTotal);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.KamasTotal = reader.ReadVarLong();
+	}
 }
-
-public int kamasTotal;
-        
-
-public KamasUpdateMessage()
-{
-}
-
-public KamasUpdateMessage(int kamasTotal)
-        {
-            this.kamasTotal = kamasTotal;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVarint(kamasTotal);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-kamasTotal = reader.ReadVarint();
-            
-
-}
-
-
-}
-
-
 }

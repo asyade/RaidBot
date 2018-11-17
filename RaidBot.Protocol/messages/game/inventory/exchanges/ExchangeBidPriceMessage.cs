@@ -1,78 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeBidPriceMessage : NetworkMessage
 {
 
-public const uint Id = 5755;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5755;
+	public override uint MessageId { get { return Id; } }
+
+	public short GenericId { get; set; }
+	public long AveragePrice { get; set; }
+
+	public ExchangeBidPriceMessage() {}
+
+
+	public ExchangeBidPriceMessage InitExchangeBidPriceMessage(short GenericId, long AveragePrice)
+	{
+		this.GenericId = GenericId;
+		this.AveragePrice = AveragePrice;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.GenericId);
+		writer.WriteVarLong(this.AveragePrice);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.GenericId = reader.ReadVarShort();
+		this.AveragePrice = reader.ReadVarLong();
+	}
 }
-
-public ushort genericId;
-        public int averagePrice;
-        
-
-public ExchangeBidPriceMessage()
-{
-}
-
-public ExchangeBidPriceMessage(ushort genericId, int averagePrice)
-        {
-            this.genericId = genericId;
-            this.averagePrice = averagePrice;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(genericId);
-            writer.WriteVarint(averagePrice);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-genericId = reader.ReadVaruhshort();
-            if (genericId < 0)
-                throw new Exception("Forbidden value on genericId = " + genericId + ", it doesn't respect the following condition : genericId < 0");
-            averagePrice = reader.ReadVarint();
-            
-
-}
-
-
-}
-
-
 }

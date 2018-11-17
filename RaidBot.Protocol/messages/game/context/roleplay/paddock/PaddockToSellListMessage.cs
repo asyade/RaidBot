@@ -1,94 +1,55 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:27
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class PaddockToSellListMessage : NetworkMessage
 {
 
-public const uint Id = 6138;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6138;
+	public override uint MessageId { get { return Id; } }
+
+	public short PageIndex { get; set; }
+	public short TotalPage { get; set; }
+	public PaddockInformationsForSell[] PaddockList { get; set; }
+
+	public PaddockToSellListMessage() {}
+
+
+	public PaddockToSellListMessage InitPaddockToSellListMessage(short PageIndex, short TotalPage, PaddockInformationsForSell[] PaddockList)
+	{
+		this.PageIndex = PageIndex;
+		this.TotalPage = TotalPage;
+		this.PaddockList = PaddockList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.PageIndex);
+		writer.WriteVarShort(this.TotalPage);
+		writer.WriteShort(this.PaddockList.Length);
+		foreach (PaddockInformationsForSell item in this.PaddockList)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.PageIndex = reader.ReadVarShort();
+		this.TotalPage = reader.ReadVarShort();
+		int PaddockListLen = reader.ReadShort();
+		PaddockList = new PaddockInformationsForSell[PaddockListLen];
+		for (int i = 0; i < PaddockListLen; i++)
+		{
+			this.PaddockList[i] = new PaddockInformationsForSell();
+			this.PaddockList[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort pageIndex;
-        public ushort totalPage;
-        public Types.PaddockInformationsForSell[] paddockList;
-        
-
-public PaddockToSellListMessage()
-{
-}
-
-public PaddockToSellListMessage(ushort pageIndex, ushort totalPage, Types.PaddockInformationsForSell[] paddockList)
-        {
-            this.pageIndex = pageIndex;
-            this.totalPage = totalPage;
-            this.paddockList = paddockList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(pageIndex);
-            writer.WriteVaruhshort(totalPage);
-            writer.WriteUShort((ushort)paddockList.Length);
-            foreach (var entry in paddockList)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-pageIndex = reader.ReadVaruhshort();
-            if (pageIndex < 0)
-                throw new Exception("Forbidden value on pageIndex = " + pageIndex + ", it doesn't respect the following condition : pageIndex < 0");
-            totalPage = reader.ReadVaruhshort();
-            if (totalPage < 0)
-                throw new Exception("Forbidden value on totalPage = " + totalPage + ", it doesn't respect the following condition : totalPage < 0");
-            var limit = reader.ReadUShort();
-            paddockList = new Types.PaddockInformationsForSell[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 paddockList[i] = new Types.PaddockInformationsForSell();
-                 paddockList[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

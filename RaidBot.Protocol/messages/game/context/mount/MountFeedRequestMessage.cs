@@ -1,90 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MountFeedRequestMessage : NetworkMessage
 {
 
-public const uint Id = 6189;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6189;
+	public override uint MessageId { get { return Id; } }
+
+	public int MountUid { get; set; }
+	public byte MountLocation { get; set; }
+	public int MountFoodUid { get; set; }
+	public int Quantity { get; set; }
+
+	public MountFeedRequestMessage() {}
+
+
+	public MountFeedRequestMessage InitMountFeedRequestMessage(int MountUid, byte MountLocation, int MountFoodUid, int Quantity)
+	{
+		this.MountUid = MountUid;
+		this.MountLocation = MountLocation;
+		this.MountFoodUid = MountFoodUid;
+		this.Quantity = Quantity;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.MountUid);
+		writer.WriteByte(this.MountLocation);
+		writer.WriteVarInt(this.MountFoodUid);
+		writer.WriteVarInt(this.Quantity);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MountUid = reader.ReadVarInt();
+		this.MountLocation = reader.ReadByte();
+		this.MountFoodUid = reader.ReadVarInt();
+		this.Quantity = reader.ReadVarInt();
+	}
 }
-
-public uint mountUid;
-        public sbyte mountLocation;
-        public uint mountFoodUid;
-        public uint quantity;
-        
-
-public MountFeedRequestMessage()
-{
-}
-
-public MountFeedRequestMessage(uint mountUid, sbyte mountLocation, uint mountFoodUid, uint quantity)
-        {
-            this.mountUid = mountUid;
-            this.mountLocation = mountLocation;
-            this.mountFoodUid = mountFoodUid;
-            this.quantity = quantity;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(mountUid);
-            writer.WriteSByte(mountLocation);
-            writer.WriteVaruhint(mountFoodUid);
-            writer.WriteVaruhint(quantity);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-mountUid = reader.ReadVaruhint();
-            if (mountUid < 0)
-                throw new Exception("Forbidden value on mountUid = " + mountUid + ", it doesn't respect the following condition : mountUid < 0");
-            mountLocation = reader.ReadSByte();
-            mountFoodUid = reader.ReadVaruhint();
-            if (mountFoodUid < 0)
-                throw new Exception("Forbidden value on mountFoodUid = " + mountFoodUid + ", it doesn't respect the following condition : mountFoodUid < 0");
-            quantity = reader.ReadVaruhint();
-            if (quantity < 0)
-                throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            
-
-}
-
-
-}
-
-
 }

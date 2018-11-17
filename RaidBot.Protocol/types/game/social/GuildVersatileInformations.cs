@@ -1,91 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GuildVersatileInformations : NetworkType
 {
 
-public class GuildVersatileInformations
-{
+	public const uint Id = 435;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 435;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int GuildId { get; set; }
+	public long LeaderId { get; set; }
+	public byte GuildLevel { get; set; }
+	public byte NbMembers { get; set; }
+
+	public GuildVersatileInformations() {}
+
+
+	public GuildVersatileInformations InitGuildVersatileInformations(int GuildId, long LeaderId, byte GuildLevel, byte NbMembers)
+	{
+		this.GuildId = GuildId;
+		this.LeaderId = LeaderId;
+		this.GuildLevel = GuildLevel;
+		this.NbMembers = NbMembers;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.GuildId);
+		writer.WriteVarLong(this.LeaderId);
+		writer.WriteByte(this.GuildLevel);
+		writer.WriteByte(this.NbMembers);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.GuildId = reader.ReadVarInt();
+		this.LeaderId = reader.ReadVarLong();
+		this.GuildLevel = reader.ReadByte();
+		this.NbMembers = reader.ReadByte();
+	}
 }
-
-public uint guildId;
-        public uint leaderId;
-        public byte guildLevel;
-        public byte nbMembers;
-        
-
-public GuildVersatileInformations()
-{
-}
-
-public GuildVersatileInformations(uint guildId, uint leaderId, byte guildLevel, byte nbMembers)
-        {
-            this.guildId = guildId;
-            this.leaderId = leaderId;
-            this.guildLevel = guildLevel;
-            this.nbMembers = nbMembers;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(guildId);
-            writer.WriteVaruhint(leaderId);
-            writer.WriteByte(guildLevel);
-            writer.WriteByte(nbMembers);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-guildId = reader.ReadVaruhint();
-            if (guildId < 0)
-                throw new Exception("Forbidden value on guildId = " + guildId + ", it doesn't respect the following condition : guildId < 0");
-            leaderId = reader.ReadVaruhint();
-            if (leaderId < 0)
-                throw new Exception("Forbidden value on leaderId = " + leaderId + ", it doesn't respect the following condition : leaderId < 0");
-            guildLevel = reader.ReadByte();
-            if (guildLevel < 1 || guildLevel > 200)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 1 || guildLevel > 200");
-            nbMembers = reader.ReadByte();
-            if (nbMembers < 1 || nbMembers > 240)
-                throw new Exception("Forbidden value on nbMembers = " + nbMembers + ", it doesn't respect the following condition : nbMembers < 1 || nbMembers > 240");
-            
-
-}
-
-
-}
-
-
 }

@@ -9,7 +9,7 @@ namespace RaidBot.Protocol.Types
 {
     public abstract class NetworkType : MarshalByRefObject
     {
-        public abstract int ProtocolId { get; }
+        public abstract uint MessageId { get; }
 
         public abstract void Serialize(ICustomDataWriter writer);
         public abstract void Deserialize(ICustomDataReader reader);

@@ -1,115 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class FightExternalInformations : NetworkType
 {
 
-public class FightExternalInformations
-{
+	public const uint Id = 117;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 117;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short FightId { get; set; }
+	public byte FightType { get; set; }
+	public int FightStart { get; set; }
+	public bool FightSpectatorLocked { get; set; }
+
+	public FightExternalInformations() {}
+
+
+	public FightExternalInformations InitFightExternalInformations(short FightId, byte FightType, int FightStart, bool FightSpectatorLocked)
+	{
+		this.FightId = FightId;
+		this.FightType = FightType;
+		this.FightStart = FightStart;
+		this.FightSpectatorLocked = FightSpectatorLocked;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.FightId);
+		writer.WriteByte(this.FightType);
+		writer.WriteInt(this.FightStart);
+		writer.WriteBoolean(this.FightSpectatorLocked);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.FightId = reader.ReadVarShort();
+		this.FightType = reader.ReadByte();
+		this.FightStart = reader.ReadInt();
+		this.FightSpectatorLocked = reader.ReadBoolean();
+	}
 }
-
-public int fightId;
-        public sbyte fightType;
-        public int fightStart;
-        public bool fightSpectatorLocked;
-        public Types.FightTeamLightInformations[] fightTeams;
-        public Types.FightOptionsInformations[] fightTeamsOptions;
-        
-
-public FightExternalInformations()
-{
-}
-
-public FightExternalInformations(int fightId, sbyte fightType, int fightStart, bool fightSpectatorLocked, Types.FightTeamLightInformations[] fightTeams, Types.FightOptionsInformations[] fightTeamsOptions)
-        {
-            this.fightId = fightId;
-            this.fightType = fightType;
-            this.fightStart = fightStart;
-            this.fightSpectatorLocked = fightSpectatorLocked;
-            this.fightTeams = fightTeams;
-            this.fightTeamsOptions = fightTeamsOptions;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(fightId);
-            writer.WriteSByte(fightType);
-            writer.WriteInt(fightStart);
-            writer.WriteBoolean(fightSpectatorLocked);
-            writer.WriteUShort((ushort)fightTeams.Length);
-            foreach (var entry in fightTeams)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)fightTeamsOptions.Length);
-            foreach (var entry in fightTeamsOptions)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-fightId = reader.ReadInt();
-            fightType = reader.ReadSByte();
-            if (fightType < 0)
-                throw new Exception("Forbidden value on fightType = " + fightType + ", it doesn't respect the following condition : fightType < 0");
-            fightStart = reader.ReadInt();
-            if (fightStart < 0)
-                throw new Exception("Forbidden value on fightStart = " + fightStart + ", it doesn't respect the following condition : fightStart < 0");
-            fightSpectatorLocked = reader.ReadBoolean();
-            var limit = reader.ReadUShort();
-            fightTeams = new Types.FightTeamLightInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightTeams[i] = new Types.FightTeamLightInformations();
-                 fightTeams[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            fightTeamsOptions = new Types.FightOptionsInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightTeamsOptions[i] = new Types.FightOptionsInformations();
-                 fightTeamsOptions[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

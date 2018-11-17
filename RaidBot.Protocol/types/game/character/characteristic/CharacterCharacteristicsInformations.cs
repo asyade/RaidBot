@@ -1,462 +1,451 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class CharacterCharacteristicsInformations : NetworkType
 {
 
-public class CharacterCharacteristicsInformations
-{
+	public const uint Id = 8;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 8;
-public virtual short TypeId
-{
-    get { return Id; }
+	public long Experience { get; set; }
+	public long ExperienceLevelFloor { get; set; }
+	public long ExperienceNextLevelFloor { get; set; }
+	public long ExperienceBonusLimit { get; set; }
+	public long Kamas { get; set; }
+	public short StatsPoints { get; set; }
+	public short AdditionnalPoints { get; set; }
+	public short SpellsPoints { get; set; }
+	public ActorExtendedAlignmentInformations AlignmentInfos { get; set; }
+	public int LifePoints { get; set; }
+	public int MaxLifePoints { get; set; }
+	public short EnergyPoints { get; set; }
+	public short MaxEnergyPoints { get; set; }
+	public short ActionPointsCurrent { get; set; }
+	public short MovementPointsCurrent { get; set; }
+	public CharacterBaseCharacteristic Initiative { get; set; }
+	public CharacterBaseCharacteristic Prospecting { get; set; }
+	public CharacterBaseCharacteristic ActionPoints { get; set; }
+	public CharacterBaseCharacteristic MovementPoints { get; set; }
+	public CharacterBaseCharacteristic Strength { get; set; }
+	public CharacterBaseCharacteristic Vitality { get; set; }
+	public CharacterBaseCharacteristic Wisdom { get; set; }
+	public CharacterBaseCharacteristic Chance { get; set; }
+	public CharacterBaseCharacteristic Agility { get; set; }
+	public CharacterBaseCharacteristic Intelligence { get; set; }
+	public CharacterBaseCharacteristic Range { get; set; }
+	public CharacterBaseCharacteristic SummonableCreaturesBoost { get; set; }
+	public CharacterBaseCharacteristic Reflect { get; set; }
+	public CharacterBaseCharacteristic CriticalHit { get; set; }
+	public short CriticalHitWeapon { get; set; }
+	public CharacterBaseCharacteristic CriticalMiss { get; set; }
+	public CharacterBaseCharacteristic HealBonus { get; set; }
+	public CharacterBaseCharacteristic AllDamagesBonus { get; set; }
+	public CharacterBaseCharacteristic WeaponDamagesBonusPercent { get; set; }
+	public CharacterBaseCharacteristic DamagesBonusPercent { get; set; }
+	public CharacterBaseCharacteristic TrapBonus { get; set; }
+	public CharacterBaseCharacteristic TrapBonusPercent { get; set; }
+	public CharacterBaseCharacteristic GlyphBonusPercent { get; set; }
+	public CharacterBaseCharacteristic RuneBonusPercent { get; set; }
+	public CharacterBaseCharacteristic PermanentDamagePercent { get; set; }
+	public CharacterBaseCharacteristic TackleBlock { get; set; }
+	public CharacterBaseCharacteristic TackleEvade { get; set; }
+	public CharacterBaseCharacteristic PAAttack { get; set; }
+	public CharacterBaseCharacteristic PMAttack { get; set; }
+	public CharacterBaseCharacteristic PushDamageBonus { get; set; }
+	public CharacterBaseCharacteristic CriticalDamageBonus { get; set; }
+	public CharacterBaseCharacteristic NeutralDamageBonus { get; set; }
+	public CharacterBaseCharacteristic EarthDamageBonus { get; set; }
+	public CharacterBaseCharacteristic WaterDamageBonus { get; set; }
+	public CharacterBaseCharacteristic AirDamageBonus { get; set; }
+	public CharacterBaseCharacteristic FireDamageBonus { get; set; }
+	public CharacterBaseCharacteristic DodgePALostProbability { get; set; }
+	public CharacterBaseCharacteristic DodgePMLostProbability { get; set; }
+	public CharacterBaseCharacteristic NeutralElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic EarthElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic WaterElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic AirElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic FireElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic NeutralElementReduction { get; set; }
+	public CharacterBaseCharacteristic EarthElementReduction { get; set; }
+	public CharacterBaseCharacteristic WaterElementReduction { get; set; }
+	public CharacterBaseCharacteristic AirElementReduction { get; set; }
+	public CharacterBaseCharacteristic FireElementReduction { get; set; }
+	public CharacterBaseCharacteristic PushDamageReduction { get; set; }
+	public CharacterBaseCharacteristic CriticalDamageReduction { get; set; }
+	public CharacterBaseCharacteristic PvpNeutralElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic PvpEarthElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic PvpWaterElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic PvpAirElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic PvpFireElementResistPercent { get; set; }
+	public CharacterBaseCharacteristic PvpNeutralElementReduction { get; set; }
+	public CharacterBaseCharacteristic PvpEarthElementReduction { get; set; }
+	public CharacterBaseCharacteristic PvpWaterElementReduction { get; set; }
+	public CharacterBaseCharacteristic PvpAirElementReduction { get; set; }
+	public CharacterBaseCharacteristic PvpFireElementReduction { get; set; }
+	public CharacterBaseCharacteristic MeleeDamageDonePercent { get; set; }
+	public CharacterBaseCharacteristic MeleeDamageReceivedPercent { get; set; }
+	public CharacterBaseCharacteristic RangedDamageDonePercent { get; set; }
+	public CharacterBaseCharacteristic RangedDamageReceivedPercent { get; set; }
+	public CharacterBaseCharacteristic WeaponDamageDonePercent { get; set; }
+	public CharacterBaseCharacteristic WeaponDamageReceivedPercent { get; set; }
+	public CharacterBaseCharacteristic SpellDamageDonePercent { get; set; }
+	public CharacterBaseCharacteristic SpellDamageReceivedPercent { get; set; }
+	public CharacterSpellModification[] SpellModifications { get; set; }
+	public int ProbationTime { get; set; }
+
+	public CharacterCharacteristicsInformations() {}
+
+
+	public CharacterCharacteristicsInformations InitCharacterCharacteristicsInformations(long Experience, long ExperienceLevelFloor, long ExperienceNextLevelFloor, long ExperienceBonusLimit, long Kamas, short StatsPoints, short AdditionnalPoints, short SpellsPoints, ActorExtendedAlignmentInformations AlignmentInfos, int LifePoints, int MaxLifePoints, short EnergyPoints, short MaxEnergyPoints, short ActionPointsCurrent, short MovementPointsCurrent, CharacterBaseCharacteristic Initiative, CharacterBaseCharacteristic Prospecting, CharacterBaseCharacteristic ActionPoints, CharacterBaseCharacteristic MovementPoints, CharacterBaseCharacteristic Strength, CharacterBaseCharacteristic Vitality, CharacterBaseCharacteristic Wisdom, CharacterBaseCharacteristic Chance, CharacterBaseCharacteristic Agility, CharacterBaseCharacteristic Intelligence, CharacterBaseCharacteristic Range, CharacterBaseCharacteristic SummonableCreaturesBoost, CharacterBaseCharacteristic Reflect, CharacterBaseCharacteristic CriticalHit, short CriticalHitWeapon, CharacterBaseCharacteristic CriticalMiss, CharacterBaseCharacteristic HealBonus, CharacterBaseCharacteristic AllDamagesBonus, CharacterBaseCharacteristic WeaponDamagesBonusPercent, CharacterBaseCharacteristic DamagesBonusPercent, CharacterBaseCharacteristic TrapBonus, CharacterBaseCharacteristic TrapBonusPercent, CharacterBaseCharacteristic GlyphBonusPercent, CharacterBaseCharacteristic RuneBonusPercent, CharacterBaseCharacteristic PermanentDamagePercent, CharacterBaseCharacteristic TackleBlock, CharacterBaseCharacteristic TackleEvade, CharacterBaseCharacteristic PAAttack, CharacterBaseCharacteristic PMAttack, CharacterBaseCharacteristic PushDamageBonus, CharacterBaseCharacteristic CriticalDamageBonus, CharacterBaseCharacteristic NeutralDamageBonus, CharacterBaseCharacteristic EarthDamageBonus, CharacterBaseCharacteristic WaterDamageBonus, CharacterBaseCharacteristic AirDamageBonus, CharacterBaseCharacteristic FireDamageBonus, CharacterBaseCharacteristic DodgePALostProbability, CharacterBaseCharacteristic DodgePMLostProbability, CharacterBaseCharacteristic NeutralElementResistPercent, CharacterBaseCharacteristic EarthElementResistPercent, CharacterBaseCharacteristic WaterElementResistPercent, CharacterBaseCharacteristic AirElementResistPercent, CharacterBaseCharacteristic FireElementResistPercent, CharacterBaseCharacteristic NeutralElementReduction, CharacterBaseCharacteristic EarthElementReduction, CharacterBaseCharacteristic WaterElementReduction, CharacterBaseCharacteristic AirElementReduction, CharacterBaseCharacteristic FireElementReduction, CharacterBaseCharacteristic PushDamageReduction, CharacterBaseCharacteristic CriticalDamageReduction, CharacterBaseCharacteristic PvpNeutralElementResistPercent, CharacterBaseCharacteristic PvpEarthElementResistPercent, CharacterBaseCharacteristic PvpWaterElementResistPercent, CharacterBaseCharacteristic PvpAirElementResistPercent, CharacterBaseCharacteristic PvpFireElementResistPercent, CharacterBaseCharacteristic PvpNeutralElementReduction, CharacterBaseCharacteristic PvpEarthElementReduction, CharacterBaseCharacteristic PvpWaterElementReduction, CharacterBaseCharacteristic PvpAirElementReduction, CharacterBaseCharacteristic PvpFireElementReduction, CharacterBaseCharacteristic MeleeDamageDonePercent, CharacterBaseCharacteristic MeleeDamageReceivedPercent, CharacterBaseCharacteristic RangedDamageDonePercent, CharacterBaseCharacteristic RangedDamageReceivedPercent, CharacterBaseCharacteristic WeaponDamageDonePercent, CharacterBaseCharacteristic WeaponDamageReceivedPercent, CharacterBaseCharacteristic SpellDamageDonePercent, CharacterBaseCharacteristic SpellDamageReceivedPercent, CharacterSpellModification[] SpellModifications, int ProbationTime)
+	{
+		this.Experience = Experience;
+		this.ExperienceLevelFloor = ExperienceLevelFloor;
+		this.ExperienceNextLevelFloor = ExperienceNextLevelFloor;
+		this.ExperienceBonusLimit = ExperienceBonusLimit;
+		this.Kamas = Kamas;
+		this.StatsPoints = StatsPoints;
+		this.AdditionnalPoints = AdditionnalPoints;
+		this.SpellsPoints = SpellsPoints;
+		this.AlignmentInfos = AlignmentInfos;
+		this.LifePoints = LifePoints;
+		this.MaxLifePoints = MaxLifePoints;
+		this.EnergyPoints = EnergyPoints;
+		this.MaxEnergyPoints = MaxEnergyPoints;
+		this.ActionPointsCurrent = ActionPointsCurrent;
+		this.MovementPointsCurrent = MovementPointsCurrent;
+		this.Initiative = Initiative;
+		this.Prospecting = Prospecting;
+		this.ActionPoints = ActionPoints;
+		this.MovementPoints = MovementPoints;
+		this.Strength = Strength;
+		this.Vitality = Vitality;
+		this.Wisdom = Wisdom;
+		this.Chance = Chance;
+		this.Agility = Agility;
+		this.Intelligence = Intelligence;
+		this.Range = Range;
+		this.SummonableCreaturesBoost = SummonableCreaturesBoost;
+		this.Reflect = Reflect;
+		this.CriticalHit = CriticalHit;
+		this.CriticalHitWeapon = CriticalHitWeapon;
+		this.CriticalMiss = CriticalMiss;
+		this.HealBonus = HealBonus;
+		this.AllDamagesBonus = AllDamagesBonus;
+		this.WeaponDamagesBonusPercent = WeaponDamagesBonusPercent;
+		this.DamagesBonusPercent = DamagesBonusPercent;
+		this.TrapBonus = TrapBonus;
+		this.TrapBonusPercent = TrapBonusPercent;
+		this.GlyphBonusPercent = GlyphBonusPercent;
+		this.RuneBonusPercent = RuneBonusPercent;
+		this.PermanentDamagePercent = PermanentDamagePercent;
+		this.TackleBlock = TackleBlock;
+		this.TackleEvade = TackleEvade;
+		this.PAAttack = PAAttack;
+		this.PMAttack = PMAttack;
+		this.PushDamageBonus = PushDamageBonus;
+		this.CriticalDamageBonus = CriticalDamageBonus;
+		this.NeutralDamageBonus = NeutralDamageBonus;
+		this.EarthDamageBonus = EarthDamageBonus;
+		this.WaterDamageBonus = WaterDamageBonus;
+		this.AirDamageBonus = AirDamageBonus;
+		this.FireDamageBonus = FireDamageBonus;
+		this.DodgePALostProbability = DodgePALostProbability;
+		this.DodgePMLostProbability = DodgePMLostProbability;
+		this.NeutralElementResistPercent = NeutralElementResistPercent;
+		this.EarthElementResistPercent = EarthElementResistPercent;
+		this.WaterElementResistPercent = WaterElementResistPercent;
+		this.AirElementResistPercent = AirElementResistPercent;
+		this.FireElementResistPercent = FireElementResistPercent;
+		this.NeutralElementReduction = NeutralElementReduction;
+		this.EarthElementReduction = EarthElementReduction;
+		this.WaterElementReduction = WaterElementReduction;
+		this.AirElementReduction = AirElementReduction;
+		this.FireElementReduction = FireElementReduction;
+		this.PushDamageReduction = PushDamageReduction;
+		this.CriticalDamageReduction = CriticalDamageReduction;
+		this.PvpNeutralElementResistPercent = PvpNeutralElementResistPercent;
+		this.PvpEarthElementResistPercent = PvpEarthElementResistPercent;
+		this.PvpWaterElementResistPercent = PvpWaterElementResistPercent;
+		this.PvpAirElementResistPercent = PvpAirElementResistPercent;
+		this.PvpFireElementResistPercent = PvpFireElementResistPercent;
+		this.PvpNeutralElementReduction = PvpNeutralElementReduction;
+		this.PvpEarthElementReduction = PvpEarthElementReduction;
+		this.PvpWaterElementReduction = PvpWaterElementReduction;
+		this.PvpAirElementReduction = PvpAirElementReduction;
+		this.PvpFireElementReduction = PvpFireElementReduction;
+		this.MeleeDamageDonePercent = MeleeDamageDonePercent;
+		this.MeleeDamageReceivedPercent = MeleeDamageReceivedPercent;
+		this.RangedDamageDonePercent = RangedDamageDonePercent;
+		this.RangedDamageReceivedPercent = RangedDamageReceivedPercent;
+		this.WeaponDamageDonePercent = WeaponDamageDonePercent;
+		this.WeaponDamageReceivedPercent = WeaponDamageReceivedPercent;
+		this.SpellDamageDonePercent = SpellDamageDonePercent;
+		this.SpellDamageReceivedPercent = SpellDamageReceivedPercent;
+		this.SpellModifications = SpellModifications;
+		this.ProbationTime = ProbationTime;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.Experience);
+		writer.WriteVarLong(this.ExperienceLevelFloor);
+		writer.WriteVarLong(this.ExperienceNextLevelFloor);
+		writer.WriteVarLong(this.ExperienceBonusLimit);
+		writer.WriteVarLong(this.Kamas);
+		writer.WriteVarShort(this.StatsPoints);
+		writer.WriteVarShort(this.AdditionnalPoints);
+		writer.WriteVarShort(this.SpellsPoints);
+		this.AlignmentInfos.Serialize(writer);
+		writer.WriteVarInt(this.LifePoints);
+		writer.WriteVarInt(this.MaxLifePoints);
+		writer.WriteVarShort(this.EnergyPoints);
+		writer.WriteVarShort(this.MaxEnergyPoints);
+		writer.WriteVarShort(this.ActionPointsCurrent);
+		writer.WriteVarShort(this.MovementPointsCurrent);
+		this.Initiative.Serialize(writer);
+		this.Prospecting.Serialize(writer);
+		this.ActionPoints.Serialize(writer);
+		this.MovementPoints.Serialize(writer);
+		this.Strength.Serialize(writer);
+		this.Vitality.Serialize(writer);
+		this.Wisdom.Serialize(writer);
+		this.Chance.Serialize(writer);
+		this.Agility.Serialize(writer);
+		this.Intelligence.Serialize(writer);
+		this.Range.Serialize(writer);
+		this.SummonableCreaturesBoost.Serialize(writer);
+		this.Reflect.Serialize(writer);
+		this.CriticalHit.Serialize(writer);
+		writer.WriteVarShort(this.CriticalHitWeapon);
+		this.CriticalMiss.Serialize(writer);
+		this.HealBonus.Serialize(writer);
+		this.AllDamagesBonus.Serialize(writer);
+		this.WeaponDamagesBonusPercent.Serialize(writer);
+		this.DamagesBonusPercent.Serialize(writer);
+		this.TrapBonus.Serialize(writer);
+		this.TrapBonusPercent.Serialize(writer);
+		this.GlyphBonusPercent.Serialize(writer);
+		this.RuneBonusPercent.Serialize(writer);
+		this.PermanentDamagePercent.Serialize(writer);
+		this.TackleBlock.Serialize(writer);
+		this.TackleEvade.Serialize(writer);
+		this.PAAttack.Serialize(writer);
+		this.PMAttack.Serialize(writer);
+		this.PushDamageBonus.Serialize(writer);
+		this.CriticalDamageBonus.Serialize(writer);
+		this.NeutralDamageBonus.Serialize(writer);
+		this.EarthDamageBonus.Serialize(writer);
+		this.WaterDamageBonus.Serialize(writer);
+		this.AirDamageBonus.Serialize(writer);
+		this.FireDamageBonus.Serialize(writer);
+		this.DodgePALostProbability.Serialize(writer);
+		this.DodgePMLostProbability.Serialize(writer);
+		this.NeutralElementResistPercent.Serialize(writer);
+		this.EarthElementResistPercent.Serialize(writer);
+		this.WaterElementResistPercent.Serialize(writer);
+		this.AirElementResistPercent.Serialize(writer);
+		this.FireElementResistPercent.Serialize(writer);
+		this.NeutralElementReduction.Serialize(writer);
+		this.EarthElementReduction.Serialize(writer);
+		this.WaterElementReduction.Serialize(writer);
+		this.AirElementReduction.Serialize(writer);
+		this.FireElementReduction.Serialize(writer);
+		this.PushDamageReduction.Serialize(writer);
+		this.CriticalDamageReduction.Serialize(writer);
+		this.PvpNeutralElementResistPercent.Serialize(writer);
+		this.PvpEarthElementResistPercent.Serialize(writer);
+		this.PvpWaterElementResistPercent.Serialize(writer);
+		this.PvpAirElementResistPercent.Serialize(writer);
+		this.PvpFireElementResistPercent.Serialize(writer);
+		this.PvpNeutralElementReduction.Serialize(writer);
+		this.PvpEarthElementReduction.Serialize(writer);
+		this.PvpWaterElementReduction.Serialize(writer);
+		this.PvpAirElementReduction.Serialize(writer);
+		this.PvpFireElementReduction.Serialize(writer);
+		this.MeleeDamageDonePercent.Serialize(writer);
+		this.MeleeDamageReceivedPercent.Serialize(writer);
+		this.RangedDamageDonePercent.Serialize(writer);
+		this.RangedDamageReceivedPercent.Serialize(writer);
+		this.WeaponDamageDonePercent.Serialize(writer);
+		this.WeaponDamageReceivedPercent.Serialize(writer);
+		this.SpellDamageDonePercent.Serialize(writer);
+		this.SpellDamageReceivedPercent.Serialize(writer);
+		writer.WriteShort(this.SpellModifications.Length);
+		foreach (CharacterSpellModification item in this.SpellModifications)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteInt(this.ProbationTime);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Experience = reader.ReadVarLong();
+		this.ExperienceLevelFloor = reader.ReadVarLong();
+		this.ExperienceNextLevelFloor = reader.ReadVarLong();
+		this.ExperienceBonusLimit = reader.ReadVarLong();
+		this.Kamas = reader.ReadVarLong();
+		this.StatsPoints = reader.ReadVarShort();
+		this.AdditionnalPoints = reader.ReadVarShort();
+		this.SpellsPoints = reader.ReadVarShort();
+		this.AlignmentInfos = new ActorExtendedAlignmentInformations();
+		this.AlignmentInfos.Deserialize(reader);
+		this.LifePoints = reader.ReadVarInt();
+		this.MaxLifePoints = reader.ReadVarInt();
+		this.EnergyPoints = reader.ReadVarShort();
+		this.MaxEnergyPoints = reader.ReadVarShort();
+		this.ActionPointsCurrent = reader.ReadVarShort();
+		this.MovementPointsCurrent = reader.ReadVarShort();
+		this.Initiative = new CharacterBaseCharacteristic();
+		this.Initiative.Deserialize(reader);
+		this.Prospecting = new CharacterBaseCharacteristic();
+		this.Prospecting.Deserialize(reader);
+		this.ActionPoints = new CharacterBaseCharacteristic();
+		this.ActionPoints.Deserialize(reader);
+		this.MovementPoints = new CharacterBaseCharacteristic();
+		this.MovementPoints.Deserialize(reader);
+		this.Strength = new CharacterBaseCharacteristic();
+		this.Strength.Deserialize(reader);
+		this.Vitality = new CharacterBaseCharacteristic();
+		this.Vitality.Deserialize(reader);
+		this.Wisdom = new CharacterBaseCharacteristic();
+		this.Wisdom.Deserialize(reader);
+		this.Chance = new CharacterBaseCharacteristic();
+		this.Chance.Deserialize(reader);
+		this.Agility = new CharacterBaseCharacteristic();
+		this.Agility.Deserialize(reader);
+		this.Intelligence = new CharacterBaseCharacteristic();
+		this.Intelligence.Deserialize(reader);
+		this.Range = new CharacterBaseCharacteristic();
+		this.Range.Deserialize(reader);
+		this.SummonableCreaturesBoost = new CharacterBaseCharacteristic();
+		this.SummonableCreaturesBoost.Deserialize(reader);
+		this.Reflect = new CharacterBaseCharacteristic();
+		this.Reflect.Deserialize(reader);
+		this.CriticalHit = new CharacterBaseCharacteristic();
+		this.CriticalHit.Deserialize(reader);
+		this.CriticalHitWeapon = reader.ReadVarShort();
+		this.CriticalMiss = new CharacterBaseCharacteristic();
+		this.CriticalMiss.Deserialize(reader);
+		this.HealBonus = new CharacterBaseCharacteristic();
+		this.HealBonus.Deserialize(reader);
+		this.AllDamagesBonus = new CharacterBaseCharacteristic();
+		this.AllDamagesBonus.Deserialize(reader);
+		this.WeaponDamagesBonusPercent = new CharacterBaseCharacteristic();
+		this.WeaponDamagesBonusPercent.Deserialize(reader);
+		this.DamagesBonusPercent = new CharacterBaseCharacteristic();
+		this.DamagesBonusPercent.Deserialize(reader);
+		this.TrapBonus = new CharacterBaseCharacteristic();
+		this.TrapBonus.Deserialize(reader);
+		this.TrapBonusPercent = new CharacterBaseCharacteristic();
+		this.TrapBonusPercent.Deserialize(reader);
+		this.GlyphBonusPercent = new CharacterBaseCharacteristic();
+		this.GlyphBonusPercent.Deserialize(reader);
+		this.RuneBonusPercent = new CharacterBaseCharacteristic();
+		this.RuneBonusPercent.Deserialize(reader);
+		this.PermanentDamagePercent = new CharacterBaseCharacteristic();
+		this.PermanentDamagePercent.Deserialize(reader);
+		this.TackleBlock = new CharacterBaseCharacteristic();
+		this.TackleBlock.Deserialize(reader);
+		this.TackleEvade = new CharacterBaseCharacteristic();
+		this.TackleEvade.Deserialize(reader);
+		this.PAAttack = new CharacterBaseCharacteristic();
+		this.PAAttack.Deserialize(reader);
+		this.PMAttack = new CharacterBaseCharacteristic();
+		this.PMAttack.Deserialize(reader);
+		this.PushDamageBonus = new CharacterBaseCharacteristic();
+		this.PushDamageBonus.Deserialize(reader);
+		this.CriticalDamageBonus = new CharacterBaseCharacteristic();
+		this.CriticalDamageBonus.Deserialize(reader);
+		this.NeutralDamageBonus = new CharacterBaseCharacteristic();
+		this.NeutralDamageBonus.Deserialize(reader);
+		this.EarthDamageBonus = new CharacterBaseCharacteristic();
+		this.EarthDamageBonus.Deserialize(reader);
+		this.WaterDamageBonus = new CharacterBaseCharacteristic();
+		this.WaterDamageBonus.Deserialize(reader);
+		this.AirDamageBonus = new CharacterBaseCharacteristic();
+		this.AirDamageBonus.Deserialize(reader);
+		this.FireDamageBonus = new CharacterBaseCharacteristic();
+		this.FireDamageBonus.Deserialize(reader);
+		this.DodgePALostProbability = new CharacterBaseCharacteristic();
+		this.DodgePALostProbability.Deserialize(reader);
+		this.DodgePMLostProbability = new CharacterBaseCharacteristic();
+		this.DodgePMLostProbability.Deserialize(reader);
+		this.NeutralElementResistPercent = new CharacterBaseCharacteristic();
+		this.NeutralElementResistPercent.Deserialize(reader);
+		this.EarthElementResistPercent = new CharacterBaseCharacteristic();
+		this.EarthElementResistPercent.Deserialize(reader);
+		this.WaterElementResistPercent = new CharacterBaseCharacteristic();
+		this.WaterElementResistPercent.Deserialize(reader);
+		this.AirElementResistPercent = new CharacterBaseCharacteristic();
+		this.AirElementResistPercent.Deserialize(reader);
+		this.FireElementResistPercent = new CharacterBaseCharacteristic();
+		this.FireElementResistPercent.Deserialize(reader);
+		this.NeutralElementReduction = new CharacterBaseCharacteristic();
+		this.NeutralElementReduction.Deserialize(reader);
+		this.EarthElementReduction = new CharacterBaseCharacteristic();
+		this.EarthElementReduction.Deserialize(reader);
+		this.WaterElementReduction = new CharacterBaseCharacteristic();
+		this.WaterElementReduction.Deserialize(reader);
+		this.AirElementReduction = new CharacterBaseCharacteristic();
+		this.AirElementReduction.Deserialize(reader);
+		this.FireElementReduction = new CharacterBaseCharacteristic();
+		this.FireElementReduction.Deserialize(reader);
+		this.PushDamageReduction = new CharacterBaseCharacteristic();
+		this.PushDamageReduction.Deserialize(reader);
+		this.CriticalDamageReduction = new CharacterBaseCharacteristic();
+		this.CriticalDamageReduction.Deserialize(reader);
+		this.PvpNeutralElementResistPercent = new CharacterBaseCharacteristic();
+		this.PvpNeutralElementResistPercent.Deserialize(reader);
+		this.PvpEarthElementResistPercent = new CharacterBaseCharacteristic();
+		this.PvpEarthElementResistPercent.Deserialize(reader);
+		this.PvpWaterElementResistPercent = new CharacterBaseCharacteristic();
+		this.PvpWaterElementResistPercent.Deserialize(reader);
+		this.PvpAirElementResistPercent = new CharacterBaseCharacteristic();
+		this.PvpAirElementResistPercent.Deserialize(reader);
+		this.PvpFireElementResistPercent = new CharacterBaseCharacteristic();
+		this.PvpFireElementResistPercent.Deserialize(reader);
+		this.PvpNeutralElementReduction = new CharacterBaseCharacteristic();
+		this.PvpNeutralElementReduction.Deserialize(reader);
+		this.PvpEarthElementReduction = new CharacterBaseCharacteristic();
+		this.PvpEarthElementReduction.Deserialize(reader);
+		this.PvpWaterElementReduction = new CharacterBaseCharacteristic();
+		this.PvpWaterElementReduction.Deserialize(reader);
+		this.PvpAirElementReduction = new CharacterBaseCharacteristic();
+		this.PvpAirElementReduction.Deserialize(reader);
+		this.PvpFireElementReduction = new CharacterBaseCharacteristic();
+		this.PvpFireElementReduction.Deserialize(reader);
+		this.MeleeDamageDonePercent = new CharacterBaseCharacteristic();
+		this.MeleeDamageDonePercent.Deserialize(reader);
+		this.MeleeDamageReceivedPercent = new CharacterBaseCharacteristic();
+		this.MeleeDamageReceivedPercent.Deserialize(reader);
+		this.RangedDamageDonePercent = new CharacterBaseCharacteristic();
+		this.RangedDamageDonePercent.Deserialize(reader);
+		this.RangedDamageReceivedPercent = new CharacterBaseCharacteristic();
+		this.RangedDamageReceivedPercent.Deserialize(reader);
+		this.WeaponDamageDonePercent = new CharacterBaseCharacteristic();
+		this.WeaponDamageDonePercent.Deserialize(reader);
+		this.WeaponDamageReceivedPercent = new CharacterBaseCharacteristic();
+		this.WeaponDamageReceivedPercent.Deserialize(reader);
+		this.SpellDamageDonePercent = new CharacterBaseCharacteristic();
+		this.SpellDamageDonePercent.Deserialize(reader);
+		this.SpellDamageReceivedPercent = new CharacterBaseCharacteristic();
+		this.SpellDamageReceivedPercent.Deserialize(reader);
+		int SpellModificationsLen = reader.ReadShort();
+		SpellModifications = new CharacterSpellModification[SpellModificationsLen];
+		for (int i = 0; i < SpellModificationsLen; i++)
+		{
+			this.SpellModifications[i] = new CharacterSpellModification();
+			this.SpellModifications[i].Deserialize(reader);
+		}
+		this.ProbationTime = reader.ReadInt();
+	}
 }
-
-public ulong experience;
-        public ulong experienceLevelFloor;
-        public ulong experienceNextLevelFloor;
-        public int kamas;
-        public ushort statsPoints;
-        public ushort additionnalPoints;
-        public ushort spellsPoints;
-        public Types.ActorExtendedAlignmentInformations alignmentInfos;
-        public uint lifePoints;
-        public uint maxLifePoints;
-        public ushort energyPoints;
-        public ushort maxEnergyPoints;
-        public short actionPointsCurrent;
-        public short movementPointsCurrent;
-        public Types.CharacterBaseCharacteristic initiative;
-        public Types.CharacterBaseCharacteristic prospecting;
-        public Types.CharacterBaseCharacteristic actionPoints;
-        public Types.CharacterBaseCharacteristic movementPoints;
-        public Types.CharacterBaseCharacteristic strength;
-        public Types.CharacterBaseCharacteristic vitality;
-        public Types.CharacterBaseCharacteristic wisdom;
-        public Types.CharacterBaseCharacteristic chance;
-        public Types.CharacterBaseCharacteristic agility;
-        public Types.CharacterBaseCharacteristic intelligence;
-        public Types.CharacterBaseCharacteristic range;
-        public Types.CharacterBaseCharacteristic summonableCreaturesBoost;
-        public Types.CharacterBaseCharacteristic reflect;
-        public Types.CharacterBaseCharacteristic criticalHit;
-        public ushort criticalHitWeapon;
-        public Types.CharacterBaseCharacteristic criticalMiss;
-        public Types.CharacterBaseCharacteristic healBonus;
-        public Types.CharacterBaseCharacteristic allDamagesBonus;
-        public Types.CharacterBaseCharacteristic weaponDamagesBonusPercent;
-        public Types.CharacterBaseCharacteristic damagesBonusPercent;
-        public Types.CharacterBaseCharacteristic trapBonus;
-        public Types.CharacterBaseCharacteristic trapBonusPercent;
-        public Types.CharacterBaseCharacteristic glyphBonusPercent;
-        public Types.CharacterBaseCharacteristic permanentDamagePercent;
-        public Types.CharacterBaseCharacteristic tackleBlock;
-        public Types.CharacterBaseCharacteristic tackleEvade;
-        public Types.CharacterBaseCharacteristic PAAttack;
-        public Types.CharacterBaseCharacteristic PMAttack;
-        public Types.CharacterBaseCharacteristic pushDamageBonus;
-        public Types.CharacterBaseCharacteristic criticalDamageBonus;
-        public Types.CharacterBaseCharacteristic neutralDamageBonus;
-        public Types.CharacterBaseCharacteristic earthDamageBonus;
-        public Types.CharacterBaseCharacteristic waterDamageBonus;
-        public Types.CharacterBaseCharacteristic airDamageBonus;
-        public Types.CharacterBaseCharacteristic fireDamageBonus;
-        public Types.CharacterBaseCharacteristic dodgePALostProbability;
-        public Types.CharacterBaseCharacteristic dodgePMLostProbability;
-        public Types.CharacterBaseCharacteristic neutralElementResistPercent;
-        public Types.CharacterBaseCharacteristic earthElementResistPercent;
-        public Types.CharacterBaseCharacteristic waterElementResistPercent;
-        public Types.CharacterBaseCharacteristic airElementResistPercent;
-        public Types.CharacterBaseCharacteristic fireElementResistPercent;
-        public Types.CharacterBaseCharacteristic neutralElementReduction;
-        public Types.CharacterBaseCharacteristic earthElementReduction;
-        public Types.CharacterBaseCharacteristic waterElementReduction;
-        public Types.CharacterBaseCharacteristic airElementReduction;
-        public Types.CharacterBaseCharacteristic fireElementReduction;
-        public Types.CharacterBaseCharacteristic pushDamageReduction;
-        public Types.CharacterBaseCharacteristic criticalDamageReduction;
-        public Types.CharacterBaseCharacteristic pvpNeutralElementResistPercent;
-        public Types.CharacterBaseCharacteristic pvpEarthElementResistPercent;
-        public Types.CharacterBaseCharacteristic pvpWaterElementResistPercent;
-        public Types.CharacterBaseCharacteristic pvpAirElementResistPercent;
-        public Types.CharacterBaseCharacteristic pvpFireElementResistPercent;
-        public Types.CharacterBaseCharacteristic pvpNeutralElementReduction;
-        public Types.CharacterBaseCharacteristic pvpEarthElementReduction;
-        public Types.CharacterBaseCharacteristic pvpWaterElementReduction;
-        public Types.CharacterBaseCharacteristic pvpAirElementReduction;
-        public Types.CharacterBaseCharacteristic pvpFireElementReduction;
-        public Types.CharacterSpellModification[] spellModifications;
-        public int probationTime;
-        
-
-public CharacterCharacteristicsInformations()
-{
-}
-
-public CharacterCharacteristicsInformations(ulong experience, ulong experienceLevelFloor, ulong experienceNextLevelFloor, int kamas, ushort statsPoints, ushort additionnalPoints, ushort spellsPoints, Types.ActorExtendedAlignmentInformations alignmentInfos, uint lifePoints, uint maxLifePoints, ushort energyPoints, ushort maxEnergyPoints, short actionPointsCurrent, short movementPointsCurrent, Types.CharacterBaseCharacteristic initiative, Types.CharacterBaseCharacteristic prospecting, Types.CharacterBaseCharacteristic actionPoints, Types.CharacterBaseCharacteristic movementPoints, Types.CharacterBaseCharacteristic strength, Types.CharacterBaseCharacteristic vitality, Types.CharacterBaseCharacteristic wisdom, Types.CharacterBaseCharacteristic chance, Types.CharacterBaseCharacteristic agility, Types.CharacterBaseCharacteristic intelligence, Types.CharacterBaseCharacteristic range, Types.CharacterBaseCharacteristic summonableCreaturesBoost, Types.CharacterBaseCharacteristic reflect, Types.CharacterBaseCharacteristic criticalHit, ushort criticalHitWeapon, Types.CharacterBaseCharacteristic criticalMiss, Types.CharacterBaseCharacteristic healBonus, Types.CharacterBaseCharacteristic allDamagesBonus, Types.CharacterBaseCharacteristic weaponDamagesBonusPercent, Types.CharacterBaseCharacteristic damagesBonusPercent, Types.CharacterBaseCharacteristic trapBonus, Types.CharacterBaseCharacteristic trapBonusPercent, Types.CharacterBaseCharacteristic glyphBonusPercent, Types.CharacterBaseCharacteristic permanentDamagePercent, Types.CharacterBaseCharacteristic tackleBlock, Types.CharacterBaseCharacteristic tackleEvade, Types.CharacterBaseCharacteristic PAAttack, Types.CharacterBaseCharacteristic PMAttack, Types.CharacterBaseCharacteristic pushDamageBonus, Types.CharacterBaseCharacteristic criticalDamageBonus, Types.CharacterBaseCharacteristic neutralDamageBonus, Types.CharacterBaseCharacteristic earthDamageBonus, Types.CharacterBaseCharacteristic waterDamageBonus, Types.CharacterBaseCharacteristic airDamageBonus, Types.CharacterBaseCharacteristic fireDamageBonus, Types.CharacterBaseCharacteristic dodgePALostProbability, Types.CharacterBaseCharacteristic dodgePMLostProbability, Types.CharacterBaseCharacteristic neutralElementResistPercent, Types.CharacterBaseCharacteristic earthElementResistPercent, Types.CharacterBaseCharacteristic waterElementResistPercent, Types.CharacterBaseCharacteristic airElementResistPercent, Types.CharacterBaseCharacteristic fireElementResistPercent, Types.CharacterBaseCharacteristic neutralElementReduction, Types.CharacterBaseCharacteristic earthElementReduction, Types.CharacterBaseCharacteristic waterElementReduction, Types.CharacterBaseCharacteristic airElementReduction, Types.CharacterBaseCharacteristic fireElementReduction, Types.CharacterBaseCharacteristic pushDamageReduction, Types.CharacterBaseCharacteristic criticalDamageReduction, Types.CharacterBaseCharacteristic pvpNeutralElementResistPercent, Types.CharacterBaseCharacteristic pvpEarthElementResistPercent, Types.CharacterBaseCharacteristic pvpWaterElementResistPercent, Types.CharacterBaseCharacteristic pvpAirElementResistPercent, Types.CharacterBaseCharacteristic pvpFireElementResistPercent, Types.CharacterBaseCharacteristic pvpNeutralElementReduction, Types.CharacterBaseCharacteristic pvpEarthElementReduction, Types.CharacterBaseCharacteristic pvpWaterElementReduction, Types.CharacterBaseCharacteristic pvpAirElementReduction, Types.CharacterBaseCharacteristic pvpFireElementReduction, Types.CharacterSpellModification[] spellModifications, int probationTime)
-        {
-            this.experience = experience;
-            this.experienceLevelFloor = experienceLevelFloor;
-            this.experienceNextLevelFloor = experienceNextLevelFloor;
-            this.kamas = kamas;
-            this.statsPoints = statsPoints;
-            this.additionnalPoints = additionnalPoints;
-            this.spellsPoints = spellsPoints;
-            this.alignmentInfos = alignmentInfos;
-            this.lifePoints = lifePoints;
-            this.maxLifePoints = maxLifePoints;
-            this.energyPoints = energyPoints;
-            this.maxEnergyPoints = maxEnergyPoints;
-            this.actionPointsCurrent = actionPointsCurrent;
-            this.movementPointsCurrent = movementPointsCurrent;
-            this.initiative = initiative;
-            this.prospecting = prospecting;
-            this.actionPoints = actionPoints;
-            this.movementPoints = movementPoints;
-            this.strength = strength;
-            this.vitality = vitality;
-            this.wisdom = wisdom;
-            this.chance = chance;
-            this.agility = agility;
-            this.intelligence = intelligence;
-            this.range = range;
-            this.summonableCreaturesBoost = summonableCreaturesBoost;
-            this.reflect = reflect;
-            this.criticalHit = criticalHit;
-            this.criticalHitWeapon = criticalHitWeapon;
-            this.criticalMiss = criticalMiss;
-            this.healBonus = healBonus;
-            this.allDamagesBonus = allDamagesBonus;
-            this.weaponDamagesBonusPercent = weaponDamagesBonusPercent;
-            this.damagesBonusPercent = damagesBonusPercent;
-            this.trapBonus = trapBonus;
-            this.trapBonusPercent = trapBonusPercent;
-            this.glyphBonusPercent = glyphBonusPercent;
-            this.permanentDamagePercent = permanentDamagePercent;
-            this.tackleBlock = tackleBlock;
-            this.tackleEvade = tackleEvade;
-            this.PAAttack = PAAttack;
-            this.PMAttack = PMAttack;
-            this.pushDamageBonus = pushDamageBonus;
-            this.criticalDamageBonus = criticalDamageBonus;
-            this.neutralDamageBonus = neutralDamageBonus;
-            this.earthDamageBonus = earthDamageBonus;
-            this.waterDamageBonus = waterDamageBonus;
-            this.airDamageBonus = airDamageBonus;
-            this.fireDamageBonus = fireDamageBonus;
-            this.dodgePALostProbability = dodgePALostProbability;
-            this.dodgePMLostProbability = dodgePMLostProbability;
-            this.neutralElementResistPercent = neutralElementResistPercent;
-            this.earthElementResistPercent = earthElementResistPercent;
-            this.waterElementResistPercent = waterElementResistPercent;
-            this.airElementResistPercent = airElementResistPercent;
-            this.fireElementResistPercent = fireElementResistPercent;
-            this.neutralElementReduction = neutralElementReduction;
-            this.earthElementReduction = earthElementReduction;
-            this.waterElementReduction = waterElementReduction;
-            this.airElementReduction = airElementReduction;
-            this.fireElementReduction = fireElementReduction;
-            this.pushDamageReduction = pushDamageReduction;
-            this.criticalDamageReduction = criticalDamageReduction;
-            this.pvpNeutralElementResistPercent = pvpNeutralElementResistPercent;
-            this.pvpEarthElementResistPercent = pvpEarthElementResistPercent;
-            this.pvpWaterElementResistPercent = pvpWaterElementResistPercent;
-            this.pvpAirElementResistPercent = pvpAirElementResistPercent;
-            this.pvpFireElementResistPercent = pvpFireElementResistPercent;
-            this.pvpNeutralElementReduction = pvpNeutralElementReduction;
-            this.pvpEarthElementReduction = pvpEarthElementReduction;
-            this.pvpWaterElementReduction = pvpWaterElementReduction;
-            this.pvpAirElementReduction = pvpAirElementReduction;
-            this.pvpFireElementReduction = pvpFireElementReduction;
-            this.spellModifications = spellModifications;
-            this.probationTime = probationTime;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhlong(experience);
-            writer.WriteVaruhlong(experienceLevelFloor);
-            writer.WriteVaruhlong(experienceNextLevelFloor);
-            writer.WriteInt(kamas);
-            writer.WriteVaruhshort(statsPoints);
-            writer.WriteVaruhshort(additionnalPoints);
-            writer.WriteVaruhshort(spellsPoints);
-            alignmentInfos.Serialize(writer);
-            writer.WriteVaruhint(lifePoints);
-            writer.WriteVaruhint(maxLifePoints);
-            writer.WriteVaruhshort(energyPoints);
-            writer.WriteVaruhshort(maxEnergyPoints);
-            writer.WriteVarshort(actionPointsCurrent);
-            writer.WriteVarshort(movementPointsCurrent);
-            initiative.Serialize(writer);
-            prospecting.Serialize(writer);
-            actionPoints.Serialize(writer);
-            movementPoints.Serialize(writer);
-            strength.Serialize(writer);
-            vitality.Serialize(writer);
-            wisdom.Serialize(writer);
-            chance.Serialize(writer);
-            agility.Serialize(writer);
-            intelligence.Serialize(writer);
-            range.Serialize(writer);
-            summonableCreaturesBoost.Serialize(writer);
-            reflect.Serialize(writer);
-            criticalHit.Serialize(writer);
-            writer.WriteVaruhshort(criticalHitWeapon);
-            criticalMiss.Serialize(writer);
-            healBonus.Serialize(writer);
-            allDamagesBonus.Serialize(writer);
-            weaponDamagesBonusPercent.Serialize(writer);
-            damagesBonusPercent.Serialize(writer);
-            trapBonus.Serialize(writer);
-            trapBonusPercent.Serialize(writer);
-            glyphBonusPercent.Serialize(writer);
-            permanentDamagePercent.Serialize(writer);
-            tackleBlock.Serialize(writer);
-            tackleEvade.Serialize(writer);
-            PAAttack.Serialize(writer);
-            PMAttack.Serialize(writer);
-            pushDamageBonus.Serialize(writer);
-            criticalDamageBonus.Serialize(writer);
-            neutralDamageBonus.Serialize(writer);
-            earthDamageBonus.Serialize(writer);
-            waterDamageBonus.Serialize(writer);
-            airDamageBonus.Serialize(writer);
-            fireDamageBonus.Serialize(writer);
-            dodgePALostProbability.Serialize(writer);
-            dodgePMLostProbability.Serialize(writer);
-            neutralElementResistPercent.Serialize(writer);
-            earthElementResistPercent.Serialize(writer);
-            waterElementResistPercent.Serialize(writer);
-            airElementResistPercent.Serialize(writer);
-            fireElementResistPercent.Serialize(writer);
-            neutralElementReduction.Serialize(writer);
-            earthElementReduction.Serialize(writer);
-            waterElementReduction.Serialize(writer);
-            airElementReduction.Serialize(writer);
-            fireElementReduction.Serialize(writer);
-            pushDamageReduction.Serialize(writer);
-            criticalDamageReduction.Serialize(writer);
-            pvpNeutralElementResistPercent.Serialize(writer);
-            pvpEarthElementResistPercent.Serialize(writer);
-            pvpWaterElementResistPercent.Serialize(writer);
-            pvpAirElementResistPercent.Serialize(writer);
-            pvpFireElementResistPercent.Serialize(writer);
-            pvpNeutralElementReduction.Serialize(writer);
-            pvpEarthElementReduction.Serialize(writer);
-            pvpWaterElementReduction.Serialize(writer);
-            pvpAirElementReduction.Serialize(writer);
-            pvpFireElementReduction.Serialize(writer);
-            writer.WriteUShort((ushort)spellModifications.Length);
-            foreach (var entry in spellModifications)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteInt(probationTime);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-experience = reader.ReadVaruhlong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            experienceLevelFloor = reader.ReadVaruhlong();
-            if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
-            experienceNextLevelFloor = reader.ReadVaruhlong();
-            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
-            kamas = reader.ReadInt();
-            if (kamas < 0)
-                throw new Exception("Forbidden value on kamas = " + kamas + ", it doesn't respect the following condition : kamas < 0");
-            statsPoints = reader.ReadVaruhshort();
-            if (statsPoints < 0)
-                throw new Exception("Forbidden value on statsPoints = " + statsPoints + ", it doesn't respect the following condition : statsPoints < 0");
-            additionnalPoints = reader.ReadVaruhshort();
-            if (additionnalPoints < 0)
-                throw new Exception("Forbidden value on additionnalPoints = " + additionnalPoints + ", it doesn't respect the following condition : additionnalPoints < 0");
-            spellsPoints = reader.ReadVaruhshort();
-            if (spellsPoints < 0)
-                throw new Exception("Forbidden value on spellsPoints = " + spellsPoints + ", it doesn't respect the following condition : spellsPoints < 0");
-            alignmentInfos = new Types.ActorExtendedAlignmentInformations();
-            alignmentInfos.Deserialize(reader);
-            lifePoints = reader.ReadVaruhint();
-            if (lifePoints < 0)
-                throw new Exception("Forbidden value on lifePoints = " + lifePoints + ", it doesn't respect the following condition : lifePoints < 0");
-            maxLifePoints = reader.ReadVaruhint();
-            if (maxLifePoints < 0)
-                throw new Exception("Forbidden value on maxLifePoints = " + maxLifePoints + ", it doesn't respect the following condition : maxLifePoints < 0");
-            energyPoints = reader.ReadVaruhshort();
-            if (energyPoints < 0)
-                throw new Exception("Forbidden value on energyPoints = " + energyPoints + ", it doesn't respect the following condition : energyPoints < 0");
-            maxEnergyPoints = reader.ReadVaruhshort();
-            if (maxEnergyPoints < 0)
-                throw new Exception("Forbidden value on maxEnergyPoints = " + maxEnergyPoints + ", it doesn't respect the following condition : maxEnergyPoints < 0");
-            actionPointsCurrent = reader.ReadVarshort();
-            movementPointsCurrent = reader.ReadVarshort();
-            initiative = new Types.CharacterBaseCharacteristic();
-            initiative.Deserialize(reader);
-            prospecting = new Types.CharacterBaseCharacteristic();
-            prospecting.Deserialize(reader);
-            actionPoints = new Types.CharacterBaseCharacteristic();
-            actionPoints.Deserialize(reader);
-            movementPoints = new Types.CharacterBaseCharacteristic();
-            movementPoints.Deserialize(reader);
-            strength = new Types.CharacterBaseCharacteristic();
-            strength.Deserialize(reader);
-            vitality = new Types.CharacterBaseCharacteristic();
-            vitality.Deserialize(reader);
-            wisdom = new Types.CharacterBaseCharacteristic();
-            wisdom.Deserialize(reader);
-            chance = new Types.CharacterBaseCharacteristic();
-            chance.Deserialize(reader);
-            agility = new Types.CharacterBaseCharacteristic();
-            agility.Deserialize(reader);
-            intelligence = new Types.CharacterBaseCharacteristic();
-            intelligence.Deserialize(reader);
-            range = new Types.CharacterBaseCharacteristic();
-            range.Deserialize(reader);
-            summonableCreaturesBoost = new Types.CharacterBaseCharacteristic();
-            summonableCreaturesBoost.Deserialize(reader);
-            reflect = new Types.CharacterBaseCharacteristic();
-            reflect.Deserialize(reader);
-            criticalHit = new Types.CharacterBaseCharacteristic();
-            criticalHit.Deserialize(reader);
-            criticalHitWeapon = reader.ReadVaruhshort();
-            if (criticalHitWeapon < 0)
-                throw new Exception("Forbidden value on criticalHitWeapon = " + criticalHitWeapon + ", it doesn't respect the following condition : criticalHitWeapon < 0");
-            criticalMiss = new Types.CharacterBaseCharacteristic();
-            criticalMiss.Deserialize(reader);
-            healBonus = new Types.CharacterBaseCharacteristic();
-            healBonus.Deserialize(reader);
-            allDamagesBonus = new Types.CharacterBaseCharacteristic();
-            allDamagesBonus.Deserialize(reader);
-            weaponDamagesBonusPercent = new Types.CharacterBaseCharacteristic();
-            weaponDamagesBonusPercent.Deserialize(reader);
-            damagesBonusPercent = new Types.CharacterBaseCharacteristic();
-            damagesBonusPercent.Deserialize(reader);
-            trapBonus = new Types.CharacterBaseCharacteristic();
-            trapBonus.Deserialize(reader);
-            trapBonusPercent = new Types.CharacterBaseCharacteristic();
-            trapBonusPercent.Deserialize(reader);
-            glyphBonusPercent = new Types.CharacterBaseCharacteristic();
-            glyphBonusPercent.Deserialize(reader);
-            permanentDamagePercent = new Types.CharacterBaseCharacteristic();
-            permanentDamagePercent.Deserialize(reader);
-            tackleBlock = new Types.CharacterBaseCharacteristic();
-            tackleBlock.Deserialize(reader);
-            tackleEvade = new Types.CharacterBaseCharacteristic();
-            tackleEvade.Deserialize(reader);
-            PAAttack = new Types.CharacterBaseCharacteristic();
-            PAAttack.Deserialize(reader);
-            PMAttack = new Types.CharacterBaseCharacteristic();
-            PMAttack.Deserialize(reader);
-            pushDamageBonus = new Types.CharacterBaseCharacteristic();
-            pushDamageBonus.Deserialize(reader);
-            criticalDamageBonus = new Types.CharacterBaseCharacteristic();
-            criticalDamageBonus.Deserialize(reader);
-            neutralDamageBonus = new Types.CharacterBaseCharacteristic();
-            neutralDamageBonus.Deserialize(reader);
-            earthDamageBonus = new Types.CharacterBaseCharacteristic();
-            earthDamageBonus.Deserialize(reader);
-            waterDamageBonus = new Types.CharacterBaseCharacteristic();
-            waterDamageBonus.Deserialize(reader);
-            airDamageBonus = new Types.CharacterBaseCharacteristic();
-            airDamageBonus.Deserialize(reader);
-            fireDamageBonus = new Types.CharacterBaseCharacteristic();
-            fireDamageBonus.Deserialize(reader);
-            dodgePALostProbability = new Types.CharacterBaseCharacteristic();
-            dodgePALostProbability.Deserialize(reader);
-            dodgePMLostProbability = new Types.CharacterBaseCharacteristic();
-            dodgePMLostProbability.Deserialize(reader);
-            neutralElementResistPercent = new Types.CharacterBaseCharacteristic();
-            neutralElementResistPercent.Deserialize(reader);
-            earthElementResistPercent = new Types.CharacterBaseCharacteristic();
-            earthElementResistPercent.Deserialize(reader);
-            waterElementResistPercent = new Types.CharacterBaseCharacteristic();
-            waterElementResistPercent.Deserialize(reader);
-            airElementResistPercent = new Types.CharacterBaseCharacteristic();
-            airElementResistPercent.Deserialize(reader);
-            fireElementResistPercent = new Types.CharacterBaseCharacteristic();
-            fireElementResistPercent.Deserialize(reader);
-            neutralElementReduction = new Types.CharacterBaseCharacteristic();
-            neutralElementReduction.Deserialize(reader);
-            earthElementReduction = new Types.CharacterBaseCharacteristic();
-            earthElementReduction.Deserialize(reader);
-            waterElementReduction = new Types.CharacterBaseCharacteristic();
-            waterElementReduction.Deserialize(reader);
-            airElementReduction = new Types.CharacterBaseCharacteristic();
-            airElementReduction.Deserialize(reader);
-            fireElementReduction = new Types.CharacterBaseCharacteristic();
-            fireElementReduction.Deserialize(reader);
-            pushDamageReduction = new Types.CharacterBaseCharacteristic();
-            pushDamageReduction.Deserialize(reader);
-            criticalDamageReduction = new Types.CharacterBaseCharacteristic();
-            criticalDamageReduction.Deserialize(reader);
-            pvpNeutralElementResistPercent = new Types.CharacterBaseCharacteristic();
-            pvpNeutralElementResistPercent.Deserialize(reader);
-            pvpEarthElementResistPercent = new Types.CharacterBaseCharacteristic();
-            pvpEarthElementResistPercent.Deserialize(reader);
-            pvpWaterElementResistPercent = new Types.CharacterBaseCharacteristic();
-            pvpWaterElementResistPercent.Deserialize(reader);
-            pvpAirElementResistPercent = new Types.CharacterBaseCharacteristic();
-            pvpAirElementResistPercent.Deserialize(reader);
-            pvpFireElementResistPercent = new Types.CharacterBaseCharacteristic();
-            pvpFireElementResistPercent.Deserialize(reader);
-            pvpNeutralElementReduction = new Types.CharacterBaseCharacteristic();
-            pvpNeutralElementReduction.Deserialize(reader);
-            pvpEarthElementReduction = new Types.CharacterBaseCharacteristic();
-            pvpEarthElementReduction.Deserialize(reader);
-            pvpWaterElementReduction = new Types.CharacterBaseCharacteristic();
-            pvpWaterElementReduction.Deserialize(reader);
-            pvpAirElementReduction = new Types.CharacterBaseCharacteristic();
-            pvpAirElementReduction.Deserialize(reader);
-            pvpFireElementReduction = new Types.CharacterBaseCharacteristic();
-            pvpFireElementReduction.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            spellModifications = new Types.CharacterSpellModification[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 spellModifications[i] = new Types.CharacterSpellModification();
-                 spellModifications[i].Deserialize(reader);
-            }
-            probationTime = reader.ReadInt();
-            if (probationTime < 0)
-                throw new Exception("Forbidden value on probationTime = " + probationTime + ", it doesn't respect the following condition : probationTime < 0");
-            
-
-}
-
-
-}
-
-
 }

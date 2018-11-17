@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:51
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectsAddedMessage : NetworkMessage
 {
 
-public const uint Id = 6033;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6033;
+	public override uint MessageId { get { return Id; } }
+
+	public ObjectItem[] Object { get; set; }
+
+	public ObjectsAddedMessage() {}
+
+
+	public ObjectsAddedMessage InitObjectsAddedMessage(ObjectItem[] Object)
+	{
+		this.Object = Object;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Object.Length);
+		foreach (ObjectItem item in this.Object)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectLen = reader.ReadShort();
+		Object = new ObjectItem[ObjectLen];
+		for (int i = 0; i < ObjectLen; i++)
+		{
+			this.Object[i] = new ObjectItem();
+			this.Object[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ObjectItem[] @object;
-        
-
-public ObjectsAddedMessage()
-{
-}
-
-public ObjectsAddedMessage(Types.ObjectItem[] @object)
-        {
-            this.@object = @object;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)@object.Length);
-            foreach (var entry in @object)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            @object = new Types.ObjectItem[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 @object[i] = new Types.ObjectItem();
-                 @object[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

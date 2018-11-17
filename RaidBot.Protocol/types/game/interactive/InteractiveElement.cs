@@ -1,107 +1,75 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class InteractiveElement : NetworkType
 {
 
-public class InteractiveElement
-{
+	public const uint Id = 80;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 80;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int ElementId { get; set; }
+	public int ElementTypeId { get; set; }
+	public InteractiveElementSkill[] EnabledSkills { get; set; }
+	public InteractiveElementSkill[] DisabledSkills { get; set; }
+	public bool OnCurrentMap { get; set; }
+
+	public InteractiveElement() {}
+
+
+	public InteractiveElement InitInteractiveElement(int ElementId, int ElementTypeId, InteractiveElementSkill[] EnabledSkills, InteractiveElementSkill[] DisabledSkills, bool OnCurrentMap)
+	{
+		this.ElementId = ElementId;
+		this.ElementTypeId = ElementTypeId;
+		this.EnabledSkills = EnabledSkills;
+		this.DisabledSkills = DisabledSkills;
+		this.OnCurrentMap = OnCurrentMap;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.ElementId);
+		writer.WriteInt(this.ElementTypeId);
+		writer.WriteShort(this.EnabledSkills.Length);
+		foreach (InteractiveElementSkill item in this.EnabledSkills)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.DisabledSkills.Length);
+		foreach (InteractiveElementSkill item in this.DisabledSkills)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteBoolean(this.OnCurrentMap);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ElementId = reader.ReadInt();
+		this.ElementTypeId = reader.ReadInt();
+		int EnabledSkillsLen = reader.ReadShort();
+		EnabledSkills = new InteractiveElementSkill[EnabledSkillsLen];
+		for (int i = 0; i < EnabledSkillsLen; i++)
+		{
+			this.EnabledSkills[i] = ProtocolTypeManager.GetInstance<InteractiveElementSkill>(reader.ReadShort());
+			this.EnabledSkills[i].Deserialize(reader);
+		}
+		int DisabledSkillsLen = reader.ReadShort();
+		DisabledSkills = new InteractiveElementSkill[DisabledSkillsLen];
+		for (int i = 0; i < DisabledSkillsLen; i++)
+		{
+			this.DisabledSkills[i] = ProtocolTypeManager.GetInstance<InteractiveElementSkill>(reader.ReadShort());
+			this.DisabledSkills[i].Deserialize(reader);
+		}
+		this.OnCurrentMap = reader.ReadBoolean();
+	}
 }
-
-public int elementId;
-        public int elementTypeId;
-        public Types.InteractiveElementSkill[] enabledSkills;
-        public Types.InteractiveElementSkill[] disabledSkills;
-        
-
-public InteractiveElement()
-{
-}
-
-public InteractiveElement(int elementId, int elementTypeId, Types.InteractiveElementSkill[] enabledSkills, Types.InteractiveElementSkill[] disabledSkills)
-        {
-            this.elementId = elementId;
-            this.elementTypeId = elementTypeId;
-            this.enabledSkills = enabledSkills;
-            this.disabledSkills = disabledSkills;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(elementId);
-            writer.WriteInt(elementTypeId);
-            writer.WriteUShort((ushort)enabledSkills.Length);
-            foreach (var entry in enabledSkills)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)disabledSkills.Length);
-            foreach (var entry in disabledSkills)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-elementId = reader.ReadInt();
-            if (elementId < 0)
-                throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
-            elementTypeId = reader.ReadInt();
-            var limit = reader.ReadUShort();
-            enabledSkills = new Types.InteractiveElementSkill[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 enabledSkills[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 enabledSkills[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            disabledSkills = new Types.InteractiveElementSkill[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 disabledSkills[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElementSkill>(reader.ReadShort());
-                 disabledSkills[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

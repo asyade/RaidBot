@@ -1,73 +1,38 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:40:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ServerStatusUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 50;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 50;
+	public override uint MessageId { get { return Id; } }
+
+	public GameServerInformations Server { get; set; }
+
+	public ServerStatusUpdateMessage() {}
+
+
+	public ServerStatusUpdateMessage InitServerStatusUpdateMessage(GameServerInformations Server)
+	{
+		this.Server = Server;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.Server.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Server = new GameServerInformations();
+		this.Server.Deserialize(reader);
+	}
 }
-
-public Types.GameServerInformations server;
-        
-
-public ServerStatusUpdateMessage()
-{
-}
-
-public ServerStatusUpdateMessage(Types.GameServerInformations server)
-        {
-            this.server = server;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-server.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-server = new Types.GameServerInformations();
-            server.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

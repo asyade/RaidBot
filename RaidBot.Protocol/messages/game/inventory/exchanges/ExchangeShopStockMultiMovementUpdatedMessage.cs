@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeShopStockMultiMovementUpdatedMessage : NetworkMessage
 {
 
-public const uint Id = 6038;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6038;
+	public override uint MessageId { get { return Id; } }
+
+	public ObjectItemToSell[] ObjectInfoList { get; set; }
+
+	public ExchangeShopStockMultiMovementUpdatedMessage() {}
+
+
+	public ExchangeShopStockMultiMovementUpdatedMessage InitExchangeShopStockMultiMovementUpdatedMessage(ObjectItemToSell[] ObjectInfoList)
+	{
+		this.ObjectInfoList = ObjectInfoList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ObjectInfoList.Length);
+		foreach (ObjectItemToSell item in this.ObjectInfoList)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectInfoListLen = reader.ReadShort();
+		ObjectInfoList = new ObjectItemToSell[ObjectInfoListLen];
+		for (int i = 0; i < ObjectInfoListLen; i++)
+		{
+			this.ObjectInfoList[i] = new ObjectItemToSell();
+			this.ObjectInfoList[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ObjectItemToSell[] objectInfoList;
-        
-
-public ExchangeShopStockMultiMovementUpdatedMessage()
-{
-}
-
-public ExchangeShopStockMultiMovementUpdatedMessage(Types.ObjectItemToSell[] objectInfoList)
-        {
-            this.objectInfoList = objectInfoList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)objectInfoList.Length);
-            foreach (var entry in objectInfoList)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            objectInfoList = new Types.ObjectItemToSell[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectInfoList[i] = new Types.ObjectItemToSell();
-                 objectInfoList[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

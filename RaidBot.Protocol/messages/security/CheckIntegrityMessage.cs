@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class CheckIntegrityMessage : NetworkMessage
 {
 
-public const uint Id = 6372;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6372;
+	public override uint MessageId { get { return Id; } }
+
+	public byte[] Data { get; set; }
+
+	public CheckIntegrityMessage() {}
+
+
+	public CheckIntegrityMessage InitCheckIntegrityMessage(byte[] Data)
+	{
+		this.Data = Data;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.Data.Length);
+		foreach (byte item in this.Data)
+		{
+			writer.WriteByte(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int DataLen = reader.ReadVarInt();
+		Data = new byte[DataLen];
+		for (int i = 0; i < DataLen; i++)
+		{
+			this.Data[i] = reader.ReadByte();
+		}
+	}
 }
-
-public sbyte[] data;
-        
-
-public CheckIntegrityMessage()
-{
-}
-
-public CheckIntegrityMessage(sbyte[] data)
-        {
-            this.data = data;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)data.Length);
-            foreach (var entry in data)
-            {
-                 writer.WriteSByte(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            data = new sbyte[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 data[i] = reader.ReadSByte();
-            }
-            
-
-}
-
-
-}
-
-
 }

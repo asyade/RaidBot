@@ -1,128 +1,95 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class BasicWhoIsMessage : NetworkMessage
 {
 
-public const uint Id = 180;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 180;
+	public override uint MessageId { get { return Id; } }
+
+	public bool Self { get; set; }
+	public bool Verbose { get; set; }
+	public byte Position { get; set; }
+	public String AccountNickname { get; set; }
+	public int AccountId { get; set; }
+	public String PlayerName { get; set; }
+	public long PlayerId { get; set; }
+	public short AreaId { get; set; }
+	public short ServerId { get; set; }
+	public short OriginServerId { get; set; }
+	public AbstractSocialGroupInfos[] SocialGroups { get; set; }
+	public byte PlayerState { get; set; }
+
+	public BasicWhoIsMessage() {}
+
+
+	public BasicWhoIsMessage InitBasicWhoIsMessage(bool Self, bool Verbose, byte Position, String AccountNickname, int AccountId, String PlayerName, long PlayerId, short AreaId, short ServerId, short OriginServerId, AbstractSocialGroupInfos[] SocialGroups, byte PlayerState)
+	{
+		this.Self = Self;
+		this.Verbose = Verbose;
+		this.Position = Position;
+		this.AccountNickname = AccountNickname;
+		this.AccountId = AccountId;
+		this.PlayerName = PlayerName;
+		this.PlayerId = PlayerId;
+		this.AreaId = AreaId;
+		this.ServerId = ServerId;
+		this.OriginServerId = OriginServerId;
+		this.SocialGroups = SocialGroups;
+		this.PlayerState = PlayerState;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, Self);
+		box = BooleanByteWrapper.SetFlag(box, 1, Verbose);
+		writer.WriteByte(box);
+		writer.WriteByte(this.Position);
+		writer.WriteUTF(this.AccountNickname);
+		writer.WriteInt(this.AccountId);
+		writer.WriteUTF(this.PlayerName);
+		writer.WriteVarLong(this.PlayerId);
+		writer.WriteShort(this.AreaId);
+		writer.WriteShort(this.ServerId);
+		writer.WriteShort(this.OriginServerId);
+		writer.WriteShort(this.SocialGroups.Length);
+		foreach (AbstractSocialGroupInfos item in this.SocialGroups)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteByte(this.PlayerState);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.Self = BooleanByteWrapper.GetFlag(box, 0);
+		this.Verbose = BooleanByteWrapper.GetFlag(box, 1);
+		this.Position = reader.ReadByte();
+		this.AccountNickname = reader.ReadUTF();
+		this.AccountId = reader.ReadInt();
+		this.PlayerName = reader.ReadUTF();
+		this.PlayerId = reader.ReadVarLong();
+		this.AreaId = reader.ReadShort();
+		this.ServerId = reader.ReadShort();
+		this.OriginServerId = reader.ReadShort();
+		int SocialGroupsLen = reader.ReadShort();
+		SocialGroups = new AbstractSocialGroupInfos[SocialGroupsLen];
+		for (int i = 0; i < SocialGroupsLen; i++)
+		{
+			this.SocialGroups[i] = ProtocolTypeManager.GetInstance<AbstractSocialGroupInfos>(reader.ReadShort());
+			this.SocialGroups[i].Deserialize(reader);
+		}
+		this.PlayerState = reader.ReadByte();
+	}
 }
-
-public bool self;
-        public bool verbose;
-        public sbyte position;
-        public string accountNickname;
-        public int accountId;
-        public string playerName;
-        public uint playerId;
-        public short areaId;
-        public Types.AbstractSocialGroupInfos[] socialGroups;
-        public sbyte playerState;
-        
-
-public BasicWhoIsMessage()
-{
-}
-
-public BasicWhoIsMessage(bool self, bool verbose, sbyte position, string accountNickname, int accountId, string playerName, uint playerId, short areaId, Types.AbstractSocialGroupInfos[] socialGroups, sbyte playerState)
-        {
-            this.self = self;
-            this.verbose = verbose;
-            this.position = position;
-            this.accountNickname = accountNickname;
-            this.accountId = accountId;
-            this.playerName = playerName;
-            this.playerId = playerId;
-            this.areaId = areaId;
-            this.socialGroups = socialGroups;
-            this.playerState = playerState;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, self);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, verbose);
-            writer.WriteByte(flag1);
-            writer.WriteSByte(position);
-            writer.WriteUTF(accountNickname);
-            writer.WriteInt(accountId);
-            writer.WriteUTF(playerName);
-            writer.WriteVaruhint(playerId);
-            writer.WriteShort(areaId);
-            writer.WriteUShort((ushort)socialGroups.Length);
-            foreach (var entry in socialGroups)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteSByte(playerState);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-byte flag1 = reader.ReadByte();
-            self = BooleanByteWrapper.GetFlag(flag1, 0);
-            verbose = BooleanByteWrapper.GetFlag(flag1, 1);
-            position = reader.ReadSByte();
-            accountNickname = reader.ReadUTF();
-            accountId = reader.ReadInt();
-            if (accountId < 0)
-                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            playerName = reader.ReadUTF();
-            playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            areaId = reader.ReadShort();
-            var limit = reader.ReadUShort();
-            socialGroups = new Types.AbstractSocialGroupInfos[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 socialGroups[i] = Types.ProtocolTypeManager.GetInstance<Types.AbstractSocialGroupInfos>(reader.ReadShort());
-                 socialGroups[i].Deserialize(reader);
-            }
-            playerState = reader.ReadSByte();
-            if (playerState < 0)
-                throw new Exception("Forbidden value on playerState = " + playerState + ", it doesn't respect the following condition : playerState < 0");
-            
-
-}
-
-
-}
-
-
 }

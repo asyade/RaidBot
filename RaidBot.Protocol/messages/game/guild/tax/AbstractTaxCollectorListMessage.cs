@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AbstractTaxCollectorListMessage : NetworkMessage
 {
 
-public const uint Id = 6568;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6568;
+	public override uint MessageId { get { return Id; } }
+
+	public TaxCollectorInformations[] Informations { get; set; }
+
+	public AbstractTaxCollectorListMessage() {}
+
+
+	public AbstractTaxCollectorListMessage InitAbstractTaxCollectorListMessage(TaxCollectorInformations[] Informations)
+	{
+		this.Informations = Informations;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Informations.Length);
+		foreach (TaxCollectorInformations item in this.Informations)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int InformationsLen = reader.ReadShort();
+		Informations = new TaxCollectorInformations[InformationsLen];
+		for (int i = 0; i < InformationsLen; i++)
+		{
+			this.Informations[i] = ProtocolTypeManager.GetInstance<TaxCollectorInformations>(reader.ReadShort());
+			this.Informations[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.TaxCollectorInformations[] informations;
-        
-
-public AbstractTaxCollectorListMessage()
-{
-}
-
-public AbstractTaxCollectorListMessage(Types.TaxCollectorInformations[] informations)
-        {
-            this.informations = informations;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)informations.Length);
-            foreach (var entry in informations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            informations = new Types.TaxCollectorInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 informations[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorInformations>(reader.ReadShort());
-                 informations[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

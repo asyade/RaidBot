@@ -1,105 +1,65 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class AllianceInsiderPrismInformation : PrismInformation
 {
 
-public const short Id = 431;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 431;
+	public override uint MessageId { get { return Id; } }
+
+	public int LastTimeSlotModificationDate { get; set; }
+	public int LastTimeSlotModificationAuthorGuildId { get; set; }
+	public long LastTimeSlotModificationAuthorId { get; set; }
+	public String LastTimeSlotModificationAuthorName { get; set; }
+	public ObjectItem[] ModulesObjects { get; set; }
+
+	public AllianceInsiderPrismInformation() {}
+
+
+	public AllianceInsiderPrismInformation InitAllianceInsiderPrismInformation(int LastTimeSlotModificationDate, int LastTimeSlotModificationAuthorGuildId, long LastTimeSlotModificationAuthorId, String LastTimeSlotModificationAuthorName, ObjectItem[] ModulesObjects)
+	{
+		this.LastTimeSlotModificationDate = LastTimeSlotModificationDate;
+		this.LastTimeSlotModificationAuthorGuildId = LastTimeSlotModificationAuthorGuildId;
+		this.LastTimeSlotModificationAuthorId = LastTimeSlotModificationAuthorId;
+		this.LastTimeSlotModificationAuthorName = LastTimeSlotModificationAuthorName;
+		this.ModulesObjects = ModulesObjects;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteInt(this.LastTimeSlotModificationDate);
+		writer.WriteVarInt(this.LastTimeSlotModificationAuthorGuildId);
+		writer.WriteVarLong(this.LastTimeSlotModificationAuthorId);
+		writer.WriteUTF(this.LastTimeSlotModificationAuthorName);
+		writer.WriteShort(this.ModulesObjects.Length);
+		foreach (ObjectItem item in this.ModulesObjects)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.LastTimeSlotModificationDate = reader.ReadInt();
+		this.LastTimeSlotModificationAuthorGuildId = reader.ReadVarInt();
+		this.LastTimeSlotModificationAuthorId = reader.ReadVarLong();
+		this.LastTimeSlotModificationAuthorName = reader.ReadUTF();
+		int ModulesObjectsLen = reader.ReadShort();
+		ModulesObjects = new ObjectItem[ModulesObjectsLen];
+		for (int i = 0; i < ModulesObjectsLen; i++)
+		{
+			this.ModulesObjects[i] = new ObjectItem();
+			this.ModulesObjects[i].Deserialize(reader);
+		}
+	}
 }
-
-public int lastTimeSlotModificationDate;
-        public uint lastTimeSlotModificationAuthorGuildId;
-        public uint lastTimeSlotModificationAuthorId;
-        public string lastTimeSlotModificationAuthorName;
-        public uint[] modulesItemIds;
-        
-
-public AllianceInsiderPrismInformation()
-{
-}
-
-public AllianceInsiderPrismInformation(sbyte typeId, sbyte state, int nextVulnerabilityDate, int placementDate, uint rewardTokenCount, int lastTimeSlotModificationDate, uint lastTimeSlotModificationAuthorGuildId, uint lastTimeSlotModificationAuthorId, string lastTimeSlotModificationAuthorName, uint[] modulesItemIds)
-         : base(typeId, state, nextVulnerabilityDate, placementDate, rewardTokenCount)
-        {
-            this.lastTimeSlotModificationDate = lastTimeSlotModificationDate;
-            this.lastTimeSlotModificationAuthorGuildId = lastTimeSlotModificationAuthorGuildId;
-            this.lastTimeSlotModificationAuthorId = lastTimeSlotModificationAuthorId;
-            this.lastTimeSlotModificationAuthorName = lastTimeSlotModificationAuthorName;
-            this.modulesItemIds = modulesItemIds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(lastTimeSlotModificationDate);
-            writer.WriteVaruhint(lastTimeSlotModificationAuthorGuildId);
-            writer.WriteVaruhint(lastTimeSlotModificationAuthorId);
-            writer.WriteUTF(lastTimeSlotModificationAuthorName);
-            writer.WriteUShort((ushort)modulesItemIds.Length);
-            foreach (var entry in modulesItemIds)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            lastTimeSlotModificationDate = reader.ReadInt();
-            if (lastTimeSlotModificationDate < 0)
-                throw new Exception("Forbidden value on lastTimeSlotModificationDate = " + lastTimeSlotModificationDate + ", it doesn't respect the following condition : lastTimeSlotModificationDate < 0");
-            lastTimeSlotModificationAuthorGuildId = reader.ReadVaruhint();
-            if (lastTimeSlotModificationAuthorGuildId < 0)
-                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorGuildId = " + lastTimeSlotModificationAuthorGuildId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorGuildId < 0");
-            lastTimeSlotModificationAuthorId = reader.ReadVaruhint();
-            if (lastTimeSlotModificationAuthorId < 0)
-                throw new Exception("Forbidden value on lastTimeSlotModificationAuthorId = " + lastTimeSlotModificationAuthorId + ", it doesn't respect the following condition : lastTimeSlotModificationAuthorId < 0");
-            lastTimeSlotModificationAuthorName = reader.ReadUTF();
-            var limit = reader.ReadUShort();
-            modulesItemIds = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 modulesItemIds[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

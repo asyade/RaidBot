@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:45
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeMountsStableRemoveMessage : NetworkMessage
 {
 
-public const uint Id = 6556;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6556;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] MountsId { get; set; }
+
+	public ExchangeMountsStableRemoveMessage() {}
+
+
+	public ExchangeMountsStableRemoveMessage InitExchangeMountsStableRemoveMessage(int[] MountsId)
+	{
+		this.MountsId = MountsId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.MountsId.Length);
+		foreach (int item in this.MountsId)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int MountsIdLen = reader.ReadShort();
+		MountsId = new int[MountsIdLen];
+		for (int i = 0; i < MountsIdLen; i++)
+		{
+			this.MountsId[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public int[] mountsId;
-        
-
-public ExchangeMountsStableRemoveMessage()
-{
-}
-
-public ExchangeMountsStableRemoveMessage(int[] mountsId)
-        {
-            this.mountsId = mountsId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)mountsId.Length);
-            foreach (var entry in mountsId)
-            {
-                 writer.WriteVarint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            mountsId = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 mountsId[i] = reader.ReadVarint();
-            }
-            
-
-}
-
-
-}
-
-
 }

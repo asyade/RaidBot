@@ -1,91 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class EntityTalkMessage : NetworkMessage
 {
 
-public const uint Id = 6110;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6110;
+	public override uint MessageId { get { return Id; } }
+
+	public double EntityId { get; set; }
+	public short TextId { get; set; }
+	public String[] Parameters { get; set; }
+
+	public EntityTalkMessage() {}
+
+
+	public EntityTalkMessage InitEntityTalkMessage(double EntityId, short TextId, String[] Parameters)
+	{
+		this.EntityId = EntityId;
+		this.TextId = TextId;
+		this.Parameters = Parameters;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.EntityId);
+		writer.WriteVarShort(this.TextId);
+		writer.WriteShort(this.Parameters.Length);
+		foreach (String item in this.Parameters)
+		{
+			writer.WriteUTF(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.EntityId = reader.ReadDouble();
+		this.TextId = reader.ReadVarShort();
+		int ParametersLen = reader.ReadShort();
+		Parameters = new String[ParametersLen];
+		for (int i = 0; i < ParametersLen; i++)
+		{
+			this.Parameters[i] = reader.ReadUTF();
+		}
+	}
 }
-
-public int entityId;
-        public ushort textId;
-        public string[] parameters;
-        
-
-public EntityTalkMessage()
-{
-}
-
-public EntityTalkMessage(int entityId, ushort textId, string[] parameters)
-        {
-            this.entityId = entityId;
-            this.textId = textId;
-            this.parameters = parameters;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(entityId);
-            writer.WriteVaruhshort(textId);
-            writer.WriteUShort((ushort)parameters.Length);
-            foreach (var entry in parameters)
-            {
-                 writer.WriteUTF(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-entityId = reader.ReadInt();
-            textId = reader.ReadVaruhshort();
-            if (textId < 0)
-                throw new Exception("Forbidden value on textId = " + textId + ", it doesn't respect the following condition : textId < 0");
-            var limit = reader.ReadUShort();
-            parameters = new string[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 parameters[i] = reader.ReadUTF();
-            }
-            
-
-}
-
-
-}
-
-
 }

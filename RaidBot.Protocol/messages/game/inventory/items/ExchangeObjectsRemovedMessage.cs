@@ -1,84 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeObjectsRemovedMessage : ExchangeObjectMessage
 {
 
-public const uint Id = 6532;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6532;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] ObjectUID { get; set; }
+
+	public ExchangeObjectsRemovedMessage() {}
+
+
+	public ExchangeObjectsRemovedMessage InitExchangeObjectsRemovedMessage(int[] ObjectUID)
+	{
+		this.ObjectUID = ObjectUID;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.ObjectUID.Length);
+		foreach (int item in this.ObjectUID)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int ObjectUIDLen = reader.ReadShort();
+		ObjectUID = new int[ObjectUIDLen];
+		for (int i = 0; i < ObjectUIDLen; i++)
+		{
+			this.ObjectUID[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public uint[] objectUID;
-        
-
-public ExchangeObjectsRemovedMessage()
-{
-}
-
-public ExchangeObjectsRemovedMessage(bool remote, uint[] objectUID)
-         : base(remote)
-        {
-            this.objectUID = objectUID;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)objectUID.Length);
-            foreach (var entry in objectUID)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            objectUID = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectUID[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

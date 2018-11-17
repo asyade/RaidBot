@@ -1,84 +1,57 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class Version : NetworkType
 {
 
-public class Version
-{
+	public const uint Id = 11;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 11;
-public virtual short TypeId
-{
-    get { return Id; }
-}
+	public byte Major { get; set; }
+	public byte Minor { get; set; }
+	public byte Release { get; set; }
+	public int Revision { get; set; }
+	public byte Patch { get; set; }
+	public byte BuildType { get; set; }
 
-public byte major;
-        public byte minor;
-        public byte release;
-        public int revision;
-        public byte patch;
-        public byte buildType;
-        
+	public Version() {}
 
-public Version()
-{
-}
 
-public Version(byte major, byte minor, byte release, int revision, byte patch, byte buildType)
-        {
-            this.major = major;
-            this.minor = minor;
-            this.release = release;
-            this.revision = revision;
-            this.patch = patch;
-            this.buildType = buildType;
-        }
-        
+	public Version InitVersion(byte Major, byte Minor, byte Release, int Revision, byte Patch, byte BuildType)
+	{
+		this.Major = Major;
+		this.Minor = Minor;
+		this.Release = Release;
+		this.Revision = Revision;
+		this.Patch = Patch;
+		this.BuildType = BuildType;
+		return (this);
+	}
 
-public virtual void Serialize(ICustomDataWriter writer)
-{
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.Major);
+		writer.WriteByte(this.Minor);
+		writer.WriteByte(this.Release);
+		writer.WriteInt(this.Revision);
+		writer.WriteByte(this.Patch);
+		writer.WriteByte(this.BuildType);
+	}
 
-            writer.WriteByte(major);
-            writer.WriteByte(minor);
-            writer.WriteByte(release);
-            writer.WriteInt(revision);
-            writer.WriteByte(patch);
-            writer.WriteByte(buildType);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-            major = reader.ReadByte();
-            minor = reader.ReadByte();
-            release = reader.ReadByte();
-            revision = reader.ReadInt();
-            patch = reader.ReadByte();
-            buildType = reader.ReadByte();
-}
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Major = reader.ReadByte();
+		this.Minor = reader.ReadByte();
+		this.Release = reader.ReadByte();
+		this.Revision = reader.ReadInt();
+		this.Patch = reader.ReadByte();
+		this.BuildType = reader.ReadByte();
+	}
 }
 }

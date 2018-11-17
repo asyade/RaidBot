@@ -1,87 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class HumanOptionObjectUse : HumanOption
 {
 
-public const short Id = 449;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 449;
+	public override uint MessageId { get { return Id; } }
+
+	public byte DelayTypeId { get; set; }
+	public double DelayEndTime { get; set; }
+	public short ObjectGID { get; set; }
+
+	public HumanOptionObjectUse() {}
+
+
+	public HumanOptionObjectUse InitHumanOptionObjectUse(byte DelayTypeId, double DelayEndTime, short ObjectGID)
+	{
+		this.DelayTypeId = DelayTypeId;
+		this.DelayEndTime = DelayEndTime;
+		this.ObjectGID = ObjectGID;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.DelayTypeId);
+		writer.WriteDouble(this.DelayEndTime);
+		writer.WriteVarShort(this.ObjectGID);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.DelayTypeId = reader.ReadByte();
+		this.DelayEndTime = reader.ReadDouble();
+		this.ObjectGID = reader.ReadVarShort();
+	}
 }
-
-public sbyte delayTypeId;
-        public double delayEndTime;
-        public ushort objectGID;
-        
-
-public HumanOptionObjectUse()
-{
-}
-
-public HumanOptionObjectUse(sbyte delayTypeId, double delayEndTime, ushort objectGID)
-        {
-            this.delayTypeId = delayTypeId;
-            this.delayEndTime = delayEndTime;
-            this.objectGID = objectGID;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(delayTypeId);
-            writer.WriteDouble(delayEndTime);
-            writer.WriteVaruhshort(objectGID);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            delayTypeId = reader.ReadSByte();
-            if (delayTypeId < 0)
-                throw new Exception("Forbidden value on delayTypeId = " + delayTypeId + ", it doesn't respect the following condition : delayTypeId < 0");
-            delayEndTime = reader.ReadDouble();
-            if (delayEndTime < 0 || delayEndTime > 9.007199254740992E15)
-                throw new Exception("Forbidden value on delayEndTime = " + delayEndTime + ", it doesn't respect the following condition : delayEndTime < 0 || delayEndTime > 9.007199254740992E15");
-            objectGID = reader.ReadVaruhshort();
-            if (objectGID < 0)
-                throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            
-
-}
-
-
-}
-
-
 }

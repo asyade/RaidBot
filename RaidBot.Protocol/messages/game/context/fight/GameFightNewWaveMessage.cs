@@ -1,84 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:15
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightNewWaveMessage : NetworkMessage
 {
 
-public const uint Id = 6490;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6490;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Id_ { get; set; }
+	public byte TeamId { get; set; }
+	public short NbTurnBeforeNextWave { get; set; }
+
+	public GameFightNewWaveMessage() {}
+
+
+	public GameFightNewWaveMessage InitGameFightNewWaveMessage(byte Id_, byte TeamId, short NbTurnBeforeNextWave)
+	{
+		this.Id_ = Id_;
+		this.TeamId = TeamId;
+		this.NbTurnBeforeNextWave = NbTurnBeforeNextWave;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.Id_);
+		writer.WriteByte(this.TeamId);
+		writer.WriteShort(this.NbTurnBeforeNextWave);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Id_ = reader.ReadByte();
+		this.TeamId = reader.ReadByte();
+		this.NbTurnBeforeNextWave = reader.ReadShort();
+	}
 }
-
-public sbyte id;
-        public sbyte teamId;
-        public short nbTurnBeforeNextWave;
-        
-
-public GameFightNewWaveMessage()
-{
-}
-
-public GameFightNewWaveMessage(sbyte id, sbyte teamId, short nbTurnBeforeNextWave)
-        {
-            this.id = id;
-            this.teamId = teamId;
-            this.nbTurnBeforeNextWave = nbTurnBeforeNextWave;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(id);
-            writer.WriteSByte(teamId);
-            writer.WriteShort(nbTurnBeforeNextWave);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-id = reader.ReadSByte();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            teamId = reader.ReadSByte();
-            if (teamId < 0)
-                throw new Exception("Forbidden value on teamId = " + teamId + ", it doesn't respect the following condition : teamId < 0");
-            nbTurnBeforeNextWave = reader.ReadShort();
-            
-
-}
-
-
-}
-
-
 }

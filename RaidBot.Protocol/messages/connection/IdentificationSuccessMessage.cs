@@ -1,121 +1,80 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:40:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class IdentificationSuccessMessage : NetworkMessage
 {
 
-public const uint Id = 22;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 22;
+	public override uint MessageId { get { return Id; } }
+
+	public bool HasRights { get; set; }
+	public bool WasAlreadyConnected { get; set; }
+	public String Login { get; set; }
+	public String Nickname { get; set; }
+	public int AccountId { get; set; }
+	public byte CommunityId { get; set; }
+	public String SecretQuestion { get; set; }
+	public double AccountCreation { get; set; }
+	public double SubscriptionElapsedDuration { get; set; }
+	public double SubscriptionEndDate { get; set; }
+	public byte HavenbagAvailableRoom { get; set; }
+
+	public IdentificationSuccessMessage() {}
+
+
+	public IdentificationSuccessMessage InitIdentificationSuccessMessage(bool HasRights, bool WasAlreadyConnected, String Login, String Nickname, int AccountId, byte CommunityId, String SecretQuestion, double AccountCreation, double SubscriptionElapsedDuration, double SubscriptionEndDate, byte HavenbagAvailableRoom)
+	{
+		this.HasRights = HasRights;
+		this.WasAlreadyConnected = WasAlreadyConnected;
+		this.Login = Login;
+		this.Nickname = Nickname;
+		this.AccountId = AccountId;
+		this.CommunityId = CommunityId;
+		this.SecretQuestion = SecretQuestion;
+		this.AccountCreation = AccountCreation;
+		this.SubscriptionElapsedDuration = SubscriptionElapsedDuration;
+		this.SubscriptionEndDate = SubscriptionEndDate;
+		this.HavenbagAvailableRoom = HavenbagAvailableRoom;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, HasRights);
+		box = BooleanByteWrapper.SetFlag(box, 1, WasAlreadyConnected);
+		writer.WriteByte(box);
+		writer.WriteUTF(this.Login);
+		writer.WriteUTF(this.Nickname);
+		writer.WriteInt(this.AccountId);
+		writer.WriteByte(this.CommunityId);
+		writer.WriteUTF(this.SecretQuestion);
+		writer.WriteDouble(this.AccountCreation);
+		writer.WriteDouble(this.SubscriptionElapsedDuration);
+		writer.WriteDouble(this.SubscriptionEndDate);
+		writer.WriteByte(this.HavenbagAvailableRoom);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		byte box = reader.ReadByte();
+		this.HasRights = BooleanByteWrapper.GetFlag(box, 0);
+		this.WasAlreadyConnected = BooleanByteWrapper.GetFlag(box, 1);
+		this.Login = reader.ReadUTF();
+		this.Nickname = reader.ReadUTF();
+		this.AccountId = reader.ReadInt();
+		this.CommunityId = reader.ReadByte();
+		this.SecretQuestion = reader.ReadUTF();
+		this.AccountCreation = reader.ReadDouble();
+		this.SubscriptionElapsedDuration = reader.ReadDouble();
+		this.SubscriptionEndDate = reader.ReadDouble();
+		this.HavenbagAvailableRoom = reader.ReadByte();
+	}
 }
-
-public bool hasRights;
-        public bool wasAlreadyConnected;
-        public string login;
-        public string nickname;
-        public int accountId;
-        public sbyte communityId;
-        public string secretQuestion;
-        public double accountCreation;
-        public double subscriptionElapsedDuration;
-        public double subscriptionEndDate;
-        
-
-public IdentificationSuccessMessage()
-{
-}
-
-public IdentificationSuccessMessage(bool hasRights, bool wasAlreadyConnected, string login, string nickname, int accountId, sbyte communityId, string secretQuestion, double accountCreation, double subscriptionElapsedDuration, double subscriptionEndDate)
-        {
-            this.hasRights = hasRights;
-            this.wasAlreadyConnected = wasAlreadyConnected;
-            this.login = login;
-            this.nickname = nickname;
-            this.accountId = accountId;
-            this.communityId = communityId;
-            this.secretQuestion = secretQuestion;
-            this.accountCreation = accountCreation;
-            this.subscriptionElapsedDuration = subscriptionElapsedDuration;
-            this.subscriptionEndDate = subscriptionEndDate;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, hasRights);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, wasAlreadyConnected);
-            writer.WriteByte(flag1);
-            writer.WriteUTF(login);
-            writer.WriteUTF(nickname);
-            writer.WriteInt(accountId);
-            writer.WriteSByte(communityId);
-            writer.WriteUTF(secretQuestion);
-            writer.WriteDouble(accountCreation);
-            writer.WriteDouble(subscriptionElapsedDuration);
-            writer.WriteDouble(subscriptionEndDate);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-byte flag1 = reader.ReadByte();
-            hasRights = BooleanByteWrapper.GetFlag(flag1, 0);
-            wasAlreadyConnected = BooleanByteWrapper.GetFlag(flag1, 1);
-            login = reader.ReadUTF();
-            nickname = reader.ReadUTF();
-            accountId = reader.ReadInt();
-            if (accountId < 0)
-                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            communityId = reader.ReadSByte();
-            if (communityId < 0)
-                throw new Exception("Forbidden value on communityId = " + communityId + ", it doesn't respect the following condition : communityId < 0");
-            secretQuestion = reader.ReadUTF();
-            accountCreation = reader.ReadDouble();
-            if (accountCreation < 0 || accountCreation > 9.007199254740992E15)
-                throw new Exception("Forbidden value on accountCreation = " + accountCreation + ", it doesn't respect the following condition : accountCreation < 0 || accountCreation > 9.007199254740992E15");
-            subscriptionElapsedDuration = reader.ReadDouble();
-            if (subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15)
-                throw new Exception("Forbidden value on subscriptionElapsedDuration = " + subscriptionElapsedDuration + ", it doesn't respect the following condition : subscriptionElapsedDuration < 0 || subscriptionElapsedDuration > 9.007199254740992E15");
-            subscriptionEndDate = reader.ReadDouble();
-            if (subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15)
-                throw new Exception("Forbidden value on subscriptionEndDate = " + subscriptionEndDate + ", it doesn't respect the following condition : subscriptionEndDate < 0 || subscriptionEndDate > 9.007199254740992E15");
-            
-
-}
-
-
-}
-
-
 }

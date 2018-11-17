@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:54
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AccessoryPreviewRequestMessage : NetworkMessage
 {
 
-public const uint Id = 6518;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6518;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] GenericId { get; set; }
+
+	public AccessoryPreviewRequestMessage() {}
+
+
+	public AccessoryPreviewRequestMessage InitAccessoryPreviewRequestMessage(short[] GenericId)
+	{
+		this.GenericId = GenericId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.GenericId.Length);
+		foreach (short item in this.GenericId)
+		{
+			writer.WriteVarShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int GenericIdLen = reader.ReadShort();
+		GenericId = new short[GenericIdLen];
+		for (int i = 0; i < GenericIdLen; i++)
+		{
+			this.GenericId[i] = reader.ReadVarShort();
+		}
+	}
 }
-
-public ushort[] genericId;
-        
-
-public AccessoryPreviewRequestMessage()
-{
-}
-
-public AccessoryPreviewRequestMessage(ushort[] genericId)
-        {
-            this.genericId = genericId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)genericId.Length);
-            foreach (var entry in genericId)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            genericId = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 genericId[i] = reader.ReadVaruhshort();
-            }
-            
-
-}
-
-
-}
-
-
 }

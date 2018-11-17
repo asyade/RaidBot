@@ -1,108 +1,72 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PrismFightersInformation : NetworkType
 {
 
-public class PrismFightersInformation
-{
+	public const uint Id = 443;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 443;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short SubAreaId { get; set; }
+	public ProtectedEntityWaitingForHelpInfo WaitingForHelpInfo { get; set; }
+	public CharacterMinimalPlusLookInformations[] AllyCharactersInformations { get; set; }
+	public CharacterMinimalPlusLookInformations[] EnemyCharactersInformations { get; set; }
+
+	public PrismFightersInformation() {}
+
+
+	public PrismFightersInformation InitPrismFightersInformation(short SubAreaId, ProtectedEntityWaitingForHelpInfo WaitingForHelpInfo, CharacterMinimalPlusLookInformations[] AllyCharactersInformations, CharacterMinimalPlusLookInformations[] EnemyCharactersInformations)
+	{
+		this.SubAreaId = SubAreaId;
+		this.WaitingForHelpInfo = WaitingForHelpInfo;
+		this.AllyCharactersInformations = AllyCharactersInformations;
+		this.EnemyCharactersInformations = EnemyCharactersInformations;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.SubAreaId);
+		this.WaitingForHelpInfo.Serialize(writer);
+		writer.WriteShort(this.AllyCharactersInformations.Length);
+		foreach (CharacterMinimalPlusLookInformations item in this.AllyCharactersInformations)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.EnemyCharactersInformations.Length);
+		foreach (CharacterMinimalPlusLookInformations item in this.EnemyCharactersInformations)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SubAreaId = reader.ReadVarShort();
+		this.WaitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
+		this.WaitingForHelpInfo.Deserialize(reader);
+		int AllyCharactersInformationsLen = reader.ReadShort();
+		AllyCharactersInformations = new CharacterMinimalPlusLookInformations[AllyCharactersInformationsLen];
+		for (int i = 0; i < AllyCharactersInformationsLen; i++)
+		{
+			this.AllyCharactersInformations[i] = ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
+			this.AllyCharactersInformations[i].Deserialize(reader);
+		}
+		int EnemyCharactersInformationsLen = reader.ReadShort();
+		EnemyCharactersInformations = new CharacterMinimalPlusLookInformations[EnemyCharactersInformationsLen];
+		for (int i = 0; i < EnemyCharactersInformationsLen; i++)
+		{
+			this.EnemyCharactersInformations[i] = ProtocolTypeManager.GetInstance<CharacterMinimalPlusLookInformations>(reader.ReadShort());
+			this.EnemyCharactersInformations[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort subAreaId;
-        public Types.ProtectedEntityWaitingForHelpInfo waitingForHelpInfo;
-        public Types.CharacterMinimalPlusLookInformations[] allyCharactersInformations;
-        public Types.CharacterMinimalPlusLookInformations[] enemyCharactersInformations;
-        
-
-public PrismFightersInformation()
-{
-}
-
-public PrismFightersInformation(ushort subAreaId, Types.ProtectedEntityWaitingForHelpInfo waitingForHelpInfo, Types.CharacterMinimalPlusLookInformations[] allyCharactersInformations, Types.CharacterMinimalPlusLookInformations[] enemyCharactersInformations)
-        {
-            this.subAreaId = subAreaId;
-            this.waitingForHelpInfo = waitingForHelpInfo;
-            this.allyCharactersInformations = allyCharactersInformations;
-            this.enemyCharactersInformations = enemyCharactersInformations;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(subAreaId);
-            waitingForHelpInfo.Serialize(writer);
-            writer.WriteUShort((ushort)allyCharactersInformations.Length);
-            foreach (var entry in allyCharactersInformations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)enemyCharactersInformations.Length);
-            foreach (var entry in enemyCharactersInformations)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            waitingForHelpInfo = new Types.ProtectedEntityWaitingForHelpInfo();
-            waitingForHelpInfo.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            allyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 allyCharactersInformations[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 allyCharactersInformations[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            enemyCharactersInformations = new Types.CharacterMinimalPlusLookInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 enemyCharactersInformations[i] = Types.ProtocolTypeManager.GetInstance<Types.CharacterMinimalPlusLookInformations>(reader.ReadShort());
-                 enemyCharactersInformations[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

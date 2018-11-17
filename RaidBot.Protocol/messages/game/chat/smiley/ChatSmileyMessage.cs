@@ -1,84 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChatSmileyMessage : NetworkMessage
 {
 
-public const uint Id = 801;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 801;
+	public override uint MessageId { get { return Id; } }
+
+	public double EntityId { get; set; }
+	public short SmileyId { get; set; }
+	public int AccountId { get; set; }
+
+	public ChatSmileyMessage() {}
+
+
+	public ChatSmileyMessage InitChatSmileyMessage(double EntityId, short SmileyId, int AccountId)
+	{
+		this.EntityId = EntityId;
+		this.SmileyId = SmileyId;
+		this.AccountId = AccountId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.EntityId);
+		writer.WriteVarShort(this.SmileyId);
+		writer.WriteInt(this.AccountId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.EntityId = reader.ReadDouble();
+		this.SmileyId = reader.ReadVarShort();
+		this.AccountId = reader.ReadInt();
+	}
 }
-
-public int entityId;
-        public sbyte smileyId;
-        public int accountId;
-        
-
-public ChatSmileyMessage()
-{
-}
-
-public ChatSmileyMessage(int entityId, sbyte smileyId, int accountId)
-        {
-            this.entityId = entityId;
-            this.smileyId = smileyId;
-            this.accountId = accountId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(entityId);
-            writer.WriteSByte(smileyId);
-            writer.WriteInt(accountId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-entityId = reader.ReadInt();
-            smileyId = reader.ReadSByte();
-            if (smileyId < 0)
-                throw new Exception("Forbidden value on smileyId = " + smileyId + ", it doesn't respect the following condition : smileyId < 0");
-            accountId = reader.ReadInt();
-            if (accountId < 0)
-                throw new Exception("Forbidden value on accountId = " + accountId + ", it doesn't respect the following condition : accountId < 0");
-            
-
-}
-
-
-}
-
-
 }

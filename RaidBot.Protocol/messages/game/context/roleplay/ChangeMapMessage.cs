@@ -1,74 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChangeMapMessage : NetworkMessage
 {
 
-public const uint Id = 221;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 221;
+	public override uint MessageId { get { return Id; } }
+
+	public double MapId { get; set; }
+	public bool Autopilot { get; set; }
+
+	public ChangeMapMessage() {}
+
+
+	public ChangeMapMessage InitChangeMapMessage(double MapId, bool Autopilot)
+	{
+		this.MapId = MapId;
+		this.Autopilot = Autopilot;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MapId);
+		writer.WriteBoolean(this.Autopilot);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MapId = reader.ReadDouble();
+		this.Autopilot = reader.ReadBoolean();
+	}
 }
-
-public int mapId;
-        
-
-public ChangeMapMessage()
-{
-}
-
-public ChangeMapMessage(int mapId)
-        {
-            this.mapId = mapId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(mapId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-mapId = reader.ReadInt();
-            if (mapId < 0)
-                throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            
-
-}
-
-
-}
-
-
 }

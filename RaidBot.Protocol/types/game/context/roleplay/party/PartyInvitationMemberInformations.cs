@@ -1,106 +1,65 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class PartyInvitationMemberInformations : CharacterBaseInformations
 {
 
-public const short Id = 376;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 376;
+	public override uint MessageId { get { return Id; } }
+
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public double MapId { get; set; }
+	public short SubAreaId { get; set; }
+	public PartyEntityBaseInformation[] Entities { get; set; }
+
+	public PartyInvitationMemberInformations() {}
+
+
+	public PartyInvitationMemberInformations InitPartyInvitationMemberInformations(short WorldX, short WorldY, double MapId, short SubAreaId, PartyEntityBaseInformation[] Entities)
+	{
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.MapId = MapId;
+		this.SubAreaId = SubAreaId;
+		this.Entities = Entities;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteShort(this.Entities.Length);
+		foreach (PartyEntityBaseInformation item in this.Entities)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.MapId = reader.ReadDouble();
+		this.SubAreaId = reader.ReadVarShort();
+		int EntitiesLen = reader.ReadShort();
+		Entities = new PartyEntityBaseInformation[EntitiesLen];
+		for (int i = 0; i < EntitiesLen; i++)
+		{
+			this.Entities[i] = new PartyEntityBaseInformation();
+			this.Entities[i].Deserialize(reader);
+		}
+	}
 }
-
-public short worldX;
-        public short worldY;
-        public int mapId;
-        public ushort subAreaId;
-        public Types.PartyCompanionBaseInformations[] companions;
-        
-
-public PartyInvitationMemberInformations()
-{
-}
-
-public PartyInvitationMemberInformations(uint id, byte level, string name, Types.EntityLook entityLook, sbyte breed, bool sex, short worldX, short worldY, int mapId, ushort subAreaId, Types.PartyCompanionBaseInformations[] companions)
-         : base(id, level, name, entityLook, breed, sex)
-        {
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.mapId = mapId;
-            this.subAreaId = subAreaId;
-            this.companions = companions;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteUShort((ushort)companions.Length);
-            foreach (var entry in companions)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            mapId = reader.ReadInt();
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            var limit = reader.ReadUShort();
-            companions = new Types.PartyCompanionBaseInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 companions[i] = new Types.PartyCompanionBaseInformations();
-                 companions[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

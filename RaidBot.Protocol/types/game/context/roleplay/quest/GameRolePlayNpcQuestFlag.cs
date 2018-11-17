@@ -1,93 +1,59 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameRolePlayNpcQuestFlag : NetworkType
 {
 
-public class GameRolePlayNpcQuestFlag
-{
+	public const uint Id = 384;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 384;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short[] QuestsToValidId { get; set; }
+	public short[] QuestsToStartId { get; set; }
+
+	public GameRolePlayNpcQuestFlag() {}
+
+
+	public GameRolePlayNpcQuestFlag InitGameRolePlayNpcQuestFlag(short[] QuestsToValidId, short[] QuestsToStartId)
+	{
+		this.QuestsToValidId = QuestsToValidId;
+		this.QuestsToStartId = QuestsToStartId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.QuestsToValidId.Length);
+		foreach (short item in this.QuestsToValidId)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.QuestsToStartId.Length);
+		foreach (short item in this.QuestsToStartId)
+		{
+			writer.WriteVarShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int QuestsToValidIdLen = reader.ReadShort();
+		QuestsToValidId = new short[QuestsToValidIdLen];
+		for (int i = 0; i < QuestsToValidIdLen; i++)
+		{
+			this.QuestsToValidId[i] = reader.ReadVarShort();
+		}
+		int QuestsToStartIdLen = reader.ReadShort();
+		QuestsToStartId = new short[QuestsToStartIdLen];
+		for (int i = 0; i < QuestsToStartIdLen; i++)
+		{
+			this.QuestsToStartId[i] = reader.ReadVarShort();
+		}
+	}
 }
-
-public ushort[] questsToValidId;
-        public ushort[] questsToStartId;
-        
-
-public GameRolePlayNpcQuestFlag()
-{
-}
-
-public GameRolePlayNpcQuestFlag(ushort[] questsToValidId, ushort[] questsToStartId)
-        {
-            this.questsToValidId = questsToValidId;
-            this.questsToStartId = questsToStartId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)questsToValidId.Length);
-            foreach (var entry in questsToValidId)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)questsToStartId.Length);
-            foreach (var entry in questsToStartId)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            questsToValidId = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 questsToValidId[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            questsToStartId = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 questsToStartId[i] = reader.ReadVaruhshort();
-            }
-            
-
-}
-
-
-}
-
-
 }

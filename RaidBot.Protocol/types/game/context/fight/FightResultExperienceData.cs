@@ -1,140 +1,94 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightResultExperienceData : FightResultAdditionalData
 {
 
-public const short Id = 192;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 192;
+	public override uint MessageId { get { return Id; } }
+
+	public bool ShowExperience { get; set; }
+	public bool ShowExperienceLevelFloor { get; set; }
+	public bool ShowExperienceNextLevelFloor { get; set; }
+	public bool ShowExperienceFightDelta { get; set; }
+	public bool ShowExperienceForGuild { get; set; }
+	public bool ShowExperienceForMount { get; set; }
+	public bool IsIncarnationExperience { get; set; }
+	public long Experience { get; set; }
+	public long ExperienceLevelFloor { get; set; }
+	public long ExperienceNextLevelFloor { get; set; }
+	public long ExperienceFightDelta { get; set; }
+	public long ExperienceForGuild { get; set; }
+	public long ExperienceForMount { get; set; }
+	public byte RerollExperienceMul { get; set; }
+
+	public FightResultExperienceData() {}
+
+
+	public FightResultExperienceData InitFightResultExperienceData(bool ShowExperience, bool ShowExperienceLevelFloor, bool ShowExperienceNextLevelFloor, bool ShowExperienceFightDelta, bool ShowExperienceForGuild, bool ShowExperienceForMount, bool IsIncarnationExperience, long Experience, long ExperienceLevelFloor, long ExperienceNextLevelFloor, long ExperienceFightDelta, long ExperienceForGuild, long ExperienceForMount, byte RerollExperienceMul)
+	{
+		this.ShowExperience = ShowExperience;
+		this.ShowExperienceLevelFloor = ShowExperienceLevelFloor;
+		this.ShowExperienceNextLevelFloor = ShowExperienceNextLevelFloor;
+		this.ShowExperienceFightDelta = ShowExperienceFightDelta;
+		this.ShowExperienceForGuild = ShowExperienceForGuild;
+		this.ShowExperienceForMount = ShowExperienceForMount;
+		this.IsIncarnationExperience = IsIncarnationExperience;
+		this.Experience = Experience;
+		this.ExperienceLevelFloor = ExperienceLevelFloor;
+		this.ExperienceNextLevelFloor = ExperienceNextLevelFloor;
+		this.ExperienceFightDelta = ExperienceFightDelta;
+		this.ExperienceForGuild = ExperienceForGuild;
+		this.ExperienceForMount = ExperienceForMount;
+		this.RerollExperienceMul = RerollExperienceMul;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, ShowExperience);
+		box = BooleanByteWrapper.SetFlag(box, 1, ShowExperienceLevelFloor);
+		box = BooleanByteWrapper.SetFlag(box, 2, ShowExperienceNextLevelFloor);
+		box = BooleanByteWrapper.SetFlag(box, 3, ShowExperienceFightDelta);
+		box = BooleanByteWrapper.SetFlag(box, 4, ShowExperienceForGuild);
+		box = BooleanByteWrapper.SetFlag(box, 5, ShowExperienceForMount);
+		box = BooleanByteWrapper.SetFlag(box, 6, IsIncarnationExperience);
+		writer.WriteByte(box);
+		writer.WriteVarLong(this.Experience);
+		writer.WriteVarLong(this.ExperienceLevelFloor);
+		writer.WriteVarLong(this.ExperienceNextLevelFloor);
+		writer.WriteVarLong(this.ExperienceFightDelta);
+		writer.WriteVarLong(this.ExperienceForGuild);
+		writer.WriteVarLong(this.ExperienceForMount);
+		writer.WriteByte(this.RerollExperienceMul);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		byte box = reader.ReadByte();
+		this.ShowExperience = BooleanByteWrapper.GetFlag(box, 0);
+		this.ShowExperienceLevelFloor = BooleanByteWrapper.GetFlag(box, 1);
+		this.ShowExperienceNextLevelFloor = BooleanByteWrapper.GetFlag(box, 2);
+		this.ShowExperienceFightDelta = BooleanByteWrapper.GetFlag(box, 3);
+		this.ShowExperienceForGuild = BooleanByteWrapper.GetFlag(box, 4);
+		this.ShowExperienceForMount = BooleanByteWrapper.GetFlag(box, 5);
+		this.IsIncarnationExperience = BooleanByteWrapper.GetFlag(box, 6);
+		this.Experience = reader.ReadVarLong();
+		this.ExperienceLevelFloor = reader.ReadVarLong();
+		this.ExperienceNextLevelFloor = reader.ReadVarLong();
+		this.ExperienceFightDelta = reader.ReadVarLong();
+		this.ExperienceForGuild = reader.ReadVarLong();
+		this.ExperienceForMount = reader.ReadVarLong();
+		this.RerollExperienceMul = reader.ReadByte();
+	}
 }
-
-public bool showExperience;
-        public bool showExperienceLevelFloor;
-        public bool showExperienceNextLevelFloor;
-        public bool showExperienceFightDelta;
-        public bool showExperienceForGuild;
-        public bool showExperienceForMount;
-        public bool isIncarnationExperience;
-        public ulong experience;
-        public ulong experienceLevelFloor;
-        public double experienceNextLevelFloor;
-        public int experienceFightDelta;
-        public uint experienceForGuild;
-        public uint experienceForMount;
-        public sbyte rerollExperienceMul;
-        
-
-public FightResultExperienceData()
-{
-}
-
-public FightResultExperienceData(bool showExperience, bool showExperienceLevelFloor, bool showExperienceNextLevelFloor, bool showExperienceFightDelta, bool showExperienceForGuild, bool showExperienceForMount, bool isIncarnationExperience, ulong experience, ulong experienceLevelFloor, double experienceNextLevelFloor, int experienceFightDelta, uint experienceForGuild, uint experienceForMount, sbyte rerollExperienceMul)
-        {
-            this.showExperience = showExperience;
-            this.showExperienceLevelFloor = showExperienceLevelFloor;
-            this.showExperienceNextLevelFloor = showExperienceNextLevelFloor;
-            this.showExperienceFightDelta = showExperienceFightDelta;
-            this.showExperienceForGuild = showExperienceForGuild;
-            this.showExperienceForMount = showExperienceForMount;
-            this.isIncarnationExperience = isIncarnationExperience;
-            this.experience = experience;
-            this.experienceLevelFloor = experienceLevelFloor;
-            this.experienceNextLevelFloor = experienceNextLevelFloor;
-            this.experienceFightDelta = experienceFightDelta;
-            this.experienceForGuild = experienceForGuild;
-            this.experienceForMount = experienceForMount;
-            this.rerollExperienceMul = rerollExperienceMul;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, showExperience);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, showExperienceLevelFloor);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, showExperienceNextLevelFloor);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, showExperienceFightDelta);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 4, showExperienceForGuild);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 5, showExperienceForMount);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 6, isIncarnationExperience);
-            writer.WriteByte(flag1);
-            writer.WriteVaruhlong(experience);
-            writer.WriteVaruhlong(experienceLevelFloor);
-            writer.WriteDouble(experienceNextLevelFloor);
-            writer.WriteVarint(experienceFightDelta);
-            writer.WriteVaruhint(experienceForGuild);
-            writer.WriteVaruhint(experienceForMount);
-            writer.WriteSByte(rerollExperienceMul);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            byte flag1 = reader.ReadByte();
-            showExperience = BooleanByteWrapper.GetFlag(flag1, 0);
-            showExperienceLevelFloor = BooleanByteWrapper.GetFlag(flag1, 1);
-            showExperienceNextLevelFloor = BooleanByteWrapper.GetFlag(flag1, 2);
-            showExperienceFightDelta = BooleanByteWrapper.GetFlag(flag1, 3);
-            showExperienceForGuild = BooleanByteWrapper.GetFlag(flag1, 4);
-            showExperienceForMount = BooleanByteWrapper.GetFlag(flag1, 5);
-            isIncarnationExperience = BooleanByteWrapper.GetFlag(flag1, 6);
-            experience = reader.ReadVaruhlong();
-            if (experience < 0 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < 0 || experience > 9.007199254740992E15");
-            experienceLevelFloor = reader.ReadVaruhlong();
-            if (experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceLevelFloor = " + experienceLevelFloor + ", it doesn't respect the following condition : experienceLevelFloor < 0 || experienceLevelFloor > 9.007199254740992E15");
-            experienceNextLevelFloor = reader.ReadDouble();
-            if (experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experienceNextLevelFloor = " + experienceNextLevelFloor + ", it doesn't respect the following condition : experienceNextLevelFloor < 0 || experienceNextLevelFloor > 9.007199254740992E15");
-            experienceFightDelta = reader.ReadVarint();
-            experienceForGuild = reader.ReadVaruhint();
-            if (experienceForGuild < 0)
-                throw new Exception("Forbidden value on experienceForGuild = " + experienceForGuild + ", it doesn't respect the following condition : experienceForGuild < 0");
-            experienceForMount = reader.ReadVaruhint();
-            if (experienceForMount < 0)
-                throw new Exception("Forbidden value on experienceForMount = " + experienceForMount + ", it doesn't respect the following condition : experienceForMount < 0");
-            rerollExperienceMul = reader.ReadSByte();
-            if (rerollExperienceMul < 0)
-                throw new Exception("Forbidden value on rerollExperienceMul = " + rerollExperienceMul + ", it doesn't respect the following condition : rerollExperienceMul < 0");
-            
-
-}
-
-
-}
-
-
 }

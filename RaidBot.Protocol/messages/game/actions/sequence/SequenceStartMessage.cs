@@ -1,76 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SequenceStartMessage : NetworkMessage
 {
 
-public const uint Id = 955;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 955;
+	public override uint MessageId { get { return Id; } }
+
+	public byte SequenceType { get; set; }
+	public double AuthorId { get; set; }
+
+	public SequenceStartMessage() {}
+
+
+	public SequenceStartMessage InitSequenceStartMessage(byte SequenceType, double AuthorId)
+	{
+		this.SequenceType = SequenceType;
+		this.AuthorId = AuthorId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.SequenceType);
+		writer.WriteDouble(this.AuthorId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SequenceType = reader.ReadByte();
+		this.AuthorId = reader.ReadDouble();
+	}
 }
-
-public sbyte sequenceType;
-        public int authorId;
-        
-
-public SequenceStartMessage()
-{
-}
-
-public SequenceStartMessage(sbyte sequenceType, int authorId)
-        {
-            this.sequenceType = sequenceType;
-            this.authorId = authorId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(sequenceType);
-            writer.WriteInt(authorId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-sequenceType = reader.ReadSByte();
-            authorId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

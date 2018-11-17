@@ -1,85 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class StatedElement : NetworkType
 {
 
-public class StatedElement
-{
+	public const uint Id = 108;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 108;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int ElementId { get; set; }
+	public short ElementCellId { get; set; }
+	public int ElementState { get; set; }
+	public bool OnCurrentMap { get; set; }
+
+	public StatedElement() {}
+
+
+	public StatedElement InitStatedElement(int ElementId, short ElementCellId, int ElementState, bool OnCurrentMap)
+	{
+		this.ElementId = ElementId;
+		this.ElementCellId = ElementCellId;
+		this.ElementState = ElementState;
+		this.OnCurrentMap = OnCurrentMap;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.ElementId);
+		writer.WriteVarShort(this.ElementCellId);
+		writer.WriteVarInt(this.ElementState);
+		writer.WriteBoolean(this.OnCurrentMap);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ElementId = reader.ReadInt();
+		this.ElementCellId = reader.ReadVarShort();
+		this.ElementState = reader.ReadVarInt();
+		this.OnCurrentMap = reader.ReadBoolean();
+	}
 }
-
-public int elementId;
-        public ushort elementCellId;
-        public uint elementState;
-        
-
-public StatedElement()
-{
-}
-
-public StatedElement(int elementId, ushort elementCellId, uint elementState)
-        {
-            this.elementId = elementId;
-            this.elementCellId = elementCellId;
-            this.elementState = elementState;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(elementId);
-            writer.WriteVaruhshort(elementCellId);
-            writer.WriteVaruhint(elementState);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-elementId = reader.ReadInt();
-            if (elementId < 0)
-                throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
-            elementCellId = reader.ReadVaruhshort();
-            if (elementCellId < 0 || elementCellId > 559)
-                throw new Exception("Forbidden value on elementCellId = " + elementCellId + ", it doesn't respect the following condition : elementCellId < 0 || elementCellId > 559");
-            elementState = reader.ReadVaruhint();
-            if (elementState < 0)
-                throw new Exception("Forbidden value on elementState = " + elementState + ", it doesn't respect the following condition : elementState < 0");
-            
-
-}
-
-
-}
-
-
 }

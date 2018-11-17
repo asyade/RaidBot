@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildVersatileInfoListMessage : NetworkMessage
 {
 
-public const uint Id = 6435;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6435;
+	public override uint MessageId { get { return Id; } }
+
+	public GuildVersatileInformations[] Guilds { get; set; }
+
+	public GuildVersatileInfoListMessage() {}
+
+
+	public GuildVersatileInfoListMessage InitGuildVersatileInfoListMessage(GuildVersatileInformations[] Guilds)
+	{
+		this.Guilds = Guilds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Guilds.Length);
+		foreach (GuildVersatileInformations item in this.Guilds)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int GuildsLen = reader.ReadShort();
+		Guilds = new GuildVersatileInformations[GuildsLen];
+		for (int i = 0; i < GuildsLen; i++)
+		{
+			this.Guilds[i] = ProtocolTypeManager.GetInstance<GuildVersatileInformations>(reader.ReadShort());
+			this.Guilds[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.GuildVersatileInformations[] guilds;
-        
-
-public GuildVersatileInfoListMessage()
-{
-}
-
-public GuildVersatileInfoListMessage(Types.GuildVersatileInformations[] guilds)
-        {
-            this.guilds = guilds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)guilds.Length);
-            foreach (var entry in guilds)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            guilds = new Types.GuildVersatileInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 guilds[i] = Types.ProtocolTypeManager.GetInstance<Types.GuildVersatileInformations>(reader.ReadShort());
-                 guilds[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

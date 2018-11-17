@@ -1,132 +1,86 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TaxCollectorInformations : NetworkType
 {
 
-public class TaxCollectorInformations
-{
+	public const uint Id = 167;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 167;
-public virtual short TypeId
-{
-    get { return Id; }
+	public double UniqueId { get; set; }
+	public short FirtNameId { get; set; }
+	public short LastNameId { get; set; }
+	public AdditionalTaxCollectorInformations AdditionalInfos { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public short SubAreaId { get; set; }
+	public byte State { get; set; }
+	public EntityLook Look { get; set; }
+	public TaxCollectorComplementaryInformations[] Complements { get; set; }
+
+	public TaxCollectorInformations() {}
+
+
+	public TaxCollectorInformations InitTaxCollectorInformations(double UniqueId, short FirtNameId, short LastNameId, AdditionalTaxCollectorInformations AdditionalInfos, short WorldX, short WorldY, short SubAreaId, byte State, EntityLook Look, TaxCollectorComplementaryInformations[] Complements)
+	{
+		this.UniqueId = UniqueId;
+		this.FirtNameId = FirtNameId;
+		this.LastNameId = LastNameId;
+		this.AdditionalInfos = AdditionalInfos;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.SubAreaId = SubAreaId;
+		this.State = State;
+		this.Look = Look;
+		this.Complements = Complements;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.UniqueId);
+		writer.WriteVarShort(this.FirtNameId);
+		writer.WriteVarShort(this.LastNameId);
+		this.AdditionalInfos.Serialize(writer);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteByte(this.State);
+		this.Look.Serialize(writer);
+		writer.WriteShort(this.Complements.Length);
+		foreach (TaxCollectorComplementaryInformations item in this.Complements)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.UniqueId = reader.ReadDouble();
+		this.FirtNameId = reader.ReadVarShort();
+		this.LastNameId = reader.ReadVarShort();
+		this.AdditionalInfos = new AdditionalTaxCollectorInformations();
+		this.AdditionalInfos.Deserialize(reader);
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.SubAreaId = reader.ReadVarShort();
+		this.State = reader.ReadByte();
+		this.Look = new EntityLook();
+		this.Look.Deserialize(reader);
+		int ComplementsLen = reader.ReadShort();
+		Complements = new TaxCollectorComplementaryInformations[ComplementsLen];
+		for (int i = 0; i < ComplementsLen; i++)
+		{
+			this.Complements[i] = ProtocolTypeManager.GetInstance<TaxCollectorComplementaryInformations>(reader.ReadShort());
+			this.Complements[i].Deserialize(reader);
+		}
+	}
 }
-
-public int uniqueId;
-        public ushort firtNameId;
-        public ushort lastNameId;
-        public Types.AdditionalTaxCollectorInformations additionalInfos;
-        public short worldX;
-        public short worldY;
-        public ushort subAreaId;
-        public sbyte state;
-        public Types.EntityLook look;
-        public Types.TaxCollectorComplementaryInformations[] complements;
-        
-
-public TaxCollectorInformations()
-{
-}
-
-public TaxCollectorInformations(int uniqueId, ushort firtNameId, ushort lastNameId, Types.AdditionalTaxCollectorInformations additionalInfos, short worldX, short worldY, ushort subAreaId, sbyte state, Types.EntityLook look, Types.TaxCollectorComplementaryInformations[] complements)
-        {
-            this.uniqueId = uniqueId;
-            this.firtNameId = firtNameId;
-            this.lastNameId = lastNameId;
-            this.additionalInfos = additionalInfos;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.subAreaId = subAreaId;
-            this.state = state;
-            this.look = look;
-            this.complements = complements;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(uniqueId);
-            writer.WriteVaruhshort(firtNameId);
-            writer.WriteVaruhshort(lastNameId);
-            additionalInfos.Serialize(writer);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteSByte(state);
-            look.Serialize(writer);
-            writer.WriteUShort((ushort)complements.Length);
-            foreach (var entry in complements)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-uniqueId = reader.ReadInt();
-            firtNameId = reader.ReadVaruhshort();
-            if (firtNameId < 0)
-                throw new Exception("Forbidden value on firtNameId = " + firtNameId + ", it doesn't respect the following condition : firtNameId < 0");
-            lastNameId = reader.ReadVaruhshort();
-            if (lastNameId < 0)
-                throw new Exception("Forbidden value on lastNameId = " + lastNameId + ", it doesn't respect the following condition : lastNameId < 0");
-            additionalInfos = new Types.AdditionalTaxCollectorInformations();
-            additionalInfos.Deserialize(reader);
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
-            look = new Types.EntityLook();
-            look.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            complements = new Types.TaxCollectorComplementaryInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 complements[i] = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorComplementaryInformations>(reader.ReadShort());
-                 complements[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

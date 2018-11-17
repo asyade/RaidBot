@@ -1,87 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class CharacterBaseCharacteristic : NetworkType
 {
 
-public class CharacterBaseCharacteristic
-{
+	public const uint Id = 4;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 4;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short Base { get; set; }
+	public short Additionnal { get; set; }
+	public short ObjectsAndMountBonus { get; set; }
+	public short AlignGiftBonus { get; set; }
+	public short ContextModif { get; set; }
+
+	public CharacterBaseCharacteristic() {}
+
+
+	public CharacterBaseCharacteristic InitCharacterBaseCharacteristic(short Base, short Additionnal, short ObjectsAndMountBonus, short AlignGiftBonus, short ContextModif)
+	{
+		this.Base = Base;
+		this.Additionnal = Additionnal;
+		this.ObjectsAndMountBonus = ObjectsAndMountBonus;
+		this.AlignGiftBonus = AlignGiftBonus;
+		this.ContextModif = ContextModif;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.Base);
+		writer.WriteVarShort(this.Additionnal);
+		writer.WriteVarShort(this.ObjectsAndMountBonus);
+		writer.WriteVarShort(this.AlignGiftBonus);
+		writer.WriteVarShort(this.ContextModif);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Base = reader.ReadVarShort();
+		this.Additionnal = reader.ReadVarShort();
+		this.ObjectsAndMountBonus = reader.ReadVarShort();
+		this.AlignGiftBonus = reader.ReadVarShort();
+		this.ContextModif = reader.ReadVarShort();
+	}
 }
-
-public short @base;
-        public short additionnal;
-        public short objectsAndMountBonus;
-        public short alignGiftBonus;
-        public short contextModif;
-        
-
-public CharacterBaseCharacteristic()
-{
-}
-
-public CharacterBaseCharacteristic(short @base, short additionnal, short objectsAndMountBonus, short alignGiftBonus, short contextModif)
-        {
-            this.@base = @base;
-            this.additionnal = additionnal;
-            this.objectsAndMountBonus = objectsAndMountBonus;
-            this.alignGiftBonus = alignGiftBonus;
-            this.contextModif = contextModif;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVarshort(@base);
-            writer.WriteVarshort(additionnal);
-            writer.WriteVarshort(objectsAndMountBonus);
-            writer.WriteVarshort(alignGiftBonus);
-            writer.WriteVarshort(contextModif);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-@base = reader.ReadVarshort();
-            additionnal = reader.ReadVarshort();
-            objectsAndMountBonus = reader.ReadVarshort();
-            alignGiftBonus = reader.ReadVarshort();
-            contextModif = reader.ReadVarshort();
-            
-
-}
-
-
-}
-
-
 }

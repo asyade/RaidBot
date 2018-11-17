@@ -1,86 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameRolePlayTaxCollectorInformations : GameRolePlayActorInformations
 {
 
-public const short Id = 148;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 148;
+	public override uint MessageId { get { return Id; } }
+
+	public byte GuildLevel { get; set; }
+	public int TaxCollectorAttack { get; set; }
+
+	public GameRolePlayTaxCollectorInformations() {}
+
+
+	public GameRolePlayTaxCollectorInformations InitGameRolePlayTaxCollectorInformations(byte GuildLevel, int TaxCollectorAttack)
+	{
+		this.GuildLevel = GuildLevel;
+		this.TaxCollectorAttack = TaxCollectorAttack;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.GuildLevel);
+		writer.WriteInt(this.TaxCollectorAttack);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.GuildLevel = reader.ReadByte();
+		this.TaxCollectorAttack = reader.ReadInt();
+	}
 }
-
-public Types.TaxCollectorStaticInformations identification;
-        public byte guildLevel;
-        public int taxCollectorAttack;
-        
-
-public GameRolePlayTaxCollectorInformations()
-{
-}
-
-public GameRolePlayTaxCollectorInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, Types.TaxCollectorStaticInformations identification, byte guildLevel, int taxCollectorAttack)
-         : base(contextualId, look, disposition)
-        {
-            this.identification = identification;
-            this.guildLevel = guildLevel;
-            this.taxCollectorAttack = taxCollectorAttack;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteShort(identification.TypeId);
-            identification.Serialize(writer);
-            writer.WriteByte(guildLevel);
-            writer.WriteInt(taxCollectorAttack);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            identification = Types.ProtocolTypeManager.GetInstance<Types.TaxCollectorStaticInformations>(reader.ReadShort());
-            identification.Deserialize(reader);
-            guildLevel = reader.ReadByte();
-            if (guildLevel < 0 || guildLevel > 255)
-                throw new Exception("Forbidden value on guildLevel = " + guildLevel + ", it doesn't respect the following condition : guildLevel < 0 || guildLevel > 255");
-            taxCollectorAttack = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

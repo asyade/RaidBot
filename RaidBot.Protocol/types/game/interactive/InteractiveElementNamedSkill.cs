@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class InteractiveElementNamedSkill : InteractiveElementSkill
 {
 
-public const short Id = 220;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 220;
+	public override uint MessageId { get { return Id; } }
+
+	public int NameId { get; set; }
+
+	public InteractiveElementNamedSkill() {}
+
+
+	public InteractiveElementNamedSkill InitInteractiveElementNamedSkill(int NameId)
+	{
+		this.NameId = NameId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarInt(this.NameId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.NameId = reader.ReadVarInt();
+	}
 }
-
-public uint nameId;
-        
-
-public InteractiveElementNamedSkill()
-{
-}
-
-public InteractiveElementNamedSkill(uint skillId, int skillInstanceUid, uint nameId)
-         : base(skillId, skillInstanceUid)
-        {
-            this.nameId = nameId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(nameId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            nameId = reader.ReadVaruhint();
-            if (nameId < 0)
-                throw new Exception("Forbidden value on nameId = " + nameId + ", it doesn't respect the following condition : nameId < 0");
-            
-
-}
-
-
-}
-
-
 }

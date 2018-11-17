@@ -1,84 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameContextRemoveMultipleElementsWithEventsMessage : GameContextRemoveMultipleElementsMessage
 {
 
-public const uint Id = 6416;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6416;
+	public override uint MessageId { get { return Id; } }
+
+	public byte[] ElementEventIds { get; set; }
+
+	public GameContextRemoveMultipleElementsWithEventsMessage() {}
+
+
+	public GameContextRemoveMultipleElementsWithEventsMessage InitGameContextRemoveMultipleElementsWithEventsMessage(byte[] ElementEventIds)
+	{
+		this.ElementEventIds = ElementEventIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.ElementEventIds.Length);
+		foreach (byte item in this.ElementEventIds)
+		{
+			writer.WriteByte(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int ElementEventIdsLen = reader.ReadShort();
+		ElementEventIds = new byte[ElementEventIdsLen];
+		for (int i = 0; i < ElementEventIdsLen; i++)
+		{
+			this.ElementEventIds[i] = reader.ReadByte();
+		}
+	}
 }
-
-public sbyte[] elementEventIds;
-        
-
-public GameContextRemoveMultipleElementsWithEventsMessage()
-{
-}
-
-public GameContextRemoveMultipleElementsWithEventsMessage(int[] id, sbyte[] elementEventIds)
-         : base(id)
-        {
-            this.elementEventIds = elementEventIds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)elementEventIds.Length);
-            foreach (var entry in elementEventIds)
-            {
-                 writer.WriteSByte(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            elementEventIds = new sbyte[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 elementEventIds[i] = reader.ReadSByte();
-            }
-            
-
-}
-
-
-}
-
-
 }

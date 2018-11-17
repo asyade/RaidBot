@@ -1,111 +1,71 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class FriendSpouseInformations : NetworkType
 {
 
-public class FriendSpouseInformations
-{
+	public const uint Id = 77;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 77;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int SpouseAccountId { get; set; }
+	public long SpouseId { get; set; }
+	public String SpouseName { get; set; }
+	public short SpouseLevel { get; set; }
+	public byte Breed { get; set; }
+	public byte Sex { get; set; }
+	public EntityLook SpouseEntityLook { get; set; }
+	public GuildInformations GuildInfo { get; set; }
+	public byte AlignmentSide { get; set; }
+
+	public FriendSpouseInformations() {}
+
+
+	public FriendSpouseInformations InitFriendSpouseInformations(int SpouseAccountId, long SpouseId, String SpouseName, short SpouseLevel, byte Breed, byte Sex, EntityLook SpouseEntityLook, GuildInformations GuildInfo, byte AlignmentSide)
+	{
+		this.SpouseAccountId = SpouseAccountId;
+		this.SpouseId = SpouseId;
+		this.SpouseName = SpouseName;
+		this.SpouseLevel = SpouseLevel;
+		this.Breed = Breed;
+		this.Sex = Sex;
+		this.SpouseEntityLook = SpouseEntityLook;
+		this.GuildInfo = GuildInfo;
+		this.AlignmentSide = AlignmentSide;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.SpouseAccountId);
+		writer.WriteVarLong(this.SpouseId);
+		writer.WriteUTF(this.SpouseName);
+		writer.WriteVarShort(this.SpouseLevel);
+		writer.WriteByte(this.Breed);
+		writer.WriteByte(this.Sex);
+		this.SpouseEntityLook.Serialize(writer);
+		this.GuildInfo.Serialize(writer);
+		writer.WriteByte(this.AlignmentSide);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SpouseAccountId = reader.ReadInt();
+		this.SpouseId = reader.ReadVarLong();
+		this.SpouseName = reader.ReadUTF();
+		this.SpouseLevel = reader.ReadVarShort();
+		this.Breed = reader.ReadByte();
+		this.Sex = reader.ReadByte();
+		this.SpouseEntityLook = new EntityLook();
+		this.SpouseEntityLook.Deserialize(reader);
+		this.GuildInfo = new GuildInformations();
+		this.GuildInfo.Deserialize(reader);
+		this.AlignmentSide = reader.ReadByte();
+	}
 }
-
-public int spouseAccountId;
-        public uint spouseId;
-        public string spouseName;
-        public byte spouseLevel;
-        public sbyte breed;
-        public sbyte sex;
-        public Types.EntityLook spouseEntityLook;
-        public Types.BasicGuildInformations guildInfo;
-        public sbyte alignmentSide;
-        
-
-public FriendSpouseInformations()
-{
-}
-
-public FriendSpouseInformations(int spouseAccountId, uint spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide)
-        {
-            this.spouseAccountId = spouseAccountId;
-            this.spouseId = spouseId;
-            this.spouseName = spouseName;
-            this.spouseLevel = spouseLevel;
-            this.breed = breed;
-            this.sex = sex;
-            this.spouseEntityLook = spouseEntityLook;
-            this.guildInfo = guildInfo;
-            this.alignmentSide = alignmentSide;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(spouseAccountId);
-            writer.WriteVaruhint(spouseId);
-            writer.WriteUTF(spouseName);
-            writer.WriteByte(spouseLevel);
-            writer.WriteSByte(breed);
-            writer.WriteSByte(sex);
-            spouseEntityLook.Serialize(writer);
-            guildInfo.Serialize(writer);
-            writer.WriteSByte(alignmentSide);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-spouseAccountId = reader.ReadInt();
-            if (spouseAccountId < 0)
-                throw new Exception("Forbidden value on spouseAccountId = " + spouseAccountId + ", it doesn't respect the following condition : spouseAccountId < 0");
-            spouseId = reader.ReadVaruhint();
-            if (spouseId < 0)
-                throw new Exception("Forbidden value on spouseId = " + spouseId + ", it doesn't respect the following condition : spouseId < 0");
-            spouseName = reader.ReadUTF();
-            spouseLevel = reader.ReadByte();
-            if (spouseLevel < 1 || spouseLevel > 200)
-                throw new Exception("Forbidden value on spouseLevel = " + spouseLevel + ", it doesn't respect the following condition : spouseLevel < 1 || spouseLevel > 200");
-            breed = reader.ReadSByte();
-            sex = reader.ReadSByte();
-            spouseEntityLook = new Types.EntityLook();
-            spouseEntityLook.Deserialize(reader);
-            guildInfo = new Types.BasicGuildInformations();
-            guildInfo.Deserialize(reader);
-            alignmentSide = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

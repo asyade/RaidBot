@@ -1,85 +1,49 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharactersListWithRemodelingMessage : CharactersListMessage
 {
 
-public const uint Id = 6550;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6550;
+	public override uint MessageId { get { return Id; } }
+
+	public CharacterToRemodelInformations[] CharactersToRemodel { get; set; }
+
+	public CharactersListWithRemodelingMessage() {}
+
+
+	public CharactersListWithRemodelingMessage InitCharactersListWithRemodelingMessage(CharacterToRemodelInformations[] CharactersToRemodel)
+	{
+		this.CharactersToRemodel = CharactersToRemodel;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.CharactersToRemodel.Length);
+		foreach (CharacterToRemodelInformations item in this.CharactersToRemodel)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		int CharactersToRemodelLen = reader.ReadShort();
+		CharactersToRemodel = new CharacterToRemodelInformations[CharactersToRemodelLen];
+		for (int i = 0; i < CharactersToRemodelLen; i++)
+		{
+			this.CharactersToRemodel[i] = new CharacterToRemodelInformations();
+			this.CharactersToRemodel[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.CharacterToRemodelInformations[] charactersToRemodel;
-        
-
-public CharactersListWithRemodelingMessage()
-{
-}
-
-public CharactersListWithRemodelingMessage(Types.CharacterBaseInformations[] characters, bool hasStartupActions, Types.CharacterToRemodelInformations[] charactersToRemodel)
-         : base(characters, hasStartupActions)
-        {
-            this.charactersToRemodel = charactersToRemodel;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUShort((ushort)charactersToRemodel.Length);
-            foreach (var entry in charactersToRemodel)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            var limit = reader.ReadUShort();
-            charactersToRemodel = new Types.CharacterToRemodelInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 charactersToRemodel[i] = new Types.CharacterToRemodelInformations();
-                 charactersToRemodel[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

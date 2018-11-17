@@ -1,77 +1,42 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:41
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SetCharacterRestrictionsMessage : NetworkMessage
 {
 
-public const uint Id = 170;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 170;
+	public override uint MessageId { get { return Id; } }
+
+	public double ActorId { get; set; }
+	public ActorRestrictionsInformations Restrictions { get; set; }
+
+	public SetCharacterRestrictionsMessage() {}
+
+
+	public SetCharacterRestrictionsMessage InitSetCharacterRestrictionsMessage(double ActorId, ActorRestrictionsInformations Restrictions)
+	{
+		this.ActorId = ActorId;
+		this.Restrictions = Restrictions;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.ActorId);
+		this.Restrictions.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ActorId = reader.ReadDouble();
+		this.Restrictions = new ActorRestrictionsInformations();
+		this.Restrictions.Deserialize(reader);
+	}
 }
-
-public int actorId;
-        public Types.ActorRestrictionsInformations restrictions;
-        
-
-public SetCharacterRestrictionsMessage()
-{
-}
-
-public SetCharacterRestrictionsMessage(int actorId, Types.ActorRestrictionsInformations restrictions)
-        {
-            this.actorId = actorId;
-            this.restrictions = restrictions;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(actorId);
-            restrictions.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-actorId = reader.ReadInt();
-            restrictions = new Types.ActorRestrictionsInformations();
-            restrictions.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

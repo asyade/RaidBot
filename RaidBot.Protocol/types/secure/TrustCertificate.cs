@@ -1,77 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class TrustCertificate : NetworkType
 {
 
-public class TrustCertificate
-{
+	public const uint Id = 377;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 377;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int Id_ { get; set; }
+	public String Hash { get; set; }
+
+	public TrustCertificate() {}
+
+
+	public TrustCertificate InitTrustCertificate(int Id_, String Hash)
+	{
+		this.Id_ = Id_;
+		this.Hash = Hash;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.Id_);
+		writer.WriteUTF(this.Hash);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Id_ = reader.ReadInt();
+		this.Hash = reader.ReadUTF();
+	}
 }
-
-public int id;
-        public string hash;
-        
-
-public TrustCertificate()
-{
-}
-
-public TrustCertificate(int id, string hash)
-        {
-            this.id = id;
-            this.hash = hash;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(id);
-            writer.WriteUTF(hash);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-id = reader.ReadInt();
-            if (id < 0)
-                throw new Exception("Forbidden value on id = " + id + ", it doesn't respect the following condition : id < 0");
-            hash = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

@@ -1,82 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SequenceEndMessage : NetworkMessage
 {
 
-public const uint Id = 956;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 956;
+	public override uint MessageId { get { return Id; } }
+
+	public short ActionId { get; set; }
+	public double AuthorId { get; set; }
+	public byte SequenceType { get; set; }
+
+	public SequenceEndMessage() {}
+
+
+	public SequenceEndMessage InitSequenceEndMessage(short ActionId, double AuthorId, byte SequenceType)
+	{
+		this.ActionId = ActionId;
+		this.AuthorId = AuthorId;
+		this.SequenceType = SequenceType;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ActionId);
+		writer.WriteDouble(this.AuthorId);
+		writer.WriteByte(this.SequenceType);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ActionId = reader.ReadVarShort();
+		this.AuthorId = reader.ReadDouble();
+		this.SequenceType = reader.ReadByte();
+	}
 }
-
-public ushort actionId;
-        public int authorId;
-        public sbyte sequenceType;
-        
-
-public SequenceEndMessage()
-{
-}
-
-public SequenceEndMessage(ushort actionId, int authorId, sbyte sequenceType)
-        {
-            this.actionId = actionId;
-            this.authorId = authorId;
-            this.sequenceType = sequenceType;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(actionId);
-            writer.WriteInt(authorId);
-            writer.WriteSByte(sequenceType);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-actionId = reader.ReadVaruhshort();
-            if (actionId < 0)
-                throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            authorId = reader.ReadInt();
-            sequenceType = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

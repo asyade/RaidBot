@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildFightLeaveRequestMessage : NetworkMessage
 {
 
-public const uint Id = 5715;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5715;
+	public override uint MessageId { get { return Id; } }
+
+	public double TaxCollectorId { get; set; }
+	public long CharacterId { get; set; }
+
+	public GuildFightLeaveRequestMessage() {}
+
+
+	public GuildFightLeaveRequestMessage InitGuildFightLeaveRequestMessage(double TaxCollectorId, long CharacterId)
+	{
+		this.TaxCollectorId = TaxCollectorId;
+		this.CharacterId = CharacterId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.TaxCollectorId);
+		writer.WriteVarLong(this.CharacterId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.TaxCollectorId = reader.ReadDouble();
+		this.CharacterId = reader.ReadVarLong();
+	}
 }
-
-public int taxCollectorId;
-        public uint characterId;
-        
-
-public GuildFightLeaveRequestMessage()
-{
-}
-
-public GuildFightLeaveRequestMessage(int taxCollectorId, uint characterId)
-        {
-            this.taxCollectorId = taxCollectorId;
-            this.characterId = characterId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(taxCollectorId);
-            writer.WriteVaruhint(characterId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-taxCollectorId = reader.ReadInt();
-            if (taxCollectorId < 0)
-                throw new Exception("Forbidden value on taxCollectorId = " + taxCollectorId + ", it doesn't respect the following condition : taxCollectorId < 0");
-            characterId = reader.ReadVaruhint();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
-            
-
-}
-
-
-}
-
-
 }

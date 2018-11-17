@@ -1,79 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PrismSubareaEmptyInfo : NetworkType
 {
 
-public class PrismSubareaEmptyInfo
-{
+	public const uint Id = 438;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 438;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short SubAreaId { get; set; }
+	public int AllianceId { get; set; }
+
+	public PrismSubareaEmptyInfo() {}
+
+
+	public PrismSubareaEmptyInfo InitPrismSubareaEmptyInfo(short SubAreaId, int AllianceId)
+	{
+		this.SubAreaId = SubAreaId;
+		this.AllianceId = AllianceId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteVarInt(this.AllianceId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SubAreaId = reader.ReadVarShort();
+		this.AllianceId = reader.ReadVarInt();
+	}
 }
-
-public ushort subAreaId;
-        public uint allianceId;
-        
-
-public PrismSubareaEmptyInfo()
-{
-}
-
-public PrismSubareaEmptyInfo(ushort subAreaId, uint allianceId)
-        {
-            this.subAreaId = subAreaId;
-            this.allianceId = allianceId;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(subAreaId);
-            writer.WriteVaruhint(allianceId);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            allianceId = reader.ReadVaruhint();
-            if (allianceId < 0)
-                throw new Exception("Forbidden value on allianceId = " + allianceId + ", it doesn't respect the following condition : allianceId < 0");
-            
-
-}
-
-
-}
-
-
 }

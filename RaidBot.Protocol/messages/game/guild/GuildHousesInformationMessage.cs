@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:38
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildHousesInformationMessage : NetworkMessage
 {
 
-public const uint Id = 5919;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5919;
+	public override uint MessageId { get { return Id; } }
+
+	public HouseInformationsForGuild[] HousesInformations { get; set; }
+
+	public GuildHousesInformationMessage() {}
+
+
+	public GuildHousesInformationMessage InitGuildHousesInformationMessage(HouseInformationsForGuild[] HousesInformations)
+	{
+		this.HousesInformations = HousesInformations;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.HousesInformations.Length);
+		foreach (HouseInformationsForGuild item in this.HousesInformations)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int HousesInformationsLen = reader.ReadShort();
+		HousesInformations = new HouseInformationsForGuild[HousesInformationsLen];
+		for (int i = 0; i < HousesInformationsLen; i++)
+		{
+			this.HousesInformations[i] = new HouseInformationsForGuild();
+			this.HousesInformations[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.HouseInformationsForGuild[] housesInformations;
-        
-
-public GuildHousesInformationMessage()
-{
-}
-
-public GuildHousesInformationMessage(Types.HouseInformationsForGuild[] housesInformations)
-        {
-            this.housesInformations = housesInformations;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)housesInformations.Length);
-            foreach (var entry in housesInformations)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            housesInformations = new Types.HouseInformationsForGuild[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 housesInformations[i] = new Types.HouseInformationsForGuild();
-                 housesInformations[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

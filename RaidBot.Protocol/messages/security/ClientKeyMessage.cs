@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ClientKeyMessage : NetworkMessage
 {
 
-public const uint Id = 5607;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5607;
+	public override uint MessageId { get { return Id; } }
+
+	public String Key { get; set; }
+
+	public ClientKeyMessage() {}
+
+
+	public ClientKeyMessage InitClientKeyMessage(String Key)
+	{
+		this.Key = Key;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.Key);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Key = reader.ReadUTF();
+	}
 }
-
-public string key;
-        
-
-public ClientKeyMessage()
-{
-}
-
-public ClientKeyMessage(string key)
-        {
-            this.key = key;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(key);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-key = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

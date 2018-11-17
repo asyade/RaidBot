@@ -1,78 +1,42 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class IndexedEntityLook : NetworkType
 {
 
-public class IndexedEntityLook
-{
+	public const uint Id = 405;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 405;
-public virtual short TypeId
-{
-    get { return Id; }
+	public EntityLook Look { get; set; }
+	public byte Index { get; set; }
+
+	public IndexedEntityLook() {}
+
+
+	public IndexedEntityLook InitIndexedEntityLook(EntityLook Look, byte Index)
+	{
+		this.Look = Look;
+		this.Index = Index;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.Look.Serialize(writer);
+		writer.WriteByte(this.Index);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Look = new EntityLook();
+		this.Look.Deserialize(reader);
+		this.Index = reader.ReadByte();
+	}
 }
-
-public Types.EntityLook look;
-        public sbyte index;
-        
-
-public IndexedEntityLook()
-{
-}
-
-public IndexedEntityLook(Types.EntityLook look, sbyte index)
-        {
-            this.look = look;
-            this.index = index;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-look.Serialize(writer);
-            writer.WriteSByte(index);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-look = new Types.EntityLook();
-            look.Deserialize(reader);
-            index = reader.ReadSByte();
-            if (index < 0)
-                throw new Exception("Forbidden value on index = " + index + ", it doesn't respect the following condition : index < 0");
-            
-
-}
-
-
-}
-
-
 }

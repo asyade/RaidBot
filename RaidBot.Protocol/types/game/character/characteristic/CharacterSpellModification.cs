@@ -1,84 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class CharacterSpellModification : NetworkType
 {
 
-public class CharacterSpellModification
-{
+	public const uint Id = 215;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 215;
-public virtual short TypeId
-{
-    get { return Id; }
+	public byte ModificationType { get; set; }
+	public short SpellId { get; set; }
+	public CharacterBaseCharacteristic Value { get; set; }
+
+	public CharacterSpellModification() {}
+
+
+	public CharacterSpellModification InitCharacterSpellModification(byte ModificationType, short SpellId, CharacterBaseCharacteristic Value)
+	{
+		this.ModificationType = ModificationType;
+		this.SpellId = SpellId;
+		this.Value = Value;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.ModificationType);
+		writer.WriteVarShort(this.SpellId);
+		this.Value.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ModificationType = reader.ReadByte();
+		this.SpellId = reader.ReadVarShort();
+		this.Value = new CharacterBaseCharacteristic();
+		this.Value.Deserialize(reader);
+	}
 }
-
-public sbyte modificationType;
-        public ushort spellId;
-        public Types.CharacterBaseCharacteristic value;
-        
-
-public CharacterSpellModification()
-{
-}
-
-public CharacterSpellModification(sbyte modificationType, ushort spellId, Types.CharacterBaseCharacteristic value)
-        {
-            this.modificationType = modificationType;
-            this.spellId = spellId;
-            this.value = value;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(modificationType);
-            writer.WriteVaruhshort(spellId);
-            value.Serialize(writer);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-modificationType = reader.ReadSByte();
-            if (modificationType < 0)
-                throw new Exception("Forbidden value on modificationType = " + modificationType + ", it doesn't respect the following condition : modificationType < 0");
-            spellId = reader.ReadVaruhshort();
-            if (spellId < 0)
-                throw new Exception("Forbidden value on spellId = " + spellId + ", it doesn't respect the following condition : spellId < 0");
-            value = new Types.CharacterBaseCharacteristic();
-            value.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

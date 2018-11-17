@@ -1,79 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PaddockInformations : NetworkType
 {
 
-public class PaddockInformations
-{
+	public const uint Id = 132;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 132;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short MaxOutdoorMount { get; set; }
+	public short MaxItems { get; set; }
+
+	public PaddockInformations() {}
+
+
+	public PaddockInformations InitPaddockInformations(short MaxOutdoorMount, short MaxItems)
+	{
+		this.MaxOutdoorMount = MaxOutdoorMount;
+		this.MaxItems = MaxItems;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.MaxOutdoorMount);
+		writer.WriteVarShort(this.MaxItems);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MaxOutdoorMount = reader.ReadVarShort();
+		this.MaxItems = reader.ReadVarShort();
+	}
 }
-
-public ushort maxOutdoorMount;
-        public ushort maxItems;
-        
-
-public PaddockInformations()
-{
-}
-
-public PaddockInformations(ushort maxOutdoorMount, ushort maxItems)
-        {
-            this.maxOutdoorMount = maxOutdoorMount;
-            this.maxItems = maxItems;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(maxOutdoorMount);
-            writer.WriteVaruhshort(maxItems);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-maxOutdoorMount = reader.ReadVaruhshort();
-            if (maxOutdoorMount < 0)
-                throw new Exception("Forbidden value on maxOutdoorMount = " + maxOutdoorMount + ", it doesn't respect the following condition : maxOutdoorMount < 0");
-            maxItems = reader.ReadVaruhshort();
-            if (maxItems < 0)
-                throw new Exception("Forbidden value on maxItems = " + maxItems + ", it doesn't respect the following condition : maxItems < 0");
-            
-
-}
-
-
-}
-
-
 }

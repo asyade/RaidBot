@@ -1,81 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class TreasureHuntStepFollowDirectionToHint : TreasureHuntStep
 {
 
-public const short Id = 472;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 472;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Direction { get; set; }
+	public short NpcId { get; set; }
+
+	public TreasureHuntStepFollowDirectionToHint() {}
+
+
+	public TreasureHuntStepFollowDirectionToHint InitTreasureHuntStepFollowDirectionToHint(byte Direction, short NpcId)
+	{
+		this.Direction = Direction;
+		this.NpcId = NpcId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.Direction);
+		writer.WriteVarShort(this.NpcId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Direction = reader.ReadByte();
+		this.NpcId = reader.ReadVarShort();
+	}
 }
-
-public sbyte direction;
-        public ushort npcId;
-        
-
-public TreasureHuntStepFollowDirectionToHint()
-{
-}
-
-public TreasureHuntStepFollowDirectionToHint(sbyte direction, ushort npcId)
-        {
-            this.direction = direction;
-            this.npcId = npcId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(direction);
-            writer.WriteVaruhshort(npcId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            direction = reader.ReadSByte();
-            if (direction < 0)
-                throw new Exception("Forbidden value on direction = " + direction + ", it doesn't respect the following condition : direction < 0");
-            npcId = reader.ReadVaruhshort();
-            if (npcId < 0)
-                throw new Exception("Forbidden value on npcId = " + npcId + ", it doesn't respect the following condition : npcId < 0");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:19
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MountReleasedMessage : NetworkMessage
 {
 
-public const uint Id = 6308;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6308;
+	public override uint MessageId { get { return Id; } }
+
+	public int MountId { get; set; }
+
+	public MountReleasedMessage() {}
+
+
+	public MountReleasedMessage InitMountReleasedMessage(int MountId)
+	{
+		this.MountId = MountId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.MountId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MountId = reader.ReadVarInt();
+	}
 }
-
-public int mountId;
-        
-
-public MountReleasedMessage()
-{
-}
-
-public MountReleasedMessage(int mountId)
-        {
-            this.mountId = mountId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVarint(mountId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-mountId = reader.ReadVarint();
-            
-
-}
-
-
-}
-
-
 }

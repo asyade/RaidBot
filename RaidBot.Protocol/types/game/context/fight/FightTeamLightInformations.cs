@@ -1,105 +1,66 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTeamLightInformations : AbstractFightTeamInformations
 {
 
-public const short Id = 115;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 115;
+	public override uint MessageId { get { return Id; } }
+
+	public bool HasFriend { get; set; }
+	public bool HasGuildMember { get; set; }
+	public bool HasAllianceMember { get; set; }
+	public bool HasGroupMember { get; set; }
+	public bool HasMyTaxCollector { get; set; }
+	public byte TeamMembersCount { get; set; }
+	public int MeanLevel { get; set; }
+
+	public FightTeamLightInformations() {}
+
+
+	public FightTeamLightInformations InitFightTeamLightInformations(bool HasFriend, bool HasGuildMember, bool HasAllianceMember, bool HasGroupMember, bool HasMyTaxCollector, byte TeamMembersCount, int MeanLevel)
+	{
+		this.HasFriend = HasFriend;
+		this.HasGuildMember = HasGuildMember;
+		this.HasAllianceMember = HasAllianceMember;
+		this.HasGroupMember = HasGroupMember;
+		this.HasMyTaxCollector = HasMyTaxCollector;
+		this.TeamMembersCount = TeamMembersCount;
+		this.MeanLevel = MeanLevel;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, HasFriend);
+		box = BooleanByteWrapper.SetFlag(box, 1, HasGuildMember);
+		box = BooleanByteWrapper.SetFlag(box, 2, HasAllianceMember);
+		box = BooleanByteWrapper.SetFlag(box, 3, HasGroupMember);
+		box = BooleanByteWrapper.SetFlag(box, 4, HasMyTaxCollector);
+		writer.WriteByte(box);
+		writer.WriteByte(this.TeamMembersCount);
+		writer.WriteVarInt(this.MeanLevel);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		byte box = reader.ReadByte();
+		this.HasFriend = BooleanByteWrapper.GetFlag(box, 0);
+		this.HasGuildMember = BooleanByteWrapper.GetFlag(box, 1);
+		this.HasAllianceMember = BooleanByteWrapper.GetFlag(box, 2);
+		this.HasGroupMember = BooleanByteWrapper.GetFlag(box, 3);
+		this.HasMyTaxCollector = BooleanByteWrapper.GetFlag(box, 4);
+		this.TeamMembersCount = reader.ReadByte();
+		this.MeanLevel = reader.ReadVarInt();
+	}
 }
-
-public bool hasFriend;
-        public bool hasGuildMember;
-        public bool hasAllianceMember;
-        public bool hasGroupMember;
-        public bool hasMyTaxCollector;
-        public sbyte teamMembersCount;
-        public uint meanLevel;
-        
-
-public FightTeamLightInformations()
-{
-}
-
-public FightTeamLightInformations(sbyte teamId, int leaderId, sbyte teamSide, sbyte teamTypeId, sbyte nbWaves, bool hasFriend, bool hasGuildMember, bool hasAllianceMember, bool hasGroupMember, bool hasMyTaxCollector, sbyte teamMembersCount, uint meanLevel)
-         : base(teamId, leaderId, teamSide, teamTypeId, nbWaves)
-        {
-            this.hasFriend = hasFriend;
-            this.hasGuildMember = hasGuildMember;
-            this.hasAllianceMember = hasAllianceMember;
-            this.hasGroupMember = hasGroupMember;
-            this.hasMyTaxCollector = hasMyTaxCollector;
-            this.teamMembersCount = teamMembersCount;
-            this.meanLevel = meanLevel;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, hasFriend);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, hasGuildMember);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 2, hasAllianceMember);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 3, hasGroupMember);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 4, hasMyTaxCollector);
-            writer.WriteByte(flag1);
-            writer.WriteSByte(teamMembersCount);
-            writer.WriteVaruhint(meanLevel);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            byte flag1 = reader.ReadByte();
-            hasFriend = BooleanByteWrapper.GetFlag(flag1, 0);
-            hasGuildMember = BooleanByteWrapper.GetFlag(flag1, 1);
-            hasAllianceMember = BooleanByteWrapper.GetFlag(flag1, 2);
-            hasGroupMember = BooleanByteWrapper.GetFlag(flag1, 3);
-            hasMyTaxCollector = BooleanByteWrapper.GetFlag(flag1, 4);
-            teamMembersCount = reader.ReadSByte();
-            if (teamMembersCount < 0)
-                throw new Exception("Forbidden value on teamMembersCount = " + teamMembersCount + ", it doesn't respect the following condition : teamMembersCount < 0");
-            meanLevel = reader.ReadVaruhint();
-            if (meanLevel < 0)
-                throw new Exception("Forbidden value on meanLevel = " + meanLevel + ", it doesn't respect the following condition : meanLevel < 0");
-            
-
-}
-
-
-}
-
-
 }

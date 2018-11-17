@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class IgnoredListMessage : NetworkMessage
 {
 
-public const uint Id = 5674;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5674;
+	public override uint MessageId { get { return Id; } }
+
+	public IgnoredInformations[] IgnoredList { get; set; }
+
+	public IgnoredListMessage() {}
+
+
+	public IgnoredListMessage InitIgnoredListMessage(IgnoredInformations[] IgnoredList)
+	{
+		this.IgnoredList = IgnoredList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.IgnoredList.Length);
+		foreach (IgnoredInformations item in this.IgnoredList)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int IgnoredListLen = reader.ReadShort();
+		IgnoredList = new IgnoredInformations[IgnoredListLen];
+		for (int i = 0; i < IgnoredListLen; i++)
+		{
+			this.IgnoredList[i] = ProtocolTypeManager.GetInstance<IgnoredInformations>(reader.ReadShort());
+			this.IgnoredList[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.IgnoredInformations[] ignoredList;
-        
-
-public IgnoredListMessage()
-{
-}
-
-public IgnoredListMessage(Types.IgnoredInformations[] ignoredList)
-        {
-            this.ignoredList = ignoredList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)ignoredList.Length);
-            foreach (var entry in ignoredList)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            ignoredList = new Types.IgnoredInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 ignoredList[i] = Types.ProtocolTypeManager.GetInstance<Types.IgnoredInformations>(reader.ReadShort());
-                 ignoredList[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

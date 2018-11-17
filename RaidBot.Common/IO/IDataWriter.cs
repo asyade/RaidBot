@@ -18,6 +18,8 @@ namespace RaidBot.Common.IO
         /// </summary>
         /// <returns></returns>
         void WriteShort(short @short);
+        void WriteShort(int @short);
+        void WriteShort(uint @short);
 
         /// <summary>
         ///   Write a int into the buffer
@@ -42,6 +44,7 @@ namespace RaidBot.Common.IO
         /// </summary>
         /// <returns></returns>
         void WriteUInt(UInt32 @uint);
+        void WriteUnsignedInt(UInt32 @uint);
 
         /// <summary>
         ///   Write a long into the buffer

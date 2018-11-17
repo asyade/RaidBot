@@ -1,82 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:23
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameRolePlayFightRequestCanceledMessage : NetworkMessage
 {
 
-public const uint Id = 5822;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5822;
+	public override uint MessageId { get { return Id; } }
+
+	public short FightId { get; set; }
+	public double SourceId { get; set; }
+	public double TargetId { get; set; }
+
+	public GameRolePlayFightRequestCanceledMessage() {}
+
+
+	public GameRolePlayFightRequestCanceledMessage InitGameRolePlayFightRequestCanceledMessage(short FightId, double SourceId, double TargetId)
+	{
+		this.FightId = FightId;
+		this.SourceId = SourceId;
+		this.TargetId = TargetId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.FightId);
+		writer.WriteDouble(this.SourceId);
+		writer.WriteDouble(this.TargetId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.FightId = reader.ReadVarShort();
+		this.SourceId = reader.ReadDouble();
+		this.TargetId = reader.ReadDouble();
+	}
 }
-
-public int fightId;
-        public uint sourceId;
-        public int targetId;
-        
-
-public GameRolePlayFightRequestCanceledMessage()
-{
-}
-
-public GameRolePlayFightRequestCanceledMessage(int fightId, uint sourceId, int targetId)
-        {
-            this.fightId = fightId;
-            this.sourceId = sourceId;
-            this.targetId = targetId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(fightId);
-            writer.WriteVaruhint(sourceId);
-            writer.WriteInt(targetId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-fightId = reader.ReadInt();
-            sourceId = reader.ReadVaruhint();
-            if (sourceId < 0)
-                throw new Exception("Forbidden value on sourceId = " + sourceId + ", it doesn't respect the following condition : sourceId < 0");
-            targetId = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

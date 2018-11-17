@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:50
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class InventoryWeightMessage : NetworkMessage
 {
 
-public const uint Id = 3009;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 3009;
+	public override uint MessageId { get { return Id; } }
+
+	public int Weight { get; set; }
+	public int WeightMax { get; set; }
+
+	public InventoryWeightMessage() {}
+
+
+	public InventoryWeightMessage InitInventoryWeightMessage(int Weight, int WeightMax)
+	{
+		this.Weight = Weight;
+		this.WeightMax = WeightMax;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.Weight);
+		writer.WriteVarInt(this.WeightMax);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Weight = reader.ReadVarInt();
+		this.WeightMax = reader.ReadVarInt();
+	}
 }
-
-public uint weight;
-        public uint weightMax;
-        
-
-public InventoryWeightMessage()
-{
-}
-
-public InventoryWeightMessage(uint weight, uint weightMax)
-        {
-            this.weight = weight;
-            this.weightMax = weightMax;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(weight);
-            writer.WriteVaruhint(weightMax);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-weight = reader.ReadVaruhint();
-            if (weight < 0)
-                throw new Exception("Forbidden value on weight = " + weight + ", it doesn't respect the following condition : weight < 0");
-            weightMax = reader.ReadVaruhint();
-            if (weightMax < 0)
-                throw new Exception("Forbidden value on weightMax = " + weightMax + ", it doesn't respect the following condition : weightMax < 0");
-            
-
-}
-
-
-}
-
-
 }

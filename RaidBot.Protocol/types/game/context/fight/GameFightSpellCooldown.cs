@@ -1,77 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:04
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class GameFightSpellCooldown : NetworkType
 {
 
-public class GameFightSpellCooldown
-{
+	public const uint Id = 205;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 205;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int SpellId { get; set; }
+	public byte Cooldown { get; set; }
+
+	public GameFightSpellCooldown() {}
+
+
+	public GameFightSpellCooldown InitGameFightSpellCooldown(int SpellId, byte Cooldown)
+	{
+		this.SpellId = SpellId;
+		this.Cooldown = Cooldown;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.SpellId);
+		writer.WriteByte(this.Cooldown);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SpellId = reader.ReadInt();
+		this.Cooldown = reader.ReadByte();
+	}
 }
-
-public int spellId;
-        public sbyte cooldown;
-        
-
-public GameFightSpellCooldown()
-{
-}
-
-public GameFightSpellCooldown(int spellId, sbyte cooldown)
-        {
-            this.spellId = spellId;
-            this.cooldown = cooldown;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(spellId);
-            writer.WriteSByte(cooldown);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-spellId = reader.ReadInt();
-            cooldown = reader.ReadSByte();
-            if (cooldown < 0)
-                throw new Exception("Forbidden value on cooldown = " + cooldown + ", it doesn't respect the following condition : cooldown < 0");
-            
-
-}
-
-
-}
-
-
 }

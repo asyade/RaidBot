@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class StartupActionsObjetAttributionMessage : NetworkMessage
 {
 
-public const uint Id = 1303;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 1303;
+	public override uint MessageId { get { return Id; } }
+
+	public int ActionId { get; set; }
+	public long CharacterId { get; set; }
+
+	public StartupActionsObjetAttributionMessage() {}
+
+
+	public StartupActionsObjetAttributionMessage InitStartupActionsObjetAttributionMessage(int ActionId, long CharacterId)
+	{
+		this.ActionId = ActionId;
+		this.CharacterId = CharacterId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.ActionId);
+		writer.WriteVarLong(this.CharacterId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ActionId = reader.ReadInt();
+		this.CharacterId = reader.ReadVarLong();
+	}
 }
-
-public int actionId;
-        public int characterId;
-        
-
-public StartupActionsObjetAttributionMessage()
-{
-}
-
-public StartupActionsObjetAttributionMessage(int actionId, int characterId)
-        {
-            this.actionId = actionId;
-            this.characterId = characterId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(actionId);
-            writer.WriteInt(characterId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-actionId = reader.ReadInt();
-            if (actionId < 0)
-                throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            characterId = reader.ReadInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
-            
-
-}
-
-
-}
-
-
 }

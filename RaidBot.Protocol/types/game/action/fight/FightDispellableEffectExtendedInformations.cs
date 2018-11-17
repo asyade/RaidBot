@@ -1,83 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:59
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class FightDispellableEffectExtendedInformations : NetworkType
 {
 
-public class FightDispellableEffectExtendedInformations
-{
+	public const uint Id = 208;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 208;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short ActionId { get; set; }
+	public double SourceId { get; set; }
+
+	public FightDispellableEffectExtendedInformations() {}
+
+
+	public FightDispellableEffectExtendedInformations InitFightDispellableEffectExtendedInformations(short ActionId, double SourceId)
+	{
+		this.ActionId = ActionId;
+		this.SourceId = SourceId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ActionId);
+		writer.WriteDouble(this.SourceId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ActionId = reader.ReadVarShort();
+		this.SourceId = reader.ReadDouble();
+	}
 }
-
-public ushort actionId;
-        public int sourceId;
-        public Types.AbstractFightDispellableEffect effect;
-        
-
-public FightDispellableEffectExtendedInformations()
-{
-}
-
-public FightDispellableEffectExtendedInformations(ushort actionId, int sourceId, Types.AbstractFightDispellableEffect effect)
-        {
-            this.actionId = actionId;
-            this.sourceId = sourceId;
-            this.effect = effect;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(actionId);
-            writer.WriteInt(sourceId);
-            writer.WriteShort(effect.TypeId);
-            effect.Serialize(writer);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-actionId = reader.ReadVaruhshort();
-            if (actionId < 0)
-                throw new Exception("Forbidden value on actionId = " + actionId + ", it doesn't respect the following condition : actionId < 0");
-            sourceId = reader.ReadInt();
-            effect = Types.ProtocolTypeManager.GetInstance<Types.AbstractFightDispellableEffect>(reader.ReadShort());
-            effect.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

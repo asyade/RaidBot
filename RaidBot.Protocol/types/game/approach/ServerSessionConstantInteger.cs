@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ServerSessionConstantInteger : ServerSessionConstant
 {
 
-public const short Id = 433;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 433;
+	public override uint MessageId { get { return Id; } }
+
+	public int Value { get; set; }
+
+	public ServerSessionConstantInteger() {}
+
+
+	public ServerSessionConstantInteger InitServerSessionConstantInteger(int Value)
+	{
+		this.Value = Value;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteInt(this.Value);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Value = reader.ReadInt();
+	}
 }
-
-public int value;
-        
-
-public ServerSessionConstantInteger()
-{
-}
-
-public ServerSessionConstantInteger(ushort id, int value)
-         : base(id)
-        {
-            this.value = value;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(value);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            value = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

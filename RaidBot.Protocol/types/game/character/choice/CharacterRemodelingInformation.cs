@@ -1,101 +1,64 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:01
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharacterRemodelingInformation : AbstractCharacterInformation
 {
 
-public const short Id = 479;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 479;
+	public override uint MessageId { get { return Id; } }
+
+	public String Name { get; set; }
+	public byte Breed { get; set; }
+	public bool Sex { get; set; }
+	public short CosmeticId { get; set; }
+	public int[] Colors { get; set; }
+
+	public CharacterRemodelingInformation() {}
+
+
+	public CharacterRemodelingInformation InitCharacterRemodelingInformation(String Name, byte Breed, bool Sex, short CosmeticId, int[] Colors)
+	{
+		this.Name = Name;
+		this.Breed = Breed;
+		this.Sex = Sex;
+		this.CosmeticId = CosmeticId;
+		this.Colors = Colors;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteUTF(this.Name);
+		writer.WriteByte(this.Breed);
+		writer.WriteBoolean(this.Sex);
+		writer.WriteVarShort(this.CosmeticId);
+		writer.WriteShort(this.Colors.Length);
+		foreach (int item in this.Colors)
+		{
+			writer.WriteInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Name = reader.ReadUTF();
+		this.Breed = reader.ReadByte();
+		this.Sex = reader.ReadBoolean();
+		this.CosmeticId = reader.ReadVarShort();
+		int ColorsLen = reader.ReadShort();
+		Colors = new int[ColorsLen];
+		for (int i = 0; i < ColorsLen; i++)
+		{
+			this.Colors[i] = reader.ReadInt();
+		}
+	}
 }
-
-public string name;
-        public sbyte breed;
-        public bool sex;
-        public ushort cosmeticId;
-        public int[] colors;
-        
-
-public CharacterRemodelingInformation()
-{
-}
-
-public CharacterRemodelingInformation(uint id, string name, sbyte breed, bool sex, ushort cosmeticId, int[] colors)
-         : base(id)
-        {
-            this.name = name;
-            this.breed = breed;
-            this.sex = sex;
-            this.cosmeticId = cosmeticId;
-            this.colors = colors;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUTF(name);
-            writer.WriteSByte(breed);
-            writer.WriteBoolean(sex);
-            writer.WriteVaruhshort(cosmeticId);
-            writer.WriteUShort((ushort)colors.Length);
-            foreach (var entry in colors)
-            {
-                 writer.WriteInt(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            name = reader.ReadUTF();
-            breed = reader.ReadSByte();
-            sex = reader.ReadBoolean();
-            cosmeticId = reader.ReadVaruhshort();
-            if (cosmeticId < 0)
-                throw new Exception("Forbidden value on cosmeticId = " + cosmeticId + ", it doesn't respect the following condition : cosmeticId < 0");
-            var limit = reader.ReadUShort();
-            colors = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 colors[i] = reader.ReadInt();
-            }
-            
-
-}
-
-
-}
-
-
 }

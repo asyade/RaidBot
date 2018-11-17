@@ -1,87 +1,50 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TaxCollectorMovementMessage : NetworkMessage
 {
 
-public const uint Id = 5633;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5633;
+	public override uint MessageId { get { return Id; } }
+
+	public byte MovementType { get; set; }
+	public TaxCollectorBasicInformations BasicInfos { get; set; }
+	public long PlayerId { get; set; }
+	public String PlayerName { get; set; }
+
+	public TaxCollectorMovementMessage() {}
+
+
+	public TaxCollectorMovementMessage InitTaxCollectorMovementMessage(byte MovementType, TaxCollectorBasicInformations BasicInfos, long PlayerId, String PlayerName)
+	{
+		this.MovementType = MovementType;
+		this.BasicInfos = BasicInfos;
+		this.PlayerId = PlayerId;
+		this.PlayerName = PlayerName;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.MovementType);
+		this.BasicInfos.Serialize(writer);
+		writer.WriteVarLong(this.PlayerId);
+		writer.WriteUTF(this.PlayerName);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MovementType = reader.ReadByte();
+		this.BasicInfos = new TaxCollectorBasicInformations();
+		this.BasicInfos.Deserialize(reader);
+		this.PlayerId = reader.ReadVarLong();
+		this.PlayerName = reader.ReadUTF();
+	}
 }
-
-public bool hireOrFire;
-        public Types.TaxCollectorBasicInformations basicInfos;
-        public uint playerId;
-        public string playerName;
-        
-
-public TaxCollectorMovementMessage()
-{
-}
-
-public TaxCollectorMovementMessage(bool hireOrFire, Types.TaxCollectorBasicInformations basicInfos, uint playerId, string playerName)
-        {
-            this.hireOrFire = hireOrFire;
-            this.basicInfos = basicInfos;
-            this.playerId = playerId;
-            this.playerName = playerName;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteBoolean(hireOrFire);
-            basicInfos.Serialize(writer);
-            writer.WriteVaruhint(playerId);
-            writer.WriteUTF(playerName);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-hireOrFire = reader.ReadBoolean();
-            basicInfos = new Types.TaxCollectorBasicInformations();
-            basicInfos.Deserialize(reader);
-            playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            playerName = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

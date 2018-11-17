@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeRequestedMessage : NetworkMessage
 {
 
-public const uint Id = 5522;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5522;
+	public override uint MessageId { get { return Id; } }
+
+	public byte ExchangeType { get; set; }
+
+	public ExchangeRequestedMessage() {}
+
+
+	public ExchangeRequestedMessage InitExchangeRequestedMessage(byte ExchangeType)
+	{
+		this.ExchangeType = ExchangeType;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.ExchangeType);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ExchangeType = reader.ReadByte();
+	}
 }
-
-public sbyte exchangeType;
-        
-
-public ExchangeRequestedMessage()
-{
-}
-
-public ExchangeRequestedMessage(sbyte exchangeType)
-        {
-            this.exchangeType = exchangeType;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(exchangeType);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-exchangeType = reader.ReadSByte();
-            
-
-}
-
-
-}
-
-
 }

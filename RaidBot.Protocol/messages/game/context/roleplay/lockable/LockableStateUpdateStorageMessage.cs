@@ -1,81 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:26
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class LockableStateUpdateStorageMessage : LockableStateUpdateAbstractMessage
 {
 
-public const uint Id = 5669;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5669;
+	public override uint MessageId { get { return Id; } }
+
+	public double MapId { get; set; }
+	public int ElementId { get; set; }
+
+	public LockableStateUpdateStorageMessage() {}
+
+
+	public LockableStateUpdateStorageMessage InitLockableStateUpdateStorageMessage(double MapId, int ElementId)
+	{
+		this.MapId = MapId;
+		this.ElementId = ElementId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarInt(this.ElementId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.MapId = reader.ReadDouble();
+		this.ElementId = reader.ReadVarInt();
+	}
 }
-
-public int mapId;
-        public uint elementId;
-        
-
-public LockableStateUpdateStorageMessage()
-{
-}
-
-public LockableStateUpdateStorageMessage(bool locked, int mapId, uint elementId)
-         : base(locked)
-        {
-            this.mapId = mapId;
-            this.elementId = elementId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhint(elementId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            mapId = reader.ReadInt();
-            elementId = reader.ReadVaruhint();
-            if (elementId < 0)
-                throw new Exception("Forbidden value on elementId = " + elementId + ", it doesn't respect the following condition : elementId < 0");
-            
-
-}
-
-
-}
-
-
 }

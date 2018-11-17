@@ -1,91 +1,53 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:40
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class TaxCollectorListMessage : AbstractTaxCollectorListMessage
 {
 
-public const uint Id = 5930;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5930;
+	public override uint MessageId { get { return Id; } }
+
+	public byte NbcollectorMax { get; set; }
+	public TaxCollectorFightersInformation[] FightersInformations { get; set; }
+
+	public TaxCollectorListMessage() {}
+
+
+	public TaxCollectorListMessage InitTaxCollectorListMessage(byte NbcollectorMax, TaxCollectorFightersInformation[] FightersInformations)
+	{
+		this.NbcollectorMax = NbcollectorMax;
+		this.FightersInformations = FightersInformations;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.NbcollectorMax);
+		writer.WriteShort(this.FightersInformations.Length);
+		foreach (TaxCollectorFightersInformation item in this.FightersInformations)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.NbcollectorMax = reader.ReadByte();
+		int FightersInformationsLen = reader.ReadShort();
+		FightersInformations = new TaxCollectorFightersInformation[FightersInformationsLen];
+		for (int i = 0; i < FightersInformationsLen; i++)
+		{
+			this.FightersInformations[i] = new TaxCollectorFightersInformation();
+			this.FightersInformations[i].Deserialize(reader);
+		}
+	}
 }
-
-public sbyte nbcollectorMax;
-        public Types.TaxCollectorFightersInformation[] fightersInformations;
-        
-
-public TaxCollectorListMessage()
-{
-}
-
-public TaxCollectorListMessage(Types.TaxCollectorInformations[] informations, sbyte nbcollectorMax, Types.TaxCollectorFightersInformation[] fightersInformations)
-         : base(informations)
-        {
-            this.nbcollectorMax = nbcollectorMax;
-            this.fightersInformations = fightersInformations;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(nbcollectorMax);
-            writer.WriteUShort((ushort)fightersInformations.Length);
-            foreach (var entry in fightersInformations)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            nbcollectorMax = reader.ReadSByte();
-            if (nbcollectorMax < 0)
-                throw new Exception("Forbidden value on nbcollectorMax = " + nbcollectorMax + ", it doesn't respect the following condition : nbcollectorMax < 0");
-            var limit = reader.ReadUShort();
-            fightersInformations = new Types.TaxCollectorFightersInformation[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fightersInformations[i] = new Types.TaxCollectorFightersInformation();
-                 fightersInformations[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

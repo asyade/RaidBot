@@ -1,115 +1,75 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FriendOnlineInformations : FriendInformations
 {
 
-public const short Id = 92;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 92;
+	public override uint MessageId { get { return Id; } }
+
+	public bool Sex { get; set; }
+	public bool HavenBagShared { get; set; }
+	public long PlayerId { get; set; }
+	public String PlayerName { get; set; }
+	public short Level { get; set; }
+	public byte AlignmentSide { get; set; }
+	public byte Breed { get; set; }
+	public GuildInformations GuildInfo { get; set; }
+	public short MoodSmileyId { get; set; }
+
+	public FriendOnlineInformations() {}
+
+
+	public FriendOnlineInformations InitFriendOnlineInformations(bool Sex, bool HavenBagShared, long PlayerId, String PlayerName, short Level, byte AlignmentSide, byte Breed, GuildInformations GuildInfo, short MoodSmileyId)
+	{
+		this.Sex = Sex;
+		this.HavenBagShared = HavenBagShared;
+		this.PlayerId = PlayerId;
+		this.PlayerName = PlayerName;
+		this.Level = Level;
+		this.AlignmentSide = AlignmentSide;
+		this.Breed = Breed;
+		this.GuildInfo = GuildInfo;
+		this.MoodSmileyId = MoodSmileyId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, Sex);
+		box = BooleanByteWrapper.SetFlag(box, 1, HavenBagShared);
+		writer.WriteByte(box);
+		writer.WriteVarLong(this.PlayerId);
+		writer.WriteUTF(this.PlayerName);
+		writer.WriteVarShort(this.Level);
+		writer.WriteByte(this.AlignmentSide);
+		writer.WriteByte(this.Breed);
+		this.GuildInfo.Serialize(writer);
+		writer.WriteVarShort(this.MoodSmileyId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		byte box = reader.ReadByte();
+		this.Sex = BooleanByteWrapper.GetFlag(box, 0);
+		this.HavenBagShared = BooleanByteWrapper.GetFlag(box, 1);
+		this.PlayerId = reader.ReadVarLong();
+		this.PlayerName = reader.ReadUTF();
+		this.Level = reader.ReadVarShort();
+		this.AlignmentSide = reader.ReadByte();
+		this.Breed = reader.ReadByte();
+		this.GuildInfo = new GuildInformations();
+		this.GuildInfo.Deserialize(reader);
+		this.MoodSmileyId = reader.ReadVarShort();
+	}
 }
-
-public uint playerId;
-        public string playerName;
-        public byte level;
-        public sbyte alignmentSide;
-        public sbyte breed;
-        public bool sex;
-        public Types.BasicGuildInformations guildInfo;
-        public sbyte moodSmileyId;
-        public Types.PlayerStatus status;
-        
-
-public FriendOnlineInformations()
-{
-}
-
-public FriendOnlineInformations(int accountId, string accountName, sbyte playerState, ushort lastConnection, int achievementPoints, uint playerId, string playerName, byte level, sbyte alignmentSide, sbyte breed, bool sex, Types.BasicGuildInformations guildInfo, sbyte moodSmileyId, Types.PlayerStatus status)
-         : base(accountId, accountName, playerState, lastConnection, achievementPoints)
-        {
-            this.playerId = playerId;
-            this.playerName = playerName;
-            this.level = level;
-            this.alignmentSide = alignmentSide;
-            this.breed = breed;
-            this.sex = sex;
-            this.guildInfo = guildInfo;
-            this.moodSmileyId = moodSmileyId;
-            this.status = status;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(playerId);
-            writer.WriteUTF(playerName);
-            writer.WriteByte(level);
-            writer.WriteSByte(alignmentSide);
-            writer.WriteSByte(breed);
-            writer.WriteBoolean(sex);
-            guildInfo.Serialize(writer);
-            writer.WriteSByte(moodSmileyId);
-            writer.WriteShort(status.TypeId);
-            status.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            playerName = reader.ReadUTF();
-            level = reader.ReadByte();
-            if (level < 0 || level > 200)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 0 || level > 200");
-            alignmentSide = reader.ReadSByte();
-            breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope");
-            sex = reader.ReadBoolean();
-            guildInfo = new Types.BasicGuildInformations();
-            guildInfo.Deserialize(reader);
-            moodSmileyId = reader.ReadSByte();
-            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
-            status.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

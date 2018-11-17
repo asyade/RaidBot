@@ -1,83 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class AllianceInvitedMessage : NetworkMessage
 {
 
-public const uint Id = 6397;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6397;
+	public override uint MessageId { get { return Id; } }
+
+	public long RecruterId { get; set; }
+	public String RecruterName { get; set; }
+	public BasicNamedAllianceInformations AllianceInfo { get; set; }
+
+	public AllianceInvitedMessage() {}
+
+
+	public AllianceInvitedMessage InitAllianceInvitedMessage(long RecruterId, String RecruterName, BasicNamedAllianceInformations AllianceInfo)
+	{
+		this.RecruterId = RecruterId;
+		this.RecruterName = RecruterName;
+		this.AllianceInfo = AllianceInfo;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.RecruterId);
+		writer.WriteUTF(this.RecruterName);
+		this.AllianceInfo.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.RecruterId = reader.ReadVarLong();
+		this.RecruterName = reader.ReadUTF();
+		this.AllianceInfo = new BasicNamedAllianceInformations();
+		this.AllianceInfo.Deserialize(reader);
+	}
 }
-
-public uint recruterId;
-        public string recruterName;
-        public Types.BasicNamedAllianceInformations allianceInfo;
-        
-
-public AllianceInvitedMessage()
-{
-}
-
-public AllianceInvitedMessage(uint recruterId, string recruterName, Types.BasicNamedAllianceInformations allianceInfo)
-        {
-            this.recruterId = recruterId;
-            this.recruterName = recruterName;
-            this.allianceInfo = allianceInfo;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(recruterId);
-            writer.WriteUTF(recruterName);
-            allianceInfo.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-recruterId = reader.ReadVaruhint();
-            if (recruterId < 0)
-                throw new Exception("Forbidden value on recruterId = " + recruterId + ", it doesn't respect the following condition : recruterId < 0");
-            recruterName = reader.ReadUTF();
-            allianceInfo = new Types.BasicNamedAllianceInformations();
-            allianceInfo.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

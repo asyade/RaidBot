@@ -1,66 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class RawDataMessage : NetworkMessage
 {
 
-public const uint Id = 6253;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6253;
+	public override uint MessageId { get { return Id; } }
+
+	public byte[] Content { get; set; }
+
+	public RawDataMessage() {}
+
+
+	public RawDataMessage InitRawDataMessage(byte[] Content)
+	{
+		this.Content = Content;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarInt(this.Content.Length);
+		foreach (byte item in this.Content)
+		{
+			writer.WriteByte(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ContentLen = reader.ReadVarInt();
+		Content = new byte[ContentLen];
+		for (int i = 0; i < ContentLen; i++)
+		{
+			this.Content[i] = reader.ReadByte();
+		}
+	}
 }
-
-
-public byte[] content;
-public RawDataMessage(byte[] cte )
-
-{
-    content = cte;
-}
-public RawDataMessage()
-{
-}
-
-
-
-public override void Serialize(ICustomDataWriter writer)
-{
-   
-}
-public override void Deserialize(ICustomDataReader reader)
-{
-    var limit = reader.ReadVarint();
-   content = reader.ReadBytes(limit);
-}
-
-
-}
-
-
 }

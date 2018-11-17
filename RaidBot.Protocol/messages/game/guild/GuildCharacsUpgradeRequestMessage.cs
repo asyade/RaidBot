@@ -1,74 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:37
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildCharacsUpgradeRequestMessage : NetworkMessage
 {
 
-public const uint Id = 5706;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5706;
+	public override uint MessageId { get { return Id; } }
+
+	public byte CharaTypeTarget { get; set; }
+
+	public GuildCharacsUpgradeRequestMessage() {}
+
+
+	public GuildCharacsUpgradeRequestMessage InitGuildCharacsUpgradeRequestMessage(byte CharaTypeTarget)
+	{
+		this.CharaTypeTarget = CharaTypeTarget;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.CharaTypeTarget);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CharaTypeTarget = reader.ReadByte();
+	}
 }
-
-public sbyte charaTypeTarget;
-        
-
-public GuildCharacsUpgradeRequestMessage()
-{
-}
-
-public GuildCharacsUpgradeRequestMessage(sbyte charaTypeTarget)
-        {
-            this.charaTypeTarget = charaTypeTarget;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(charaTypeTarget);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-charaTypeTarget = reader.ReadSByte();
-            if (charaTypeTarget < 0)
-                throw new Exception("Forbidden value on charaTypeTarget = " + charaTypeTarget + ", it doesn't respect the following condition : charaTypeTarget < 0");
-            
-
-}
-
-
-}
-
-
 }

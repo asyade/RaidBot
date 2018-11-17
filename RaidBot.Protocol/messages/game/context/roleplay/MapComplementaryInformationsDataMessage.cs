@@ -1,167 +1,137 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:21
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class MapComplementaryInformationsDataMessage : NetworkMessage
 {
 
-public const uint Id = 226;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 226;
+	public override uint MessageId { get { return Id; } }
+
+	public short SubAreaId { get; set; }
+	public double MapId { get; set; }
+	public HouseInformations[] Houses { get; set; }
+	public GameRolePlayActorInformations[] Actors { get; set; }
+	public InteractiveElement[] InteractiveElements { get; set; }
+	public StatedElement[] StatedElements { get; set; }
+	public MapObstacle[] Obstacles { get; set; }
+	public FightCommonInformations[] Fights { get; set; }
+	public bool HasAggressiveMonsters { get; set; }
+	public FightStartingPositions FightStartPositions { get; set; }
+
+	public MapComplementaryInformationsDataMessage() {}
+
+
+	public MapComplementaryInformationsDataMessage InitMapComplementaryInformationsDataMessage(short SubAreaId, double MapId, HouseInformations[] Houses, GameRolePlayActorInformations[] Actors, InteractiveElement[] InteractiveElements, StatedElement[] StatedElements, MapObstacle[] Obstacles, FightCommonInformations[] Fights, bool HasAggressiveMonsters, FightStartingPositions FightStartPositions)
+	{
+		this.SubAreaId = SubAreaId;
+		this.MapId = MapId;
+		this.Houses = Houses;
+		this.Actors = Actors;
+		this.InteractiveElements = InteractiveElements;
+		this.StatedElements = StatedElements;
+		this.Obstacles = Obstacles;
+		this.Fights = Fights;
+		this.HasAggressiveMonsters = HasAggressiveMonsters;
+		this.FightStartPositions = FightStartPositions;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteDouble(this.MapId);
+		writer.WriteShort(this.Houses.Length);
+		foreach (HouseInformations item in this.Houses)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Actors.Length);
+		foreach (GameRolePlayActorInformations item in this.Actors)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.InteractiveElements.Length);
+		foreach (InteractiveElement item in this.InteractiveElements)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.StatedElements.Length);
+		foreach (StatedElement item in this.StatedElements)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Obstacles.Length);
+		foreach (MapObstacle item in this.Obstacles)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Fights.Length);
+		foreach (FightCommonInformations item in this.Fights)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteBoolean(this.HasAggressiveMonsters);
+		this.FightStartPositions.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.SubAreaId = reader.ReadVarShort();
+		this.MapId = reader.ReadDouble();
+		int HousesLen = reader.ReadShort();
+		Houses = new HouseInformations[HousesLen];
+		for (int i = 0; i < HousesLen; i++)
+		{
+			this.Houses[i] = ProtocolTypeManager.GetInstance<HouseInformations>(reader.ReadShort());
+			this.Houses[i].Deserialize(reader);
+		}
+		int ActorsLen = reader.ReadShort();
+		Actors = new GameRolePlayActorInformations[ActorsLen];
+		for (int i = 0; i < ActorsLen; i++)
+		{
+			this.Actors[i] = ProtocolTypeManager.GetInstance<GameRolePlayActorInformations>(reader.ReadShort());
+			this.Actors[i].Deserialize(reader);
+		}
+		int InteractiveElementsLen = reader.ReadShort();
+		InteractiveElements = new InteractiveElement[InteractiveElementsLen];
+		for (int i = 0; i < InteractiveElementsLen; i++)
+		{
+			this.InteractiveElements[i] = ProtocolTypeManager.GetInstance<InteractiveElement>(reader.ReadShort());
+			this.InteractiveElements[i].Deserialize(reader);
+		}
+		int StatedElementsLen = reader.ReadShort();
+		StatedElements = new StatedElement[StatedElementsLen];
+		for (int i = 0; i < StatedElementsLen; i++)
+		{
+			this.StatedElements[i] = new StatedElement();
+			this.StatedElements[i].Deserialize(reader);
+		}
+		int ObstaclesLen = reader.ReadShort();
+		Obstacles = new MapObstacle[ObstaclesLen];
+		for (int i = 0; i < ObstaclesLen; i++)
+		{
+			this.Obstacles[i] = new MapObstacle();
+			this.Obstacles[i].Deserialize(reader);
+		}
+		int FightsLen = reader.ReadShort();
+		Fights = new FightCommonInformations[FightsLen];
+		for (int i = 0; i < FightsLen; i++)
+		{
+			this.Fights[i] = new FightCommonInformations();
+			this.Fights[i].Deserialize(reader);
+		}
+		this.HasAggressiveMonsters = reader.ReadBoolean();
+		this.FightStartPositions = new FightStartingPositions();
+		this.FightStartPositions.Deserialize(reader);
+	}
 }
-
-public ushort subAreaId;
-        public int mapId;
-        public Types.HouseInformations[] houses;
-        public Types.GameRolePlayActorInformations[] actors;
-        public Types.InteractiveElement[] interactiveElements;
-        public Types.StatedElement[] statedElements;
-        public Types.MapObstacle[] obstacles;
-        public Types.FightCommonInformations[] fights;
-        
-
-public MapComplementaryInformationsDataMessage()
-{
-}
-
-public MapComplementaryInformationsDataMessage(ushort subAreaId, int mapId, Types.HouseInformations[] houses, Types.GameRolePlayActorInformations[] actors, Types.InteractiveElement[] interactiveElements, Types.StatedElement[] statedElements, Types.MapObstacle[] obstacles, Types.FightCommonInformations[] fights)
-        {
-            this.subAreaId = subAreaId;
-            this.mapId = mapId;
-            this.houses = houses;
-            this.actors = actors;
-            this.interactiveElements = interactiveElements;
-            this.statedElements = statedElements;
-            this.obstacles = obstacles;
-            this.fights = fights;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(subAreaId);
-            writer.WriteInt(mapId);
-            writer.WriteUShort((ushort)houses.Length);
-            foreach (var entry in houses)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)actors.Length);
-            foreach (var entry in actors)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)interactiveElements.Length);
-            foreach (var entry in interactiveElements)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)statedElements.Length);
-            foreach (var entry in statedElements)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)obstacles.Length);
-            foreach (var entry in obstacles)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)fights.Length);
-            foreach (var entry in fights)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            mapId = reader.ReadInt();
-            if (mapId < 0)
-                throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            var limit = reader.ReadUShort();
-            houses = new Types.HouseInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 houses[i] = Types.ProtocolTypeManager.GetInstance<Types.HouseInformations>(reader.ReadShort());
-                 houses[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            actors = new Types.GameRolePlayActorInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 actors[i] = Types.ProtocolTypeManager.GetInstance<Types.GameRolePlayActorInformations>(reader.ReadShort());
-                 actors[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            interactiveElements = new Types.InteractiveElement[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 interactiveElements[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
-                 interactiveElements[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            statedElements = new Types.StatedElement[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 statedElements[i] = new Types.StatedElement();
-                 statedElements[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            obstacles = new Types.MapObstacle[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 obstacles[i] = new Types.MapObstacle();
-                 obstacles[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            fights = new Types.FightCommonInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fights[i] = new Types.FightCommonInformations();
-                 fights[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

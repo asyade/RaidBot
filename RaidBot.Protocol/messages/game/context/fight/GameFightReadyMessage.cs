@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:16
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightReadyMessage : NetworkMessage
 {
 
-public const uint Id = 708;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 708;
+	public override uint MessageId { get { return Id; } }
+
+	public bool IsReady { get; set; }
+
+	public GameFightReadyMessage() {}
+
+
+	public GameFightReadyMessage InitGameFightReadyMessage(bool IsReady)
+	{
+		this.IsReady = IsReady;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteBoolean(this.IsReady);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.IsReady = reader.ReadBoolean();
+	}
 }
-
-public bool isReady;
-        
-
-public GameFightReadyMessage()
-{
-}
-
-public GameFightReadyMessage(bool isReady)
-        {
-            this.isReady = isReady;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteBoolean(isReady);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-isReady = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

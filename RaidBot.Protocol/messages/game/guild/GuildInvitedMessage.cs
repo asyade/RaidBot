@@ -1,83 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildInvitedMessage : NetworkMessage
 {
 
-public const uint Id = 5552;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5552;
+	public override uint MessageId { get { return Id; } }
+
+	public long RecruterId { get; set; }
+	public String RecruterName { get; set; }
+	public BasicGuildInformations GuildInfo { get; set; }
+
+	public GuildInvitedMessage() {}
+
+
+	public GuildInvitedMessage InitGuildInvitedMessage(long RecruterId, String RecruterName, BasicGuildInformations GuildInfo)
+	{
+		this.RecruterId = RecruterId;
+		this.RecruterName = RecruterName;
+		this.GuildInfo = GuildInfo;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.RecruterId);
+		writer.WriteUTF(this.RecruterName);
+		this.GuildInfo.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.RecruterId = reader.ReadVarLong();
+		this.RecruterName = reader.ReadUTF();
+		this.GuildInfo = new BasicGuildInformations();
+		this.GuildInfo.Deserialize(reader);
+	}
 }
-
-public uint recruterId;
-        public string recruterName;
-        public Types.BasicGuildInformations guildInfo;
-        
-
-public GuildInvitedMessage()
-{
-}
-
-public GuildInvitedMessage(uint recruterId, string recruterName, Types.BasicGuildInformations guildInfo)
-        {
-            this.recruterId = recruterId;
-            this.recruterName = recruterName;
-            this.guildInfo = guildInfo;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(recruterId);
-            writer.WriteUTF(recruterName);
-            guildInfo.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-recruterId = reader.ReadVaruhint();
-            if (recruterId < 0)
-                throw new Exception("Forbidden value on recruterId = " + recruterId + ", it doesn't respect the following condition : recruterId < 0");
-            recruterName = reader.ReadUTF();
-            guildInfo = new Types.BasicGuildInformations();
-            guildInfo.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

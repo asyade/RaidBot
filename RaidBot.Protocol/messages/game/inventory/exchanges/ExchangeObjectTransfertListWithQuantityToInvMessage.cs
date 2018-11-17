@@ -1,94 +1,59 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeObjectTransfertListWithQuantityToInvMessage : NetworkMessage
 {
 
-public const uint Id = 6470;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6470;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] Ids { get; set; }
+	public int[] Qtys { get; set; }
+
+	public ExchangeObjectTransfertListWithQuantityToInvMessage() {}
+
+
+	public ExchangeObjectTransfertListWithQuantityToInvMessage InitExchangeObjectTransfertListWithQuantityToInvMessage(int[] Ids, int[] Qtys)
+	{
+		this.Ids = Ids;
+		this.Qtys = Qtys;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Ids.Length);
+		foreach (int item in this.Ids)
+		{
+			writer.WriteVarInt(item);
+		}
+		writer.WriteShort(this.Qtys.Length);
+		foreach (int item in this.Qtys)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int IdsLen = reader.ReadShort();
+		Ids = new int[IdsLen];
+		for (int i = 0; i < IdsLen; i++)
+		{
+			this.Ids[i] = reader.ReadVarInt();
+		}
+		int QtysLen = reader.ReadShort();
+		Qtys = new int[QtysLen];
+		for (int i = 0; i < QtysLen; i++)
+		{
+			this.Qtys[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public uint[] ids;
-        public uint[] qtys;
-        
-
-public ExchangeObjectTransfertListWithQuantityToInvMessage()
-{
-}
-
-public ExchangeObjectTransfertListWithQuantityToInvMessage(uint[] ids, uint[] qtys)
-        {
-            this.ids = ids;
-            this.qtys = qtys;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)ids.Length);
-            foreach (var entry in ids)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            writer.WriteUShort((ushort)qtys.Length);
-            foreach (var entry in qtys)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            ids = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 ids[i] = reader.ReadVaruhint();
-            }
-            limit = reader.ReadUShort();
-            qtys = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 qtys[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

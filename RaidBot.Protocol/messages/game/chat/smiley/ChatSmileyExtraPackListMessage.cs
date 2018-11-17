@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
+using RaidBot.Common.IO;
+
+namespace Raidbot.Protocol.Messages
+{
+public class ChatSmileyExtraPackListMessage : NetworkMessage
+{
+
+	public const uint Id = 6596;
+	public override uint MessageId { get { return Id; } }
+
+	public byte[] PackIds { get; set; }
+
+	public ChatSmileyExtraPackListMessage() {}
+
+
+	public ChatSmileyExtraPackListMessage InitChatSmileyExtraPackListMessage(byte[] PackIds)
+	{
+		this.PackIds = PackIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.PackIds.Length);
+		foreach (byte item in this.PackIds)
+		{
+			writer.WriteByte(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int PackIdsLen = reader.ReadShort();
+		PackIds = new byte[PackIdsLen];
+		for (int i = 0; i < PackIdsLen; i++)
+		{
+			this.PackIds[i] = reader.ReadByte();
+		}
+	}
+}
+}

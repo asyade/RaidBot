@@ -1,93 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FriendSpouseOnlineInformations : FriendSpouseInformations
 {
 
-public const short Id = 93;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 93;
+	public override uint MessageId { get { return Id; } }
+
+	public bool InFight { get; set; }
+	public bool FollowSpouse { get; set; }
+	public double MapId { get; set; }
+	public short SubAreaId { get; set; }
+
+	public FriendSpouseOnlineInformations() {}
+
+
+	public FriendSpouseOnlineInformations InitFriendSpouseOnlineInformations(bool InFight, bool FollowSpouse, double MapId, short SubAreaId)
+	{
+		this.InFight = InFight;
+		this.FollowSpouse = FollowSpouse;
+		this.MapId = MapId;
+		this.SubAreaId = SubAreaId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		byte box = 0;
+		box = BooleanByteWrapper.SetFlag(box, 0, InFight);
+		box = BooleanByteWrapper.SetFlag(box, 1, FollowSpouse);
+		writer.WriteByte(box);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarShort(this.SubAreaId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		byte box = reader.ReadByte();
+		this.InFight = BooleanByteWrapper.GetFlag(box, 0);
+		this.FollowSpouse = BooleanByteWrapper.GetFlag(box, 1);
+		this.MapId = reader.ReadDouble();
+		this.SubAreaId = reader.ReadVarShort();
+	}
 }
-
-public bool inFight;
-        public bool followSpouse;
-        public int mapId;
-        public ushort subAreaId;
-        
-
-public FriendSpouseOnlineInformations()
-{
-}
-
-public FriendSpouseOnlineInformations(int spouseAccountId, uint spouseId, string spouseName, byte spouseLevel, sbyte breed, sbyte sex, Types.EntityLook spouseEntityLook, Types.BasicGuildInformations guildInfo, sbyte alignmentSide, bool inFight, bool followSpouse, int mapId, ushort subAreaId)
-         : base(spouseAccountId, spouseId, spouseName, spouseLevel, breed, sex, spouseEntityLook, guildInfo, alignmentSide)
-        {
-            this.inFight = inFight;
-            this.followSpouse = followSpouse;
-            this.mapId = mapId;
-            this.subAreaId = subAreaId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            byte flag1 = 0;
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 0, inFight);
-            flag1 = BooleanByteWrapper.SetFlag(flag1, 1, followSpouse);
-            writer.WriteByte(flag1);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhshort(subAreaId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            byte flag1 = reader.ReadByte();
-            inFight = BooleanByteWrapper.GetFlag(flag1, 0);
-            followSpouse = BooleanByteWrapper.GetFlag(flag1, 1);
-            mapId = reader.ReadInt();
-            if (mapId < 0)
-                throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            
-
-}
-
-
-}
-
-
 }

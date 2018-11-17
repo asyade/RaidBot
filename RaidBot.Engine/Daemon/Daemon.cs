@@ -1,4 +1,5 @@
-﻿using RaidBot.Common.Default.Loging;
+﻿using Raidbot.Protocol.Messages;
+using RaidBot.Common.Default.Loging;
 using RaidBot.Common.IO;
 using RaidBot.Common.Network.Client;
 using RaidBot.Common.Network.Server;
@@ -18,14 +19,14 @@ namespace RaidBot.Engine.Daemon
         private Dispatcher.Dispatcher mDispatcher;
         private Server mServer;
         private Client slave;
-        private Queue<KeyValuePair<String, sbyte[]>> mRequests;
+        private Queue<KeyValuePair<String, byte[]>> mRequests;
 
         public event EventHandler<IdentificationLoadedEventArgs> AuthentificationLoaded;
         public event EventHandler<EventArgs> Ready;
 
         public Daemon()
         {
-            mRequests = new Queue<KeyValuePair<string, sbyte[]>>();
+            mRequests = new Queue<KeyValuePair<string, byte[]>>();
             mServer = new Server();
             mServer.ConnectionAccepted += MServer_ConnectionAccepted;
             mServer.Start(5555);
@@ -37,14 +38,14 @@ namespace RaidBot.Engine.Daemon
             slave = new Client(acceptedSocket, new Logger(), true);
             mDispatcher = new Dispatcher.Dispatcher();
             slave.DataReceived += Slave_DataReceived;
-            SendMessage(new ProtocolRequired(1878, 1890));
+            SendMessage(new ProtocolRequired().InitProtocolRequired(1878, 1890));
             Ready(this, new EventArgs());
         }
 
-        public void RequestAuthentificationMessage(String salt, sbyte[] key)
+        public void RequestAuthentificationMessage(String salt, byte[] key)
         {
-            mRequests.Enqueue(new KeyValuePair<String, sbyte[]>(salt, key));
-            SendMessage(new HelloConnect(salt, key));
+            mRequests.Enqueue(new KeyValuePair<String, byte[]>(salt, key));
+            SendMessage(new HelloConnectMessage().InitHelloConnectMessage(salt, key));
         }
 
         private void SendMessage(NetworkMessage message)
@@ -61,7 +62,7 @@ namespace RaidBot.Engine.Daemon
             {
                 Console.WriteLine(BitConverter.ToString(e.Data.Data));
                 msg.Deserialize(new CustomDataReader(msg.Data));
-                KeyValuePair<String, sbyte[]> req = mRequests.Dequeue();
+                KeyValuePair<String, byte[]> req = mRequests.Dequeue();
                 Console.WriteLine("Slave Thx slave");
                 AuthentificationLoaded(this, new IdentificationLoadedEventArgs(req.Key, (IdentificationMessage)msg));
             }

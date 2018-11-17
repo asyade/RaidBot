@@ -1,123 +1,73 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class JobCrafterDirectoryEntryPlayerInfo : NetworkType
 {
 
-public class JobCrafterDirectoryEntryPlayerInfo
-{
+	public const uint Id = 194;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 194;
-public virtual short TypeId
-{
-    get { return Id; }
+	public long PlayerId { get; set; }
+	public String PlayerName { get; set; }
+	public byte AlignmentSide { get; set; }
+	public byte Breed { get; set; }
+	public bool Sex { get; set; }
+	public bool IsInWorkshop { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public double MapId { get; set; }
+	public short SubAreaId { get; set; }
+
+	public JobCrafterDirectoryEntryPlayerInfo() {}
+
+
+	public JobCrafterDirectoryEntryPlayerInfo InitJobCrafterDirectoryEntryPlayerInfo(long PlayerId, String PlayerName, byte AlignmentSide, byte Breed, bool Sex, bool IsInWorkshop, short WorldX, short WorldY, double MapId, short SubAreaId)
+	{
+		this.PlayerId = PlayerId;
+		this.PlayerName = PlayerName;
+		this.AlignmentSide = AlignmentSide;
+		this.Breed = Breed;
+		this.Sex = Sex;
+		this.IsInWorkshop = IsInWorkshop;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.MapId = MapId;
+		this.SubAreaId = SubAreaId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.PlayerId);
+		writer.WriteUTF(this.PlayerName);
+		writer.WriteByte(this.AlignmentSide);
+		writer.WriteByte(this.Breed);
+		writer.WriteBoolean(this.Sex);
+		writer.WriteBoolean(this.IsInWorkshop);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarShort(this.SubAreaId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.PlayerId = reader.ReadVarLong();
+		this.PlayerName = reader.ReadUTF();
+		this.AlignmentSide = reader.ReadByte();
+		this.Breed = reader.ReadByte();
+		this.Sex = reader.ReadBoolean();
+		this.IsInWorkshop = reader.ReadBoolean();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.MapId = reader.ReadDouble();
+		this.SubAreaId = reader.ReadVarShort();
+	}
 }
-
-public uint playerId;
-        public string playerName;
-        public sbyte alignmentSide;
-        public sbyte breed;
-        public bool sex;
-        public bool isInWorkshop;
-        public short worldX;
-        public short worldY;
-        public int mapId;
-        public ushort subAreaId;
-        public Types.PlayerStatus status;
-        
-
-public JobCrafterDirectoryEntryPlayerInfo()
-{
-}
-
-public JobCrafterDirectoryEntryPlayerInfo(uint playerId, string playerName, sbyte alignmentSide, sbyte breed, bool sex, bool isInWorkshop, short worldX, short worldY, int mapId, ushort subAreaId, Types.PlayerStatus status)
-        {
-            this.playerId = playerId;
-            this.playerName = playerName;
-            this.alignmentSide = alignmentSide;
-            this.breed = breed;
-            this.sex = sex;
-            this.isInWorkshop = isInWorkshop;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.mapId = mapId;
-            this.subAreaId = subAreaId;
-            this.status = status;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(playerId);
-            writer.WriteUTF(playerName);
-            writer.WriteSByte(alignmentSide);
-            writer.WriteSByte(breed);
-            writer.WriteBoolean(sex);
-            writer.WriteBoolean(isInWorkshop);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteShort(status.TypeId);
-            status.Serialize(writer);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            playerName = reader.ReadUTF();
-            alignmentSide = reader.ReadSByte();
-            breed = reader.ReadSByte();
-            if (breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope)
-                throw new Exception("Forbidden value on breed = " + breed + ", it doesn't respect the following condition : breed < (byte)Enums.PlayableBreedEnum.Feca || breed > (byte)Enums.PlayableBreedEnum.Eliotrope");
-            sex = reader.ReadBoolean();
-            isInWorkshop = reader.ReadBoolean();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            mapId = reader.ReadInt();
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            status = Types.ProtocolTypeManager.GetInstance<Types.PlayerStatus>(reader.ReadShort());
-            status.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

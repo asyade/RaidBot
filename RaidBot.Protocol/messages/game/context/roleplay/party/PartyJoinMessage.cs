@@ -1,126 +1,84 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:30
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class PartyJoinMessage : AbstractPartyMessage
 {
 
-public const uint Id = 5576;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5576;
+	public override uint MessageId { get { return Id; } }
+
+	public byte PartyType { get; set; }
+	public long PartyLeaderId { get; set; }
+	public byte MaxParticipants { get; set; }
+	public PartyMemberInformations[] Members { get; set; }
+	public PartyGuestInformations[] Guests { get; set; }
+	public bool Restricted { get; set; }
+	public String PartyName { get; set; }
+
+	public PartyJoinMessage() {}
+
+
+	public PartyJoinMessage InitPartyJoinMessage(byte PartyType, long PartyLeaderId, byte MaxParticipants, PartyMemberInformations[] Members, PartyGuestInformations[] Guests, bool Restricted, String PartyName)
+	{
+		this.PartyType = PartyType;
+		this.PartyLeaderId = PartyLeaderId;
+		this.MaxParticipants = MaxParticipants;
+		this.Members = Members;
+		this.Guests = Guests;
+		this.Restricted = Restricted;
+		this.PartyName = PartyName;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.PartyType);
+		writer.WriteVarLong(this.PartyLeaderId);
+		writer.WriteByte(this.MaxParticipants);
+		writer.WriteShort(this.Members.Length);
+		foreach (PartyMemberInformations item in this.Members)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.Guests.Length);
+		foreach (PartyGuestInformations item in this.Guests)
+		{
+			item.Serialize(writer);
+		}
+		writer.WriteBoolean(this.Restricted);
+		writer.WriteUTF(this.PartyName);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.PartyType = reader.ReadByte();
+		this.PartyLeaderId = reader.ReadVarLong();
+		this.MaxParticipants = reader.ReadByte();
+		int MembersLen = reader.ReadShort();
+		Members = new PartyMemberInformations[MembersLen];
+		for (int i = 0; i < MembersLen; i++)
+		{
+			this.Members[i] = ProtocolTypeManager.GetInstance<PartyMemberInformations>(reader.ReadShort());
+			this.Members[i].Deserialize(reader);
+		}
+		int GuestsLen = reader.ReadShort();
+		Guests = new PartyGuestInformations[GuestsLen];
+		for (int i = 0; i < GuestsLen; i++)
+		{
+			this.Guests[i] = new PartyGuestInformations();
+			this.Guests[i].Deserialize(reader);
+		}
+		this.Restricted = reader.ReadBoolean();
+		this.PartyName = reader.ReadUTF();
+	}
 }
-
-public sbyte partyType;
-        public uint partyLeaderId;
-        public sbyte maxParticipants;
-        public Types.PartyMemberInformations[] members;
-        public Types.PartyGuestInformations[] guests;
-        public bool restricted;
-        public string partyName;
-        
-
-public PartyJoinMessage()
-{
-}
-
-public PartyJoinMessage(uint partyId, sbyte partyType, uint partyLeaderId, sbyte maxParticipants, Types.PartyMemberInformations[] members, Types.PartyGuestInformations[] guests, bool restricted, string partyName)
-         : base(partyId)
-        {
-            this.partyType = partyType;
-            this.partyLeaderId = partyLeaderId;
-            this.maxParticipants = maxParticipants;
-            this.members = members;
-            this.guests = guests;
-            this.restricted = restricted;
-            this.partyName = partyName;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteSByte(partyType);
-            writer.WriteVaruhint(partyLeaderId);
-            writer.WriteSByte(maxParticipants);
-            writer.WriteUShort((ushort)members.Length);
-            foreach (var entry in members)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)guests.Length);
-            foreach (var entry in guests)
-            {
-                 entry.Serialize(writer);
-            }
-            writer.WriteBoolean(restricted);
-            writer.WriteUTF(partyName);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            partyType = reader.ReadSByte();
-            if (partyType < 0)
-                throw new Exception("Forbidden value on partyType = " + partyType + ", it doesn't respect the following condition : partyType < 0");
-            partyLeaderId = reader.ReadVaruhint();
-            if (partyLeaderId < 0)
-                throw new Exception("Forbidden value on partyLeaderId = " + partyLeaderId + ", it doesn't respect the following condition : partyLeaderId < 0");
-            maxParticipants = reader.ReadSByte();
-            if (maxParticipants < 0)
-                throw new Exception("Forbidden value on maxParticipants = " + maxParticipants + ", it doesn't respect the following condition : maxParticipants < 0");
-            var limit = reader.ReadUShort();
-            members = new Types.PartyMemberInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 members[i] = Types.ProtocolTypeManager.GetInstance<Types.PartyMemberInformations>(reader.ReadShort());
-                 members[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            guests = new Types.PartyGuestInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 guests[i] = new Types.PartyGuestInformations();
-                 guests[i].Deserialize(reader);
-            }
-            restricted = reader.ReadBoolean();
-            partyName = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

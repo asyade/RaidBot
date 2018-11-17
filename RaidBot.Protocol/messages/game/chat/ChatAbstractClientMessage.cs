@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChatAbstractClientMessage : NetworkMessage
 {
 
-public const uint Id = 850;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 850;
+	public override uint MessageId { get { return Id; } }
+
+	public String Content { get; set; }
+
+	public ChatAbstractClientMessage() {}
+
+
+	public ChatAbstractClientMessage InitChatAbstractClientMessage(String Content)
+	{
+		this.Content = Content;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.Content);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Content = reader.ReadUTF();
+	}
 }
-
-public string content;
-        
-
-public ChatAbstractClientMessage()
-{
-}
-
-public ChatAbstractClientMessage(string content)
-        {
-            this.content = content;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(content);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-content = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

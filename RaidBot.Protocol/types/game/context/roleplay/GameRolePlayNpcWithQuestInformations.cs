@@ -1,75 +1,40 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameRolePlayNpcWithQuestInformations : GameRolePlayNpcInformations
 {
 
-public const short Id = 383;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 383;
+	public override uint MessageId { get { return Id; } }
+
+	public GameRolePlayNpcQuestFlag QuestFlag { get; set; }
+
+	public GameRolePlayNpcWithQuestInformations() {}
+
+
+	public GameRolePlayNpcWithQuestInformations InitGameRolePlayNpcWithQuestInformations(GameRolePlayNpcQuestFlag QuestFlag)
+	{
+		this.QuestFlag = QuestFlag;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		this.QuestFlag.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.QuestFlag = new GameRolePlayNpcQuestFlag();
+		this.QuestFlag.Deserialize(reader);
+	}
 }
-
-public Types.GameRolePlayNpcQuestFlag questFlag;
-        
-
-public GameRolePlayNpcWithQuestInformations()
-{
-}
-
-public GameRolePlayNpcWithQuestInformations(int contextualId, Types.EntityLook look, Types.EntityDispositionInformations disposition, ushort npcId, bool sex, ushort specialArtworkId, Types.GameRolePlayNpcQuestFlag questFlag)
-         : base(contextualId, look, disposition, npcId, sex, specialArtworkId)
-        {
-            this.questFlag = questFlag;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            questFlag.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            questFlag = new Types.GameRolePlayNpcQuestFlag();
-            questFlag.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

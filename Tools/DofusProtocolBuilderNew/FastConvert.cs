@@ -66,9 +66,19 @@ namespace DofusProtocolBuilder
             bool useBw = false;
             Parsed.Fields = ParseDeserializeBloc(bloc, out useBw);
             Parsed.UseByteWrapper = useBw;
+            NetworkClassField last = null;
             foreach (NetworkClassField field in Parsed.Fields)
             {
+                if (field.IsBoolean)
+                {
+                    field.IsLast = false;
+                    last = field;
+                }
                 field.ConvertNames();
+            }
+            if (last != null)
+            {
+                last.IsLast = true;
             }
         }
 
@@ -151,7 +161,7 @@ namespace DofusProtocolBuilder
                 UseByteWrapper = false;
                 Id = 0;
                 Name = "";
-                Parent = "";
+                Parent = "NetworkType";
                 Fields = new List<NetworkClassField>();
             }
 
@@ -162,6 +172,7 @@ namespace DofusProtocolBuilder
                 o.AppendLine("using System.Collections.Generic;");
                 o.AppendLine("using System.Linq;");
                 o.AppendLine("using RaidBot.Protocol.Types;");
+                o.AppendLine("using RaidBot.Protocol.Messages;");
                 o.AppendLine("using RaidBot.Common.IO;");
                 o.AppendLine("\nnamespace Raidbot.Protocol.Messages\n{");
                 o.AppendLine("public class " + Name + (Parent != null ? " : " + Parent : "") + "\n{");
@@ -175,9 +186,28 @@ namespace DofusProtocolBuilder
                         o.AppendFormat("\tpublic {1} {0} {{ get; set; }}\n", field.Name, field.Type);
                 }
 
+                o.AppendFormat("\n\tpublic {0}() {{}}\n", Name);
+                if (Fields.Count > 0)
+                {
+                    o.AppendFormat("\n\n\tpublic {0} Init{0}(", Name);
+                    Fields.Last().IsLastRow = true;
+                    foreach (NetworkClassField field in this.Fields)
+                    {
+                        o.AppendFormat("{0}{2} {1}{3}", field.Type, field.Name, field.IsArray ? "[]" : "", field.IsLastRow ? "" : ", ");
+                    }
+                    o.AppendLine(")\n\t{");
+                    foreach (NetworkClassField field in this.Fields)
+                    {
+                        o.AppendFormat("\t\tthis.{0} = {0};\n", field.Name);
+                    }
+                    o.AppendLine("\t\treturn (this);\n\t}");
+                }
+
+
+
                 o.AppendLine("\n\tpublic override void Serialize(ICustomDataWriter writer)\n\t{");
                 if (Parent != "NetworkMessage" && Parent != "NetworkType")
-                    o.AppendFormat("\t\tbase.Serialize(writer)");
+                    o.AppendFormat("\t\tbase.Serialize(writer);\n");
                 if (UseByteWrapper)
                 {
                     o.AppendLine("\t\tbyte box = 0;");
@@ -187,26 +217,67 @@ namespace DofusProtocolBuilder
                     if (!field.IsArray && !field.IsBoolean)
                     {
                         if (field.IsObject)
-                            o.AppendFormat("\t\tthis.{0}.Serialize(writer);\n", field.Type, field.Name);
+                            o.AppendFormat("\t\tthis.{0}.Serialize(writer);\n", field.Name);
                         else
-                            o.AppendFormat("\t\twriter.Write{0}(this.{1});\n", field.Type, field.Name);
+                            o.AppendFormat("\t\twriter.Write{0}(this.{1});\n", field.Methode, field.Name);
                     }
                     else if (field.IsBoolean)
+                    {
                         o.AppendFormat("\t\tbox = BooleanByteWrapper.SetFlag(box, {0}, {1});\n", field.BooleanIndex, field.Name);
+                        if (field.IsLast)
+                            o.AppendLine("\t\twriter.WriteByte(box);");
+                    }
                     else if (field.IsArray)
                     {
-                        String indexName = field.Name + "Index";
-                        o.AppendFormat("\t\twriter.Write{0}(this.{1}.length);\n", field.ArrayMethode, field.Name);
+                        o.AppendFormat("\t\twriter.Write{0}(this.{1}.Length);\n", field.ArrayMethode, field.Name);
                         o.AppendFormat("\t\tforeach ({0} item in this.{1})\n\t\t{{\n", field.Type, field.Name);
                         if (field.IsGenericArray)
                             o.AppendFormat("\t\t\twriter.WriteShort(item.MessageId);\n");
                         if (field.IsObject)
                             o.AppendFormat("\t\t\titem.Serialize(writer);\n");
                         else
-                            o.AppendFormat("\t\t\twriter.Write{0}(item);\n", field.Type, field.Name);
+                            o.AppendFormat("\t\t\twriter.Write{0}(item);\n", field.Methode, field.Name);
                         o.AppendLine("\t\t}");
                     }
                 }
+                /// Deserialize
+                o.AppendLine("\t}\n\n\tpublic override void Deserialize(ICustomDataReader reader)\n\t{");
+                if (Parent != "NetworkMessage" && Parent != "NetworkType")
+                    o.AppendFormat("\t\tbase.Deserialize(reader);\n");
+                if (UseByteWrapper)
+                {
+                    o.AppendLine("\t\tbyte box = reader.ReadByte();");
+                }
+                foreach (NetworkClassField field in this.Fields)
+                {
+                    if (!field.IsArray && !field.IsBoolean)
+                    {
+                        if (field.IsObject)
+                            o.AppendFormat("\t\tthis.{0} = new {1}();\n\t\tthis.{0}.Deserialize(reader);\n", field.Name, field.Type);
+                        else
+                            o.AppendFormat("\t\tthis.{1} = reader.Read{0}();\n", field.Methode, field.Name);
+                    }
+                    else if (field.IsBoolean)
+                        o.AppendFormat("\t\tthis.{1} = BooleanByteWrapper.GetFlag(box, {0});\n", field.BooleanIndex, field.Name);
+                    else if (field.IsArray)
+                    {
+                        String szName = field.Name + "Len";
+                        o.AppendFormat("\t\tint {0} = reader.Read{1}();\n\t\t{2} = new {3}[{0}];\n", szName, field.ArrayMethode, field.Name, field.Type);
+                        o.AppendFormat("\t\tfor (int i = 0; i < {0}; i++)\n\t\t{{\n", szName);
+                        if (field.IsObject)
+                        {
+                            if (field.IsGenericArray)
+                                o.AppendFormat("\t\t\tthis.{0}[i] = ProtocolTypeManager.GetInstance<{1}>(reader.ReadShort());\n", field.Name, field.Type);
+                            else
+                                o.AppendFormat("\t\t\tthis.{0}[i] = new {1}();\n", field.Name, field.Type);
+                            o.AppendFormat("\t\t\tthis.{0}[i].Deserialize(reader);\n", field.Name);
+                        }
+                        else
+                            o.AppendFormat("\t\t\tthis.{0}[i] = reader.Read{1}();\n", field.Name, field.Methode);
+                        o.AppendLine("\t\t}");
+                    }
+                }
+
 
                 o.AppendLine("\t}\n}\n}");
                 return (o.ToString());
@@ -222,11 +293,14 @@ namespace DofusProtocolBuilder
             public bool IsObject { get; set; }
             public bool IsGenericArray { get; set; }
             public bool IsBoolean { get; set; }
+            public bool IsLast { get; set; }
+            public bool IsLastRow { get; set; }
             public int BooleanIndex { get; set; }
             public String Type { get; set; }
 
             public NetworkClassField(String name, String methode)
             {
+                IsLastRow = false;
                 Name = name;
                 Methode = methode;
                 IsArray = false;
@@ -236,6 +310,7 @@ namespace DofusProtocolBuilder
 
             public NetworkClassField(String name, int pos)
             {
+                IsLastRow = false;
                 Name = name;
                 IsBoolean = true;
                 IsArray = false;
@@ -245,6 +320,8 @@ namespace DofusProtocolBuilder
 
             public NetworkClassField(String name)
             {
+
+                IsLastRow = false;
                 Name = name;
                 IsArray = true;
                 IsBoolean = false;
@@ -264,6 +341,10 @@ namespace DofusProtocolBuilder
             public void ConvertNames()
             {
                 Name = UppercaseFirst(Name);
+                if (Name == "Id" || Name == "MessageId")
+                {
+                    Name += "_";
+                }
                 this.IsObject = false;
                 if (this.IsBoolean)
                 {
@@ -292,6 +373,15 @@ namespace DofusProtocolBuilder
                         break;
                     case "boolean":
                         Type = "bool";
+                        break;
+                    case "double":
+                        Type = "double";
+                        break;
+                    case "float":
+                        Type = "float";
+                        break;
+                    case "unsignedint":
+                        Type = "uint";
                         break;
                     default:
                         this.IsObject = true;

@@ -1,91 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class QuestActiveDetailedInformations : QuestActiveInformations
 {
 
-public const short Id = 382;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 382;
+	public override uint MessageId { get { return Id; } }
+
+	public short StepId { get; set; }
+	public QuestObjectiveInformations[] Objectives { get; set; }
+
+	public QuestActiveDetailedInformations() {}
+
+
+	public QuestActiveDetailedInformations InitQuestActiveDetailedInformations(short StepId, QuestObjectiveInformations[] Objectives)
+	{
+		this.StepId = StepId;
+		this.Objectives = Objectives;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.StepId);
+		writer.WriteShort(this.Objectives.Length);
+		foreach (QuestObjectiveInformations item in this.Objectives)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.StepId = reader.ReadVarShort();
+		int ObjectivesLen = reader.ReadShort();
+		Objectives = new QuestObjectiveInformations[ObjectivesLen];
+		for (int i = 0; i < ObjectivesLen; i++)
+		{
+			this.Objectives[i] = ProtocolTypeManager.GetInstance<QuestObjectiveInformations>(reader.ReadShort());
+			this.Objectives[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort stepId;
-        public Types.QuestObjectiveInformations[] objectives;
-        
-
-public QuestActiveDetailedInformations()
-{
-}
-
-public QuestActiveDetailedInformations(ushort questId, ushort stepId, Types.QuestObjectiveInformations[] objectives)
-         : base(questId)
-        {
-            this.stepId = stepId;
-            this.objectives = objectives;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(stepId);
-            writer.WriteUShort((ushort)objectives.Length);
-            foreach (var entry in objectives)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            stepId = reader.ReadVaruhshort();
-            if (stepId < 0)
-                throw new Exception("Forbidden value on stepId = " + stepId + ", it doesn't respect the following condition : stepId < 0");
-            var limit = reader.ReadUShort();
-            objectives = new Types.QuestObjectiveInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectives[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestObjectiveInformations>(reader.ReadShort());
-                 objectives[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

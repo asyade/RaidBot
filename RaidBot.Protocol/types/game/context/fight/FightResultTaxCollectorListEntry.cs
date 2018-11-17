@@ -1,85 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:02
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightResultTaxCollectorListEntry : FightResultFighterListEntry
 {
 
-public const short Id = 84;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 84;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Level { get; set; }
+	public BasicGuildInformations GuildInfo { get; set; }
+	public int ExperienceForGuild { get; set; }
+
+	public FightResultTaxCollectorListEntry() {}
+
+
+	public FightResultTaxCollectorListEntry InitFightResultTaxCollectorListEntry(byte Level, BasicGuildInformations GuildInfo, int ExperienceForGuild)
+	{
+		this.Level = Level;
+		this.GuildInfo = GuildInfo;
+		this.ExperienceForGuild = ExperienceForGuild;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.Level);
+		this.GuildInfo.Serialize(writer);
+		writer.WriteInt(this.ExperienceForGuild);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Level = reader.ReadByte();
+		this.GuildInfo = new BasicGuildInformations();
+		this.GuildInfo.Deserialize(reader);
+		this.ExperienceForGuild = reader.ReadInt();
+	}
 }
-
-public byte level;
-        public Types.BasicGuildInformations guildInfo;
-        public int experienceForGuild;
-        
-
-public FightResultTaxCollectorListEntry()
-{
-}
-
-public FightResultTaxCollectorListEntry(ushort outcome, sbyte wave, Types.FightLoot rewards, int id, bool alive, byte level, Types.BasicGuildInformations guildInfo, int experienceForGuild)
-         : base(outcome, wave, rewards, id, alive)
-        {
-            this.level = level;
-            this.guildInfo = guildInfo;
-            this.experienceForGuild = experienceForGuild;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(level);
-            guildInfo.Serialize(writer);
-            writer.WriteInt(experienceForGuild);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            level = reader.ReadByte();
-            if (level < 1 || level > 200)
-                throw new Exception("Forbidden value on level = " + level + ", it doesn't respect the following condition : level < 1 || level > 200");
-            guildInfo = new Types.BasicGuildInformations();
-            guildInfo.Deserialize(reader);
-            experienceForGuild = reader.ReadInt();
-            
-
-}
-
-
-}
-
-
 }

@@ -1,107 +1,72 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:40:57
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ConsoleCommandsListMessage : NetworkMessage
 {
 
-public const uint Id = 6127;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6127;
+	public override uint MessageId { get { return Id; } }
+
+	public String[] Aliases { get; set; }
+	public String[] Args { get; set; }
+	public String[] Descriptions { get; set; }
+
+	public ConsoleCommandsListMessage() {}
+
+
+	public ConsoleCommandsListMessage InitConsoleCommandsListMessage(String[] Aliases, String[] Args, String[] Descriptions)
+	{
+		this.Aliases = Aliases;
+		this.Args = Args;
+		this.Descriptions = Descriptions;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Aliases.Length);
+		foreach (String item in this.Aliases)
+		{
+			writer.WriteUTF(item);
+		}
+		writer.WriteShort(this.Args.Length);
+		foreach (String item in this.Args)
+		{
+			writer.WriteUTF(item);
+		}
+		writer.WriteShort(this.Descriptions.Length);
+		foreach (String item in this.Descriptions)
+		{
+			writer.WriteUTF(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int AliasesLen = reader.ReadShort();
+		Aliases = new String[AliasesLen];
+		for (int i = 0; i < AliasesLen; i++)
+		{
+			this.Aliases[i] = reader.ReadUTF();
+		}
+		int ArgsLen = reader.ReadShort();
+		Args = new String[ArgsLen];
+		for (int i = 0; i < ArgsLen; i++)
+		{
+			this.Args[i] = reader.ReadUTF();
+		}
+		int DescriptionsLen = reader.ReadShort();
+		Descriptions = new String[DescriptionsLen];
+		for (int i = 0; i < DescriptionsLen; i++)
+		{
+			this.Descriptions[i] = reader.ReadUTF();
+		}
+	}
 }
-
-public string[] aliases;
-        public string[] args;
-        public string[] descriptions;
-        
-
-public ConsoleCommandsListMessage()
-{
-}
-
-public ConsoleCommandsListMessage(string[] aliases, string[] args, string[] descriptions)
-        {
-            this.aliases = aliases;
-            this.args = args;
-            this.descriptions = descriptions;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)aliases.Length);
-            foreach (var entry in aliases)
-            {
-                 writer.WriteUTF(entry);
-            }
-            writer.WriteUShort((ushort)args.Length);
-            foreach (var entry in args)
-            {
-                 writer.WriteUTF(entry);
-            }
-            writer.WriteUShort((ushort)descriptions.Length);
-            foreach (var entry in descriptions)
-            {
-                 writer.WriteUTF(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            aliases = new string[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 aliases[i] = reader.ReadUTF();
-            }
-            limit = reader.ReadUShort();
-            args = new string[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 args[i] = reader.ReadUTF();
-            }
-            limit = reader.ReadUShort();
-            descriptions = new string[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 descriptions[i] = reader.ReadUTF();
-            }
-            
-
-}
-
-
-}
-
-
 }

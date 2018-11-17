@@ -1,77 +1,42 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameContextRefreshEntityLookMessage : NetworkMessage
 {
 
-public const uint Id = 5637;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5637;
+	public override uint MessageId { get { return Id; } }
+
+	public double Id_ { get; set; }
+	public EntityLook Look { get; set; }
+
+	public GameContextRefreshEntityLookMessage() {}
+
+
+	public GameContextRefreshEntityLookMessage InitGameContextRefreshEntityLookMessage(double Id_, EntityLook Look)
+	{
+		this.Id_ = Id_;
+		this.Look = Look;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.Id_);
+		this.Look.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Id_ = reader.ReadDouble();
+		this.Look = new EntityLook();
+		this.Look.Deserialize(reader);
+	}
 }
-
-public int id;
-        public Types.EntityLook look;
-        
-
-public GameContextRefreshEntityLookMessage()
-{
-}
-
-public GameContextRefreshEntityLookMessage(int id, Types.EntityLook look)
-        {
-            this.id = id;
-            this.look = look;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(id);
-            look.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-id = reader.ReadInt();
-            look = new Types.EntityLook();
-            look.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

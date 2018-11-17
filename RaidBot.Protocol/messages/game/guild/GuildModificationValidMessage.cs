@@ -1,77 +1,42 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:39
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildModificationValidMessage : NetworkMessage
 {
 
-public const uint Id = 6323;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6323;
+	public override uint MessageId { get { return Id; } }
+
+	public String GuildName { get; set; }
+	public GuildEmblem GuildEmblem { get; set; }
+
+	public GuildModificationValidMessage() {}
+
+
+	public GuildModificationValidMessage InitGuildModificationValidMessage(String GuildName, GuildEmblem GuildEmblem)
+	{
+		this.GuildName = GuildName;
+		this.GuildEmblem = GuildEmblem;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.GuildName);
+		this.GuildEmblem.Serialize(writer);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.GuildName = reader.ReadUTF();
+		this.GuildEmblem = new GuildEmblem();
+		this.GuildEmblem.Deserialize(reader);
+	}
 }
-
-public string guildName;
-        public Types.GuildEmblem guildEmblem;
-        
-
-public GuildModificationValidMessage()
-{
-}
-
-public GuildModificationValidMessage(string guildName, Types.GuildEmblem guildEmblem)
-        {
-            this.guildName = guildName;
-            this.guildEmblem = guildEmblem;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(guildName);
-            guildEmblem.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-guildName = reader.ReadUTF();
-            guildEmblem = new Types.GuildEmblem();
-            guildEmblem.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

@@ -1,79 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class MapObstacle : NetworkType
 {
 
-public class MapObstacle
-{
+	public const uint Id = 200;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 200;
-public virtual short TypeId
-{
-    get { return Id; }
+	public short ObstacleCellId { get; set; }
+	public byte State { get; set; }
+
+	public MapObstacle() {}
+
+
+	public MapObstacle InitMapObstacle(short ObstacleCellId, byte State)
+	{
+		this.ObstacleCellId = ObstacleCellId;
+		this.State = State;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ObstacleCellId);
+		writer.WriteByte(this.State);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ObstacleCellId = reader.ReadVarShort();
+		this.State = reader.ReadByte();
+	}
 }
-
-public ushort obstacleCellId;
-        public sbyte state;
-        
-
-public MapObstacle()
-{
-}
-
-public MapObstacle(ushort obstacleCellId, sbyte state)
-        {
-            this.obstacleCellId = obstacleCellId;
-            this.state = state;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(obstacleCellId);
-            writer.WriteSByte(state);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-obstacleCellId = reader.ReadVaruhshort();
-            if (obstacleCellId < 0 || obstacleCellId > 559)
-                throw new Exception("Forbidden value on obstacleCellId = " + obstacleCellId + ", it doesn't respect the following condition : obstacleCellId < 0 || obstacleCellId > 559");
-            state = reader.ReadSByte();
-            if (state < 0)
-                throw new Exception("Forbidden value on state = " + state + ", it doesn't respect the following condition : state < 0");
-            
-
-}
-
-
-}
-
-
 }

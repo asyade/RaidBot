@@ -1,103 +1,61 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class PaddockInformationsForSell : NetworkType
 {
 
-public class PaddockInformationsForSell
-{
+	public const uint Id = 222;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 222;
-public virtual short TypeId
-{
-    get { return Id; }
+	public String GuildOwner { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public short SubAreaId { get; set; }
+	public byte NbMount { get; set; }
+	public byte NbObject { get; set; }
+	public long Price { get; set; }
+
+	public PaddockInformationsForSell() {}
+
+
+	public PaddockInformationsForSell InitPaddockInformationsForSell(String GuildOwner, short WorldX, short WorldY, short SubAreaId, byte NbMount, byte NbObject, long Price)
+	{
+		this.GuildOwner = GuildOwner;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.SubAreaId = SubAreaId;
+		this.NbMount = NbMount;
+		this.NbObject = NbObject;
+		this.Price = Price;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.GuildOwner);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteByte(this.NbMount);
+		writer.WriteByte(this.NbObject);
+		writer.WriteVarLong(this.Price);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.GuildOwner = reader.ReadUTF();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.SubAreaId = reader.ReadVarShort();
+		this.NbMount = reader.ReadByte();
+		this.NbObject = reader.ReadByte();
+		this.Price = reader.ReadVarLong();
+	}
 }
-
-public string guildOwner;
-        public short worldX;
-        public short worldY;
-        public ushort subAreaId;
-        public sbyte nbMount;
-        public sbyte nbObject;
-        public uint price;
-        
-
-public PaddockInformationsForSell()
-{
-}
-
-public PaddockInformationsForSell(string guildOwner, short worldX, short worldY, ushort subAreaId, sbyte nbMount, sbyte nbObject, uint price)
-        {
-            this.guildOwner = guildOwner;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.subAreaId = subAreaId;
-            this.nbMount = nbMount;
-            this.nbObject = nbObject;
-            this.price = price;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(guildOwner);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteSByte(nbMount);
-            writer.WriteSByte(nbObject);
-            writer.WriteVaruhint(price);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-guildOwner = reader.ReadUTF();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            nbMount = reader.ReadSByte();
-            nbObject = reader.ReadSByte();
-            price = reader.ReadVaruhint();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
-            
-
-}
-
-
-}
-
-
 }

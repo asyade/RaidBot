@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:42
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class InteractiveMapUpdateMessage : NetworkMessage
 {
 
-public const uint Id = 5002;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5002;
+	public override uint MessageId { get { return Id; } }
+
+	public InteractiveElement[] InteractiveElements { get; set; }
+
+	public InteractiveMapUpdateMessage() {}
+
+
+	public InteractiveMapUpdateMessage InitInteractiveMapUpdateMessage(InteractiveElement[] InteractiveElements)
+	{
+		this.InteractiveElements = InteractiveElements;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.InteractiveElements.Length);
+		foreach (InteractiveElement item in this.InteractiveElements)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int InteractiveElementsLen = reader.ReadShort();
+		InteractiveElements = new InteractiveElement[InteractiveElementsLen];
+		for (int i = 0; i < InteractiveElementsLen; i++)
+		{
+			this.InteractiveElements[i] = ProtocolTypeManager.GetInstance<InteractiveElement>(reader.ReadShort());
+			this.InteractiveElements[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.InteractiveElement[] interactiveElements;
-        
-
-public InteractiveMapUpdateMessage()
-{
-}
-
-public InteractiveMapUpdateMessage(Types.InteractiveElement[] interactiveElements)
-        {
-            this.interactiveElements = interactiveElements;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)interactiveElements.Length);
-            foreach (var entry in interactiveElements)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            interactiveElements = new Types.InteractiveElement[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 interactiveElements[i] = Types.ProtocolTypeManager.GetInstance<Types.InteractiveElement>(reader.ReadShort());
-                 interactiveElements[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

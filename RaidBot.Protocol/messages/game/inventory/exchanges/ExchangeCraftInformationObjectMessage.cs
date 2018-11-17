@@ -1,77 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeCraftInformationObjectMessage : ExchangeCraftResultWithObjectIdMessage
 {
 
-public const uint Id = 5794;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5794;
+	public override uint MessageId { get { return Id; } }
+
+	public long PlayerId { get; set; }
+
+	public ExchangeCraftInformationObjectMessage() {}
+
+
+	public ExchangeCraftInformationObjectMessage InitExchangeCraftInformationObjectMessage(long PlayerId)
+	{
+		this.PlayerId = PlayerId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarLong(this.PlayerId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.PlayerId = reader.ReadVarLong();
+	}
 }
-
-public uint playerId;
-        
-
-public ExchangeCraftInformationObjectMessage()
-{
-}
-
-public ExchangeCraftInformationObjectMessage(sbyte craftResult, ushort objectGenericId, uint playerId)
-         : base(craftResult, objectGenericId)
-        {
-            this.playerId = playerId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(playerId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            playerId = reader.ReadVaruhint();
-            if (playerId < 0)
-                throw new Exception("Forbidden value on playerId = " + playerId + ", it doesn't respect the following condition : playerId < 0");
-            
-
-}
-
-
-}
-
-
 }

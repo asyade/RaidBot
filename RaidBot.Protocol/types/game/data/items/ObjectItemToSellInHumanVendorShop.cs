@@ -1,114 +1,70 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectItemToSellInHumanVendorShop : Item
 {
 
-public const short Id = 359;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 359;
+	public override uint MessageId { get { return Id; } }
+
+	public short ObjectGID { get; set; }
+	public ObjectEffect[] Effects { get; set; }
+	public int ObjectUID { get; set; }
+	public int Quantity { get; set; }
+	public long ObjectPrice { get; set; }
+	public long PublicPrice { get; set; }
+
+	public ObjectItemToSellInHumanVendorShop() {}
+
+
+	public ObjectItemToSellInHumanVendorShop InitObjectItemToSellInHumanVendorShop(short ObjectGID, ObjectEffect[] Effects, int ObjectUID, int Quantity, long ObjectPrice, long PublicPrice)
+	{
+		this.ObjectGID = ObjectGID;
+		this.Effects = Effects;
+		this.ObjectUID = ObjectUID;
+		this.Quantity = Quantity;
+		this.ObjectPrice = ObjectPrice;
+		this.PublicPrice = PublicPrice;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.ObjectGID);
+		writer.WriteShort(this.Effects.Length);
+		foreach (ObjectEffect item in this.Effects)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteVarInt(this.ObjectUID);
+		writer.WriteVarInt(this.Quantity);
+		writer.WriteVarLong(this.ObjectPrice);
+		writer.WriteVarLong(this.PublicPrice);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.ObjectGID = reader.ReadVarShort();
+		int EffectsLen = reader.ReadShort();
+		Effects = new ObjectEffect[EffectsLen];
+		for (int i = 0; i < EffectsLen; i++)
+		{
+			this.Effects[i] = ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
+			this.Effects[i].Deserialize(reader);
+		}
+		this.ObjectUID = reader.ReadVarInt();
+		this.Quantity = reader.ReadVarInt();
+		this.ObjectPrice = reader.ReadVarLong();
+		this.PublicPrice = reader.ReadVarLong();
+	}
 }
-
-public ushort objectGID;
-        public Types.ObjectEffect[] effects;
-        public uint objectUID;
-        public uint quantity;
-        public uint objectPrice;
-        public uint publicPrice;
-        
-
-public ObjectItemToSellInHumanVendorShop()
-{
-}
-
-public ObjectItemToSellInHumanVendorShop(ushort objectGID, Types.ObjectEffect[] effects, uint objectUID, uint quantity, uint objectPrice, uint publicPrice)
-        {
-            this.objectGID = objectGID;
-            this.effects = effects;
-            this.objectUID = objectUID;
-            this.quantity = quantity;
-            this.objectPrice = objectPrice;
-            this.publicPrice = publicPrice;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(objectGID);
-            writer.WriteUShort((ushort)effects.Length);
-            foreach (var entry in effects)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteVaruhint(objectUID);
-            writer.WriteVaruhint(quantity);
-            writer.WriteVaruhint(objectPrice);
-            writer.WriteVaruhint(publicPrice);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            objectGID = reader.ReadVaruhshort();
-            if (objectGID < 0)
-                throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 effects[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 effects[i].Deserialize(reader);
-            }
-            objectUID = reader.ReadVaruhint();
-            if (objectUID < 0)
-                throw new Exception("Forbidden value on objectUID = " + objectUID + ", it doesn't respect the following condition : objectUID < 0");
-            quantity = reader.ReadVaruhint();
-            if (quantity < 0)
-                throw new Exception("Forbidden value on quantity = " + quantity + ", it doesn't respect the following condition : quantity < 0");
-            objectPrice = reader.ReadVaruhint();
-            if (objectPrice < 0)
-                throw new Exception("Forbidden value on objectPrice = " + objectPrice + ", it doesn't respect the following condition : objectPrice < 0");
-            publicPrice = reader.ReadVaruhint();
-            if (publicPrice < 0)
-                throw new Exception("Forbidden value on publicPrice = " + publicPrice + ", it doesn't respect the following condition : publicPrice < 0");
-            
-
-}
-
-
-}
-
-
 }

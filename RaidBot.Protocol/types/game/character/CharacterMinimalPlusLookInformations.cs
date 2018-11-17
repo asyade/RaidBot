@@ -1,75 +1,44 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharacterMinimalPlusLookInformations : CharacterMinimalInformations
 {
 
-public const short Id = 163;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 163;
+	public override uint MessageId { get { return Id; } }
+
+	public EntityLook EntityLook { get; set; }
+	public byte Breed { get; set; }
+
+	public CharacterMinimalPlusLookInformations() {}
+
+
+	public CharacterMinimalPlusLookInformations InitCharacterMinimalPlusLookInformations(EntityLook EntityLook, byte Breed)
+	{
+		this.EntityLook = EntityLook;
+		this.Breed = Breed;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		this.EntityLook.Serialize(writer);
+		writer.WriteByte(this.Breed);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.EntityLook = new EntityLook();
+		this.EntityLook.Deserialize(reader);
+		this.Breed = reader.ReadByte();
+	}
 }
-
-public Types.EntityLook entityLook;
-        
-
-public CharacterMinimalPlusLookInformations()
-{
-}
-
-public CharacterMinimalPlusLookInformations(uint id, byte level, string name, Types.EntityLook entityLook)
-         : base(id, level, name)
-        {
-            this.entityLook = entityLook;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            entityLook.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            entityLook = new Types.EntityLook();
-            entityLook.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

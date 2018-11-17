@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:00
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class FightTemporarySpellBoostEffect : FightTemporaryBoostEffect
 {
 
-public const short Id = 207;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 207;
+	public override uint MessageId { get { return Id; } }
+
+	public short BoostedSpellId { get; set; }
+
+	public FightTemporarySpellBoostEffect() {}
+
+
+	public FightTemporarySpellBoostEffect InitFightTemporarySpellBoostEffect(short BoostedSpellId)
+	{
+		this.BoostedSpellId = BoostedSpellId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.BoostedSpellId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.BoostedSpellId = reader.ReadVarShort();
+	}
 }
-
-public ushort boostedSpellId;
-        
-
-public FightTemporarySpellBoostEffect()
-{
-}
-
-public FightTemporarySpellBoostEffect(uint uid, int targetId, short turnDuration, sbyte dispelable, ushort spellId, uint effectId, uint parentBoostUid, short delta, ushort boostedSpellId)
-         : base(uid, targetId, turnDuration, dispelable, spellId, effectId, parentBoostUid, delta)
-        {
-            this.boostedSpellId = boostedSpellId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(boostedSpellId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            boostedSpellId = reader.ReadVaruhshort();
-            if (boostedSpellId < 0)
-                throw new Exception("Forbidden value on boostedSpellId = " + boostedSpellId + ", it doesn't respect the following condition : boostedSpellId < 0");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:55
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class PrismsInfoValidMessage : NetworkMessage
 {
 
-public const uint Id = 6451;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6451;
+	public override uint MessageId { get { return Id; } }
+
+	public PrismFightersInformation[] Fights { get; set; }
+
+	public PrismsInfoValidMessage() {}
+
+
+	public PrismsInfoValidMessage InitPrismsInfoValidMessage(PrismFightersInformation[] Fights)
+	{
+		this.Fights = Fights;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Fights.Length);
+		foreach (PrismFightersInformation item in this.Fights)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int FightsLen = reader.ReadShort();
+		Fights = new PrismFightersInformation[FightsLen];
+		for (int i = 0; i < FightsLen; i++)
+		{
+			this.Fights[i] = new PrismFightersInformation();
+			this.Fights[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.PrismFightersInformation[] fights;
-        
-
-public PrismsInfoValidMessage()
-{
-}
-
-public PrismsInfoValidMessage(Types.PrismFightersInformation[] fights)
-        {
-            this.fights = fights;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)fights.Length);
-            foreach (var entry in fights)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            fights = new Types.PrismFightersInformation[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 fights[i] = new Types.PrismFightersInformation();
-                 fights[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

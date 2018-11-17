@@ -1,130 +1,94 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:09
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class HouseInformationsForSell : NetworkType
 {
 
-public class HouseInformationsForSell
-{
+	public const uint Id = 221;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 221;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int InstanceId { get; set; }
+	public bool SecondHand { get; set; }
+	public int ModelId { get; set; }
+	public String OwnerName { get; set; }
+	public bool OwnerConnected { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public short SubAreaId { get; set; }
+	public byte NbRoom { get; set; }
+	public byte NbChest { get; set; }
+	public int[] SkillListIds { get; set; }
+	public bool IsLocked { get; set; }
+	public long Price { get; set; }
+
+	public HouseInformationsForSell() {}
+
+
+	public HouseInformationsForSell InitHouseInformationsForSell(int InstanceId, bool SecondHand, int ModelId, String OwnerName, bool OwnerConnected, short WorldX, short WorldY, short SubAreaId, byte NbRoom, byte NbChest, int[] SkillListIds, bool IsLocked, long Price)
+	{
+		this.InstanceId = InstanceId;
+		this.SecondHand = SecondHand;
+		this.ModelId = ModelId;
+		this.OwnerName = OwnerName;
+		this.OwnerConnected = OwnerConnected;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.SubAreaId = SubAreaId;
+		this.NbRoom = NbRoom;
+		this.NbChest = NbChest;
+		this.SkillListIds = SkillListIds;
+		this.IsLocked = IsLocked;
+		this.Price = Price;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.InstanceId);
+		writer.WriteBoolean(this.SecondHand);
+		writer.WriteVarInt(this.ModelId);
+		writer.WriteUTF(this.OwnerName);
+		writer.WriteBoolean(this.OwnerConnected);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteByte(this.NbRoom);
+		writer.WriteByte(this.NbChest);
+		writer.WriteShort(this.SkillListIds.Length);
+		foreach (int item in this.SkillListIds)
+		{
+			writer.WriteInt(item);
+		}
+		writer.WriteBoolean(this.IsLocked);
+		writer.WriteVarLong(this.Price);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.InstanceId = reader.ReadInt();
+		this.SecondHand = reader.ReadBoolean();
+		this.ModelId = reader.ReadVarInt();
+		this.OwnerName = reader.ReadUTF();
+		this.OwnerConnected = reader.ReadBoolean();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.SubAreaId = reader.ReadVarShort();
+		this.NbRoom = reader.ReadByte();
+		this.NbChest = reader.ReadByte();
+		int SkillListIdsLen = reader.ReadShort();
+		SkillListIds = new int[SkillListIdsLen];
+		for (int i = 0; i < SkillListIdsLen; i++)
+		{
+			this.SkillListIds[i] = reader.ReadInt();
+		}
+		this.IsLocked = reader.ReadBoolean();
+		this.Price = reader.ReadVarLong();
+	}
 }
-
-public uint modelId;
-        public string ownerName;
-        public bool ownerConnected;
-        public short worldX;
-        public short worldY;
-        public ushort subAreaId;
-        public sbyte nbRoom;
-        public sbyte nbChest;
-        public int[] skillListIds;
-        public bool isLocked;
-        public uint price;
-        
-
-public HouseInformationsForSell()
-{
-}
-
-public HouseInformationsForSell(uint modelId, string ownerName, bool ownerConnected, short worldX, short worldY, ushort subAreaId, sbyte nbRoom, sbyte nbChest, int[] skillListIds, bool isLocked, uint price)
-        {
-            this.modelId = modelId;
-            this.ownerName = ownerName;
-            this.ownerConnected = ownerConnected;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.subAreaId = subAreaId;
-            this.nbRoom = nbRoom;
-            this.nbChest = nbChest;
-            this.skillListIds = skillListIds;
-            this.isLocked = isLocked;
-            this.price = price;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(modelId);
-            writer.WriteUTF(ownerName);
-            writer.WriteBoolean(ownerConnected);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteSByte(nbRoom);
-            writer.WriteSByte(nbChest);
-            writer.WriteUShort((ushort)skillListIds.Length);
-            foreach (var entry in skillListIds)
-            {
-                 writer.WriteInt(entry);
-            }
-            writer.WriteBoolean(isLocked);
-            writer.WriteVaruhint(price);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-modelId = reader.ReadVaruhint();
-            if (modelId < 0)
-                throw new Exception("Forbidden value on modelId = " + modelId + ", it doesn't respect the following condition : modelId < 0");
-            ownerName = reader.ReadUTF();
-            ownerConnected = reader.ReadBoolean();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            nbRoom = reader.ReadSByte();
-            nbChest = reader.ReadSByte();
-            var limit = reader.ReadUShort();
-            skillListIds = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 skillListIds[i] = reader.ReadInt();
-            }
-            isLocked = reader.ReadBoolean();
-            price = reader.ReadVaruhint();
-            if (price < 0)
-                throw new Exception("Forbidden value on price = " + price + ", it doesn't respect the following condition : price < 0");
-            
-
-}
-
-
-}
-
-
 }

@@ -1,83 +1,48 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ServerSessionConstantsMessage : NetworkMessage
 {
 
-public const uint Id = 6434;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6434;
+	public override uint MessageId { get { return Id; } }
+
+	public ServerSessionConstant[] Variables { get; set; }
+
+	public ServerSessionConstantsMessage() {}
+
+
+	public ServerSessionConstantsMessage InitServerSessionConstantsMessage(ServerSessionConstant[] Variables)
+	{
+		this.Variables = Variables;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Variables.Length);
+		foreach (ServerSessionConstant item in this.Variables)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int VariablesLen = reader.ReadShort();
+		Variables = new ServerSessionConstant[VariablesLen];
+		for (int i = 0; i < VariablesLen; i++)
+		{
+			this.Variables[i] = ProtocolTypeManager.GetInstance<ServerSessionConstant>(reader.ReadShort());
+			this.Variables[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ServerSessionConstant[] variables;
-        
-
-public ServerSessionConstantsMessage()
-{
-}
-
-public ServerSessionConstantsMessage(Types.ServerSessionConstant[] variables)
-        {
-            this.variables = variables;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)variables.Length);
-            foreach (var entry in variables)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            variables = new Types.ServerSessionConstant[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 variables[i] = Types.ProtocolTypeManager.GetInstance<Types.ServerSessionConstant>(reader.ReadShort());
-                 variables[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

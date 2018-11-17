@@ -1,78 +1,42 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:06
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class NamedPartyTeamWithOutcome : NetworkType
 {
 
-public class NamedPartyTeamWithOutcome
-{
+	public const uint Id = 470;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 470;
-public virtual short TypeId
-{
-    get { return Id; }
+	public NamedPartyTeam Team { get; set; }
+	public short Outcome { get; set; }
+
+	public NamedPartyTeamWithOutcome() {}
+
+
+	public NamedPartyTeamWithOutcome InitNamedPartyTeamWithOutcome(NamedPartyTeam Team, short Outcome)
+	{
+		this.Team = Team;
+		this.Outcome = Outcome;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		this.Team.Serialize(writer);
+		writer.WriteVarShort(this.Outcome);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Team = new NamedPartyTeam();
+		this.Team.Deserialize(reader);
+		this.Outcome = reader.ReadVarShort();
+	}
 }
-
-public Types.NamedPartyTeam team;
-        public ushort outcome;
-        
-
-public NamedPartyTeamWithOutcome()
-{
-}
-
-public NamedPartyTeamWithOutcome(Types.NamedPartyTeam team, ushort outcome)
-        {
-            this.team = team;
-            this.outcome = outcome;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-team.Serialize(writer);
-            writer.WriteVaruhshort(outcome);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-team = new Types.NamedPartyTeam();
-            team.Deserialize(reader);
-            outcome = reader.ReadVaruhshort();
-            if (outcome < 0)
-                throw new Exception("Forbidden value on outcome = " + outcome + ", it doesn't respect the following condition : outcome < 0");
-            
-
-}
-
-
-}
-
-
 }

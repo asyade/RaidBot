@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:13
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameContextMoveMultipleElementsMessage : NetworkMessage
 {
 
-public const uint Id = 254;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 254;
+	public override uint MessageId { get { return Id; } }
+
+	public EntityMovementInformations[] Movements { get; set; }
+
+	public GameContextMoveMultipleElementsMessage() {}
+
+
+	public GameContextMoveMultipleElementsMessage InitGameContextMoveMultipleElementsMessage(EntityMovementInformations[] Movements)
+	{
+		this.Movements = Movements;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.Movements.Length);
+		foreach (EntityMovementInformations item in this.Movements)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int MovementsLen = reader.ReadShort();
+		Movements = new EntityMovementInformations[MovementsLen];
+		for (int i = 0; i < MovementsLen; i++)
+		{
+			this.Movements[i] = new EntityMovementInformations();
+			this.Movements[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.EntityMovementInformations[] movements;
-        
-
-public GameContextMoveMultipleElementsMessage()
-{
-}
-
-public GameContextMoveMultipleElementsMessage(Types.EntityMovementInformations[] movements)
-        {
-            this.movements = movements;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)movements.Length);
-            foreach (var entry in movements)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            movements = new Types.EntityMovementInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 movements[i] = new Types.EntityMovementInformations();
-                 movements[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

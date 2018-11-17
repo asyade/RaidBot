@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:22
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class EmoteListMessage : NetworkMessage
 {
 
-public const uint Id = 5689;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5689;
+	public override uint MessageId { get { return Id; } }
+
+	public byte[] EmoteIds { get; set; }
+
+	public EmoteListMessage() {}
+
+
+	public EmoteListMessage InitEmoteListMessage(byte[] EmoteIds)
+	{
+		this.EmoteIds = EmoteIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.EmoteIds.Length);
+		foreach (byte item in this.EmoteIds)
+		{
+			writer.WriteByte(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int EmoteIdsLen = reader.ReadShort();
+		EmoteIds = new byte[EmoteIdsLen];
+		for (int i = 0; i < EmoteIdsLen; i++)
+		{
+			this.EmoteIds[i] = reader.ReadByte();
+		}
+	}
 }
-
-public byte[] emoteIds;
-        
-
-public EmoteListMessage()
-{
-}
-
-public EmoteListMessage(byte[] emoteIds)
-        {
-            this.emoteIds = emoteIds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)emoteIds.Length);
-            foreach (var entry in emoteIds)
-            {
-                 writer.WriteByte(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            emoteIds = new byte[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 emoteIds[i] = reader.ReadByte();
-            }
-            
-
-}
-
-
-}
-
-
 }

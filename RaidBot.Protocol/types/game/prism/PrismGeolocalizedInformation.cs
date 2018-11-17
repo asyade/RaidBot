@@ -1,92 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class PrismGeolocalizedInformation : PrismSubareaEmptyInfo
 {
 
-public const short Id = 434;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 434;
+	public override uint MessageId { get { return Id; } }
+
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public double MapId { get; set; }
+
+	public PrismGeolocalizedInformation() {}
+
+
+	public PrismGeolocalizedInformation InitPrismGeolocalizedInformation(short WorldX, short WorldY, double MapId)
+	{
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.MapId = MapId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteDouble(this.MapId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.MapId = reader.ReadDouble();
+	}
 }
-
-public short worldX;
-        public short worldY;
-        public int mapId;
-        public Types.PrismInformation prism;
-        
-
-public PrismGeolocalizedInformation()
-{
-}
-
-public PrismGeolocalizedInformation(ushort subAreaId, uint allianceId, short worldX, short worldY, int mapId, Types.PrismInformation prism)
-         : base(subAreaId, allianceId)
-        {
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.mapId = mapId;
-            this.prism = prism;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteInt(mapId);
-            writer.WriteShort(prism.TypeId);
-            prism.Serialize(writer);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            mapId = reader.ReadInt();
-            prism = Types.ProtocolTypeManager.GetInstance<Types.PrismInformation>(reader.ReadShort());
-            prism.Deserialize(reader);
-            
-
-}
-
-
-}
-
-
 }

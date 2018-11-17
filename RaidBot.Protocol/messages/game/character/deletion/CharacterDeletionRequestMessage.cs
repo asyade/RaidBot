@@ -1,78 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class CharacterDeletionRequestMessage : NetworkMessage
 {
 
-public const uint Id = 165;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 165;
+	public override uint MessageId { get { return Id; } }
+
+	public long CharacterId { get; set; }
+	public String SecretAnswerHash { get; set; }
+
+	public CharacterDeletionRequestMessage() {}
+
+
+	public CharacterDeletionRequestMessage InitCharacterDeletionRequestMessage(long CharacterId, String SecretAnswerHash)
+	{
+		this.CharacterId = CharacterId;
+		this.SecretAnswerHash = SecretAnswerHash;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.CharacterId);
+		writer.WriteUTF(this.SecretAnswerHash);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CharacterId = reader.ReadVarLong();
+		this.SecretAnswerHash = reader.ReadUTF();
+	}
 }
-
-public int characterId;
-        public string secretAnswerHash;
-        
-
-public CharacterDeletionRequestMessage()
-{
-}
-
-public CharacterDeletionRequestMessage(int characterId, string secretAnswerHash)
-        {
-            this.characterId = characterId;
-            this.secretAnswerHash = secretAnswerHash;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(characterId);
-            writer.WriteUTF(secretAnswerHash);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-characterId = reader.ReadInt();
-            if (characterId < 0)
-                throw new Exception("Forbidden value on characterId = " + characterId + ", it doesn't respect the following condition : characterId < 0");
-            secretAnswerHash = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

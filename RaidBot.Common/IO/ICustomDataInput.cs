@@ -8,11 +8,11 @@ namespace RaidBot.Common.IO
 {
     public interface ICustomDataReader:IDataReader
     {
-        int ReadVarint();
+        int ReadVarInt();
         uint ReadVaruhint();
-        short ReadVarshort();
+        short ReadVarShort();
         ushort ReadVaruhshort();
-        Types.Int64 ReadVarlong();
+        Types.Int64 ReadVarLong();
         Types.UInt64 ReadVaruhlong();
     }
 }

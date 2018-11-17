@@ -1,96 +1,51 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:11
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GuildInsiderFactSheetInformations : GuildFactSheetInformations
 {
 
-public const short Id = 423;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 423;
+	public override uint MessageId { get { return Id; } }
+
+	public String LeaderName { get; set; }
+	public short NbConnectedMembers { get; set; }
+	public byte NbTaxCollectors { get; set; }
+	public int LastActivity { get; set; }
+
+	public GuildInsiderFactSheetInformations() {}
+
+
+	public GuildInsiderFactSheetInformations InitGuildInsiderFactSheetInformations(String LeaderName, short NbConnectedMembers, byte NbTaxCollectors, int LastActivity)
+	{
+		this.LeaderName = LeaderName;
+		this.NbConnectedMembers = NbConnectedMembers;
+		this.NbTaxCollectors = NbTaxCollectors;
+		this.LastActivity = LastActivity;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteUTF(this.LeaderName);
+		writer.WriteVarShort(this.NbConnectedMembers);
+		writer.WriteByte(this.NbTaxCollectors);
+		writer.WriteInt(this.LastActivity);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.LeaderName = reader.ReadUTF();
+		this.NbConnectedMembers = reader.ReadVarShort();
+		this.NbTaxCollectors = reader.ReadByte();
+		this.LastActivity = reader.ReadInt();
+	}
 }
-
-public string leaderName;
-        public ushort nbConnectedMembers;
-        public sbyte nbTaxCollectors;
-        public int lastActivity;
-        public bool enabled;
-        
-
-public GuildInsiderFactSheetInformations()
-{
-}
-
-public GuildInsiderFactSheetInformations(uint guildId, string guildName, Types.GuildEmblem guildEmblem, uint leaderId, byte guildLevel, ushort nbMembers, string leaderName, ushort nbConnectedMembers, sbyte nbTaxCollectors, int lastActivity, bool enabled)
-         : base(guildId, guildName, guildEmblem, leaderId, guildLevel, nbMembers)
-        {
-            this.leaderName = leaderName;
-            this.nbConnectedMembers = nbConnectedMembers;
-            this.nbTaxCollectors = nbTaxCollectors;
-            this.lastActivity = lastActivity;
-            this.enabled = enabled;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUTF(leaderName);
-            writer.WriteVaruhshort(nbConnectedMembers);
-            writer.WriteSByte(nbTaxCollectors);
-            writer.WriteInt(lastActivity);
-            writer.WriteBoolean(enabled);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            leaderName = reader.ReadUTF();
-            nbConnectedMembers = reader.ReadVaruhshort();
-            if (nbConnectedMembers < 0)
-                throw new Exception("Forbidden value on nbConnectedMembers = " + nbConnectedMembers + ", it doesn't respect the following condition : nbConnectedMembers < 0");
-            nbTaxCollectors = reader.ReadSByte();
-            if (nbTaxCollectors < 0)
-                throw new Exception("Forbidden value on nbTaxCollectors = " + nbTaxCollectors + ", it doesn't respect the following condition : nbTaxCollectors < 0");
-            lastActivity = reader.ReadInt();
-            if (lastActivity < 0)
-                throw new Exception("Forbidden value on lastActivity = " + lastActivity + ", it doesn't respect the following condition : lastActivity < 0");
-            enabled = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }

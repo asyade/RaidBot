@@ -1,90 +1,54 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:07
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ObjectItemMinimalInformation : Item
 {
 
-public const short Id = 124;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 124;
+	public override uint MessageId { get { return Id; } }
+
+	public short ObjectGID { get; set; }
+	public ObjectEffect[] Effects { get; set; }
+
+	public ObjectItemMinimalInformation() {}
+
+
+	public ObjectItemMinimalInformation InitObjectItemMinimalInformation(short ObjectGID, ObjectEffect[] Effects)
+	{
+		this.ObjectGID = ObjectGID;
+		this.Effects = Effects;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.ObjectGID);
+		writer.WriteShort(this.Effects.Length);
+		foreach (ObjectEffect item in this.Effects)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.ObjectGID = reader.ReadVarShort();
+		int EffectsLen = reader.ReadShort();
+		Effects = new ObjectEffect[EffectsLen];
+		for (int i = 0; i < EffectsLen; i++)
+		{
+			this.Effects[i] = ProtocolTypeManager.GetInstance<ObjectEffect>(reader.ReadShort());
+			this.Effects[i].Deserialize(reader);
+		}
+	}
 }
-
-public ushort objectGID;
-        public Types.ObjectEffect[] effects;
-        
-
-public ObjectItemMinimalInformation()
-{
-}
-
-public ObjectItemMinimalInformation(ushort objectGID, Types.ObjectEffect[] effects)
-        {
-            this.objectGID = objectGID;
-            this.effects = effects;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(objectGID);
-            writer.WriteUShort((ushort)effects.Length);
-            foreach (var entry in effects)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            objectGID = reader.ReadVaruhshort();
-            if (objectGID < 0)
-                throw new Exception("Forbidden value on objectGID = " + objectGID + ", it doesn't respect the following condition : objectGID < 0");
-            var limit = reader.ReadUShort();
-            effects = new Types.ObjectEffect[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 effects[i] = Types.ProtocolTypeManager.GetInstance<Types.ObjectEffect>(reader.ReadShort());
-                 effects[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

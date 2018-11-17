@@ -10,7 +10,7 @@ namespace RaidBot.Common.IO
 {
     public class CustomDataWriter : BigEndianWriter, ICustomDataWriter
     {
-        public void WriteVarint(int value)
+        public void WriteVarInt(int value)
         {
             var local_5 = 0;
             BigEndianWriter local_2 = new BigEndianWriter();
@@ -45,7 +45,7 @@ namespace RaidBot.Common.IO
             WriteBytes(local_2.Data);
         }
 
-        public void WriteVarshort(short @int)
+        public void WriteVarShort(short @int)
         {
             var local_5 = 0;
             if (@int > CustomDataConst.SHORT_MAX_VALUE || @int < CustomDataConst.SHORT_MIN_VALUE)
@@ -87,7 +87,7 @@ namespace RaidBot.Common.IO
         }
 
 
-        public void WriteVarlong(double param1)
+        public void WriteVarLong(double param1)
         {
             uint _loc3_ = 0;
             Types.Int64 _loc2_ = Types.Int64.fromNumber(param1);
@@ -129,17 +129,17 @@ namespace RaidBot.Common.IO
 
         public void WriteVaruhint(uint value)
         {
-            WriteVarint((int)value);
+            WriteVarInt((int)value);
         }
 
         public void WriteVaruhshort(ushort value)
         {
-            WriteVarshort((short)value);
+            WriteVarShort((short)value);
         }
 
         public void WriteVaruhlong(ulong value)
         {
-            WriteVarlong((long)value);
+            WriteVarLong((long)value);
         }
     }
 }

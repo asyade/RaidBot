@@ -1,86 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:40:58
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class SelectedServerRefusedMessage : NetworkMessage
 {
 
-public const uint Id = 41;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 41;
+	public override uint MessageId { get { return Id; } }
+
+	public short ServerId { get; set; }
+	public byte Error { get; set; }
+	public byte ServerStatus { get; set; }
+
+	public SelectedServerRefusedMessage() {}
+
+
+	public SelectedServerRefusedMessage InitSelectedServerRefusedMessage(short ServerId, byte Error, byte ServerStatus)
+	{
+		this.ServerId = ServerId;
+		this.Error = Error;
+		this.ServerStatus = ServerStatus;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarShort(this.ServerId);
+		writer.WriteByte(this.Error);
+		writer.WriteByte(this.ServerStatus);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.ServerId = reader.ReadVarShort();
+		this.Error = reader.ReadByte();
+		this.ServerStatus = reader.ReadByte();
+	}
 }
-
-public ushort serverId;
-        public sbyte error;
-        public sbyte serverStatus;
-        
-
-public SelectedServerRefusedMessage()
-{
-}
-
-public SelectedServerRefusedMessage(ushort serverId, sbyte error, sbyte serverStatus)
-        {
-            this.serverId = serverId;
-            this.error = error;
-            this.serverStatus = serverStatus;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhshort(serverId);
-            writer.WriteSByte(error);
-            writer.WriteSByte(serverStatus);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-serverId = reader.ReadVaruhshort();
-            if (serverId < 0)
-                throw new Exception("Forbidden value on serverId = " + serverId + ", it doesn't respect the following condition : serverId < 0");
-            error = reader.ReadSByte();
-            if (error < 0)
-                throw new Exception("Forbidden value on error = " + error + ", it doesn't respect the following condition : error < 0");
-            serverStatus = reader.ReadSByte();
-            if (serverStatus < 0)
-                throw new Exception("Forbidden value on serverStatus = " + serverStatus + ", it doesn't respect the following condition : serverStatus < 0");
-            
-
-}
-
-
-}
-
-
 }

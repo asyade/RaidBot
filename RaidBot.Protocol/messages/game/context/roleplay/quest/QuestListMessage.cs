@@ -1,122 +1,87 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:33
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class QuestListMessage : NetworkMessage
 {
 
-public const uint Id = 5626;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5626;
+	public override uint MessageId { get { return Id; } }
+
+	public short[] FinishedQuestsIds { get; set; }
+	public short[] FinishedQuestsCounts { get; set; }
+	public QuestActiveInformations[] ActiveQuests { get; set; }
+	public short[] ReinitDoneQuestsIds { get; set; }
+
+	public QuestListMessage() {}
+
+
+	public QuestListMessage InitQuestListMessage(short[] FinishedQuestsIds, short[] FinishedQuestsCounts, QuestActiveInformations[] ActiveQuests, short[] ReinitDoneQuestsIds)
+	{
+		this.FinishedQuestsIds = FinishedQuestsIds;
+		this.FinishedQuestsCounts = FinishedQuestsCounts;
+		this.ActiveQuests = ActiveQuests;
+		this.ReinitDoneQuestsIds = ReinitDoneQuestsIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.FinishedQuestsIds.Length);
+		foreach (short item in this.FinishedQuestsIds)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.FinishedQuestsCounts.Length);
+		foreach (short item in this.FinishedQuestsCounts)
+		{
+			writer.WriteVarShort(item);
+		}
+		writer.WriteShort(this.ActiveQuests.Length);
+		foreach (QuestActiveInformations item in this.ActiveQuests)
+		{
+			writer.WriteShort(item.MessageId);
+			item.Serialize(writer);
+		}
+		writer.WriteShort(this.ReinitDoneQuestsIds.Length);
+		foreach (short item in this.ReinitDoneQuestsIds)
+		{
+			writer.WriteVarShort(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int FinishedQuestsIdsLen = reader.ReadShort();
+		FinishedQuestsIds = new short[FinishedQuestsIdsLen];
+		for (int i = 0; i < FinishedQuestsIdsLen; i++)
+		{
+			this.FinishedQuestsIds[i] = reader.ReadVarShort();
+		}
+		int FinishedQuestsCountsLen = reader.ReadShort();
+		FinishedQuestsCounts = new short[FinishedQuestsCountsLen];
+		for (int i = 0; i < FinishedQuestsCountsLen; i++)
+		{
+			this.FinishedQuestsCounts[i] = reader.ReadVarShort();
+		}
+		int ActiveQuestsLen = reader.ReadShort();
+		ActiveQuests = new QuestActiveInformations[ActiveQuestsLen];
+		for (int i = 0; i < ActiveQuestsLen; i++)
+		{
+			this.ActiveQuests[i] = ProtocolTypeManager.GetInstance<QuestActiveInformations>(reader.ReadShort());
+			this.ActiveQuests[i].Deserialize(reader);
+		}
+		int ReinitDoneQuestsIdsLen = reader.ReadShort();
+		ReinitDoneQuestsIds = new short[ReinitDoneQuestsIdsLen];
+		for (int i = 0; i < ReinitDoneQuestsIdsLen; i++)
+		{
+			this.ReinitDoneQuestsIds[i] = reader.ReadVarShort();
+		}
+	}
 }
-
-public ushort[] finishedQuestsIds;
-        public ushort[] finishedQuestsCounts;
-        public Types.QuestActiveInformations[] activeQuests;
-        public ushort[] reinitDoneQuestsIds;
-        
-
-public QuestListMessage()
-{
-}
-
-public QuestListMessage(ushort[] finishedQuestsIds, ushort[] finishedQuestsCounts, Types.QuestActiveInformations[] activeQuests, ushort[] reinitDoneQuestsIds)
-        {
-            this.finishedQuestsIds = finishedQuestsIds;
-            this.finishedQuestsCounts = finishedQuestsCounts;
-            this.activeQuests = activeQuests;
-            this.reinitDoneQuestsIds = reinitDoneQuestsIds;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)finishedQuestsIds.Length);
-            foreach (var entry in finishedQuestsIds)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)finishedQuestsCounts.Length);
-            foreach (var entry in finishedQuestsCounts)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            writer.WriteUShort((ushort)activeQuests.Length);
-            foreach (var entry in activeQuests)
-            {
-                 writer.WriteShort(entry.TypeId);
-                 entry.Serialize(writer);
-            }
-            writer.WriteUShort((ushort)reinitDoneQuestsIds.Length);
-            foreach (var entry in reinitDoneQuestsIds)
-            {
-                 writer.WriteVaruhshort(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            finishedQuestsIds = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 finishedQuestsIds[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            finishedQuestsCounts = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 finishedQuestsCounts[i] = reader.ReadVaruhshort();
-            }
-            limit = reader.ReadUShort();
-            activeQuests = new Types.QuestActiveInformations[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 activeQuests[i] = Types.ProtocolTypeManager.GetInstance<Types.QuestActiveInformations>(reader.ReadShort());
-                 activeQuests[i].Deserialize(reader);
-            }
-            limit = reader.ReadUShort();
-            reinitDoneQuestsIds = new ushort[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 reinitDoneQuestsIds[i] = reader.ReadVaruhshort();
-            }
-            
-
-}
-
-
-}
-
-
 }

@@ -1,118 +1,87 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:44
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeGuildTaxCollectorGetMessage : NetworkMessage
 {
 
-public const uint Id = 5762;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5762;
+	public override uint MessageId { get { return Id; } }
+
+	public String CollectorName { get; set; }
+	public short WorldX { get; set; }
+	public short WorldY { get; set; }
+	public double MapId { get; set; }
+	public short SubAreaId { get; set; }
+	public String UserName { get; set; }
+	public long CallerId { get; set; }
+	public String CallerName { get; set; }
+	public double Experience { get; set; }
+	public short Pods { get; set; }
+	public ObjectItemGenericQuantity[] ObjectsInfos { get; set; }
+
+	public ExchangeGuildTaxCollectorGetMessage() {}
+
+
+	public ExchangeGuildTaxCollectorGetMessage InitExchangeGuildTaxCollectorGetMessage(String CollectorName, short WorldX, short WorldY, double MapId, short SubAreaId, String UserName, long CallerId, String CallerName, double Experience, short Pods, ObjectItemGenericQuantity[] ObjectsInfos)
+	{
+		this.CollectorName = CollectorName;
+		this.WorldX = WorldX;
+		this.WorldY = WorldY;
+		this.MapId = MapId;
+		this.SubAreaId = SubAreaId;
+		this.UserName = UserName;
+		this.CallerId = CallerId;
+		this.CallerName = CallerName;
+		this.Experience = Experience;
+		this.Pods = Pods;
+		this.ObjectsInfos = ObjectsInfos;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteUTF(this.CollectorName);
+		writer.WriteShort(this.WorldX);
+		writer.WriteShort(this.WorldY);
+		writer.WriteDouble(this.MapId);
+		writer.WriteVarShort(this.SubAreaId);
+		writer.WriteUTF(this.UserName);
+		writer.WriteVarLong(this.CallerId);
+		writer.WriteUTF(this.CallerName);
+		writer.WriteDouble(this.Experience);
+		writer.WriteVarShort(this.Pods);
+		writer.WriteShort(this.ObjectsInfos.Length);
+		foreach (ObjectItemGenericQuantity item in this.ObjectsInfos)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.CollectorName = reader.ReadUTF();
+		this.WorldX = reader.ReadShort();
+		this.WorldY = reader.ReadShort();
+		this.MapId = reader.ReadDouble();
+		this.SubAreaId = reader.ReadVarShort();
+		this.UserName = reader.ReadUTF();
+		this.CallerId = reader.ReadVarLong();
+		this.CallerName = reader.ReadUTF();
+		this.Experience = reader.ReadDouble();
+		this.Pods = reader.ReadVarShort();
+		int ObjectsInfosLen = reader.ReadShort();
+		ObjectsInfos = new ObjectItemGenericQuantity[ObjectsInfosLen];
+		for (int i = 0; i < ObjectsInfosLen; i++)
+		{
+			this.ObjectsInfos[i] = new ObjectItemGenericQuantity();
+			this.ObjectsInfos[i].Deserialize(reader);
+		}
+	}
 }
-
-public string collectorName;
-        public short worldX;
-        public short worldY;
-        public int mapId;
-        public ushort subAreaId;
-        public string userName;
-        public double experience;
-        public Types.ObjectItemGenericQuantity[] objectsInfos;
-        
-
-public ExchangeGuildTaxCollectorGetMessage()
-{
-}
-
-public ExchangeGuildTaxCollectorGetMessage(string collectorName, short worldX, short worldY, int mapId, ushort subAreaId, string userName, double experience, Types.ObjectItemGenericQuantity[] objectsInfos)
-        {
-            this.collectorName = collectorName;
-            this.worldX = worldX;
-            this.worldY = worldY;
-            this.mapId = mapId;
-            this.subAreaId = subAreaId;
-            this.userName = userName;
-            this.experience = experience;
-            this.objectsInfos = objectsInfos;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUTF(collectorName);
-            writer.WriteShort(worldX);
-            writer.WriteShort(worldY);
-            writer.WriteInt(mapId);
-            writer.WriteVaruhshort(subAreaId);
-            writer.WriteUTF(userName);
-            writer.WriteDouble(experience);
-            writer.WriteUShort((ushort)objectsInfos.Length);
-            foreach (var entry in objectsInfos)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-collectorName = reader.ReadUTF();
-            worldX = reader.ReadShort();
-            if (worldX < -255 || worldX > 255)
-                throw new Exception("Forbidden value on worldX = " + worldX + ", it doesn't respect the following condition : worldX < -255 || worldX > 255");
-            worldY = reader.ReadShort();
-            if (worldY < -255 || worldY > 255)
-                throw new Exception("Forbidden value on worldY = " + worldY + ", it doesn't respect the following condition : worldY < -255 || worldY > 255");
-            mapId = reader.ReadInt();
-            subAreaId = reader.ReadVaruhshort();
-            if (subAreaId < 0)
-                throw new Exception("Forbidden value on subAreaId = " + subAreaId + ", it doesn't respect the following condition : subAreaId < 0");
-            userName = reader.ReadUTF();
-            experience = reader.ReadDouble();
-            if (experience < -9.007199254740992E15 || experience > 9.007199254740992E15)
-                throw new Exception("Forbidden value on experience = " + experience + ", it doesn't respect the following condition : experience < -9.007199254740992E15 || experience > 9.007199254740992E15");
-            var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItemGenericQuantity[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectsInfos[i] = new Types.ObjectItemGenericQuantity();
-                 objectsInfos[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

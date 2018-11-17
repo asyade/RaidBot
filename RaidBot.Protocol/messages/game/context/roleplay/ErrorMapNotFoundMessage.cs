@@ -1,74 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:20
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ErrorMapNotFoundMessage : NetworkMessage
 {
 
-public const uint Id = 6197;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6197;
+	public override uint MessageId { get { return Id; } }
+
+	public double MapId { get; set; }
+
+	public ErrorMapNotFoundMessage() {}
+
+
+	public ErrorMapNotFoundMessage InitErrorMapNotFoundMessage(double MapId)
+	{
+		this.MapId = MapId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteDouble(this.MapId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.MapId = reader.ReadDouble();
+	}
 }
-
-public int mapId;
-        
-
-public ErrorMapNotFoundMessage()
-{
-}
-
-public ErrorMapNotFoundMessage(int mapId)
-        {
-            this.mapId = mapId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(mapId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-mapId = reader.ReadInt();
-            if (mapId < 0)
-                throw new Exception("Forbidden value on mapId = " + mapId + ", it doesn't respect the following condition : mapId < 0");
-            
-
-}
-
-
-}
-
-
 }

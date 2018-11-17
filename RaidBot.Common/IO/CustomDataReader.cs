@@ -9,7 +9,7 @@ namespace RaidBot.Common.IO
     public class CustomDataReader : BigEndianReader, ICustomDataReader
     {
         public CustomDataReader(byte[] buffer) : base(buffer) { }
-        public int ReadVarint()
+        public int ReadVarInt()
         {
             int retVal = 0;
             int proccesed = 0;
@@ -37,10 +37,10 @@ namespace RaidBot.Common.IO
 
         public uint ReadVaruhint()
         {
-            return (uint)ReadVarint();
+            return (uint)ReadVarInt();
         }
 
-        public short ReadVarshort()
+        public short ReadVarShort()
         {
             int retVal = 0;
             int processed = 0;
@@ -72,10 +72,10 @@ namespace RaidBot.Common.IO
 
         public ushort ReadVaruhshort()
         {
-            return (ushort)ReadVarshort();
+            return (ushort)ReadVarShort();
         }
 
-        public Types.Int64 ReadVarlong()
+        public Types.Int64 ReadVarLong()
         {
             return ReadInt64();
         }

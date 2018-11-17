@@ -1,76 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class ShortcutEmote : Shortcut
 {
 
-public const short Id = 389;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 389;
+	public override uint MessageId { get { return Id; } }
+
+	public byte EmoteId { get; set; }
+
+	public ShortcutEmote() {}
+
+
+	public ShortcutEmote InitShortcutEmote(byte EmoteId)
+	{
+		this.EmoteId = EmoteId;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteByte(this.EmoteId);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.EmoteId = reader.ReadByte();
+	}
 }
-
-public byte emoteId;
-        
-
-public ShortcutEmote()
-{
-}
-
-public ShortcutEmote(sbyte slot, byte emoteId)
-         : base(slot)
-        {
-            this.emoteId = emoteId;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteByte(emoteId);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            emoteId = reader.ReadByte();
-            if (emoteId < 0 || emoteId > 255)
-                throw new Exception("Forbidden value on emoteId = " + emoteId + ", it doesn't respect the following condition : emoteId < 0 || emoteId > 255");
-            
-
-}
-
-
-}
-
-
 }

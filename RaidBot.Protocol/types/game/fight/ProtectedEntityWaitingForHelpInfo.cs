@@ -1,81 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:08
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
+{
+public class ProtectedEntityWaitingForHelpInfo : NetworkType
 {
 
-public class ProtectedEntityWaitingForHelpInfo
-{
+	public const uint Id = 186;
+	public override uint MessageId { get { return Id; } }
 
-public const short Id = 186;
-public virtual short TypeId
-{
-    get { return Id; }
+	public int TimeLeftBeforeFight { get; set; }
+	public int WaitTimeForPlacement { get; set; }
+	public byte NbPositionForDefensors { get; set; }
+
+	public ProtectedEntityWaitingForHelpInfo() {}
+
+
+	public ProtectedEntityWaitingForHelpInfo InitProtectedEntityWaitingForHelpInfo(int TimeLeftBeforeFight, int WaitTimeForPlacement, byte NbPositionForDefensors)
+	{
+		this.TimeLeftBeforeFight = TimeLeftBeforeFight;
+		this.WaitTimeForPlacement = WaitTimeForPlacement;
+		this.NbPositionForDefensors = NbPositionForDefensors;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.TimeLeftBeforeFight);
+		writer.WriteInt(this.WaitTimeForPlacement);
+		writer.WriteByte(this.NbPositionForDefensors);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.TimeLeftBeforeFight = reader.ReadInt();
+		this.WaitTimeForPlacement = reader.ReadInt();
+		this.NbPositionForDefensors = reader.ReadByte();
+	}
 }
-
-public int timeLeftBeforeFight;
-        public int waitTimeForPlacement;
-        public sbyte nbPositionForDefensors;
-        
-
-public ProtectedEntityWaitingForHelpInfo()
-{
-}
-
-public ProtectedEntityWaitingForHelpInfo(int timeLeftBeforeFight, int waitTimeForPlacement, sbyte nbPositionForDefensors)
-        {
-            this.timeLeftBeforeFight = timeLeftBeforeFight;
-            this.waitTimeForPlacement = waitTimeForPlacement;
-            this.nbPositionForDefensors = nbPositionForDefensors;
-        }
-        
-
-public virtual void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteInt(timeLeftBeforeFight);
-            writer.WriteInt(waitTimeForPlacement);
-            writer.WriteSByte(nbPositionForDefensors);
-            
-
-}
-
-public virtual void Deserialize(ICustomDataReader reader)
-{
-
-timeLeftBeforeFight = reader.ReadInt();
-            waitTimeForPlacement = reader.ReadInt();
-            nbPositionForDefensors = reader.ReadSByte();
-            if (nbPositionForDefensors < 0)
-                throw new Exception("Forbidden value on nbPositionForDefensors = " + nbPositionForDefensors + ", it doesn't respect the following condition : nbPositionForDefensors < 0");
-            
-
-}
-
-
-}
-
-
 }

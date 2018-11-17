@@ -8,9 +8,9 @@ namespace RaidBot.Common.IO
 {
     public interface ICustomDataWriter:IDataWriter
     {
-        void WriteVarint(int value);
-        void WriteVarshort(short value);
-        void WriteVarlong(double value);
+        void WriteVarInt(int value);
+        void WriteVarShort(short value);
+        void WriteVarLong(double value);
         void WriteVaruhint(uint value);
         void WriteVaruhshort(ushort value);
         void WriteVaruhlong(ulong value);

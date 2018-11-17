@@ -1,77 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:10
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class LifePointsRegenEndMessage : UpdateLifePointsMessage
 {
 
-public const uint Id = 5686;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5686;
+	public override uint MessageId { get { return Id; } }
+
+	public int LifePointsGained { get; set; }
+
+	public LifePointsRegenEndMessage() {}
+
+
+	public LifePointsRegenEndMessage InitLifePointsRegenEndMessage(int LifePointsGained)
+	{
+		this.LifePointsGained = LifePointsGained;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarInt(this.LifePointsGained);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.LifePointsGained = reader.ReadVarInt();
+	}
 }
-
-public uint lifePointsGained;
-        
-
-public LifePointsRegenEndMessage()
-{
-}
-
-public LifePointsRegenEndMessage(uint lifePoints, uint maxLifePoints, uint lifePointsGained)
-         : base(lifePoints, maxLifePoints)
-        {
-            this.lifePointsGained = lifePointsGained;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhint(lifePointsGained);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            lifePointsGained = reader.ReadVaruhint();
-            if (lifePointsGained < 0)
-                throw new Exception("Forbidden value on lifePointsGained = " + lifePointsGained + ", it doesn't respect the following condition : lifePointsGained < 0");
-            
-
-}
-
-
-}
-
-
 }

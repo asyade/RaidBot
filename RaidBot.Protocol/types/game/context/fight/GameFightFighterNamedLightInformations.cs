@@ -1,74 +1,39 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:03
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameFightFighterNamedLightInformations : GameFightFighterLightInformations
 {
 
-public const short Id = 456;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 456;
+	public override uint MessageId { get { return Id; } }
+
+	public String Name { get; set; }
+
+	public GameFightFighterNamedLightInformations() {}
+
+
+	public GameFightFighterNamedLightInformations InitGameFightFighterNamedLightInformations(String Name)
+	{
+		this.Name = Name;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteUTF(this.Name);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.Name = reader.ReadUTF();
+	}
 }
-
-public string name;
-        
-
-public GameFightFighterNamedLightInformations()
-{
-}
-
-public GameFightFighterNamedLightInformations(bool sex, bool alive, int id, sbyte wave, ushort level, sbyte breed, string name)
-         : base(sex, alive, id, wave, level, breed)
-        {
-            this.name = name;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteUTF(name);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            name = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

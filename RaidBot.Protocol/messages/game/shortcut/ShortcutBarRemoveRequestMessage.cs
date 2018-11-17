@@ -1,80 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:56
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ShortcutBarRemoveRequestMessage : NetworkMessage
 {
 
-public const uint Id = 6228;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6228;
+	public override uint MessageId { get { return Id; } }
+
+	public byte BarType { get; set; }
+	public byte Slot { get; set; }
+
+	public ShortcutBarRemoveRequestMessage() {}
+
+
+	public ShortcutBarRemoveRequestMessage InitShortcutBarRemoveRequestMessage(byte BarType, byte Slot)
+	{
+		this.BarType = BarType;
+		this.Slot = Slot;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.BarType);
+		writer.WriteByte(this.Slot);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.BarType = reader.ReadByte();
+		this.Slot = reader.ReadByte();
+	}
 }
-
-public sbyte barType;
-        public sbyte slot;
-        
-
-public ShortcutBarRemoveRequestMessage()
-{
-}
-
-public ShortcutBarRemoveRequestMessage(sbyte barType, sbyte slot)
-        {
-            this.barType = barType;
-            this.slot = slot;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(barType);
-            writer.WriteSByte(slot);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-barType = reader.ReadSByte();
-            if (barType < 0)
-                throw new Exception("Forbidden value on barType = " + barType + ", it doesn't respect the following condition : barType < 0");
-            slot = reader.ReadSByte();
-            if (slot < 0 || slot > 99)
-                throw new Exception("Forbidden value on slot = " + slot + ", it doesn't respect the following condition : slot < 0 || slot > 99");
-            
-
-}
-
-
-}
-
-
 }

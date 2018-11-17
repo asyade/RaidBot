@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:25
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class JobCrafterDirectoryListMessage : NetworkMessage
 {
 
-public const uint Id = 6046;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6046;
+	public override uint MessageId { get { return Id; } }
+
+	public JobCrafterDirectoryListEntry[] ListEntries { get; set; }
+
+	public JobCrafterDirectoryListMessage() {}
+
+
+	public JobCrafterDirectoryListMessage InitJobCrafterDirectoryListMessage(JobCrafterDirectoryListEntry[] ListEntries)
+	{
+		this.ListEntries = ListEntries;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ListEntries.Length);
+		foreach (JobCrafterDirectoryListEntry item in this.ListEntries)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ListEntriesLen = reader.ReadShort();
+		ListEntries = new JobCrafterDirectoryListEntry[ListEntriesLen];
+		for (int i = 0; i < ListEntriesLen; i++)
+		{
+			this.ListEntries[i] = new JobCrafterDirectoryListEntry();
+			this.ListEntries[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.JobCrafterDirectoryListEntry[] listEntries;
-        
-
-public JobCrafterDirectoryListMessage()
-{
-}
-
-public JobCrafterDirectoryListMessage(Types.JobCrafterDirectoryListEntry[] listEntries)
-        {
-            this.listEntries = listEntries;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)listEntries.Length);
-            foreach (var entry in listEntries)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            listEntries = new Types.JobCrafterDirectoryListEntry[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 listEntries[i] = new Types.JobCrafterDirectoryListEntry();
-                 listEntries[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

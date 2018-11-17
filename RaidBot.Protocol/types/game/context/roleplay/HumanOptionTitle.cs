@@ -1,79 +1,43 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:42:05
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Types
+namespace Raidbot.Protocol.Messages
 {
-
 public class HumanOptionTitle : HumanOption
 {
 
-public const short Id = 408;
-public override short TypeId
-{
-    get { return Id; }
+	public const uint Id = 408;
+	public override uint MessageId { get { return Id; } }
+
+	public short TitleId { get; set; }
+	public String TitleParam { get; set; }
+
+	public HumanOptionTitle() {}
+
+
+	public HumanOptionTitle InitHumanOptionTitle(short TitleId, String TitleParam)
+	{
+		this.TitleId = TitleId;
+		this.TitleParam = TitleParam;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		base.Serialize(writer);
+		writer.WriteVarShort(this.TitleId);
+		writer.WriteUTF(this.TitleParam);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		base.Deserialize(reader);
+		this.TitleId = reader.ReadVarShort();
+		this.TitleParam = reader.ReadUTF();
+	}
 }
-
-public ushort titleId;
-        public string titleParam;
-        
-
-public HumanOptionTitle()
-{
-}
-
-public HumanOptionTitle(ushort titleId, string titleParam)
-        {
-            this.titleId = titleId;
-            this.titleParam = titleParam;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-base.Serialize(writer);
-            writer.WriteVaruhshort(titleId);
-            writer.WriteUTF(titleParam);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-base.Deserialize(reader);
-            titleId = reader.ReadVaruhshort();
-            if (titleId < 0)
-                throw new Exception("Forbidden value on titleId = " + titleId + ", it doesn't respect the following condition : titleId < 0");
-            titleParam = reader.ReadUTF();
-            
-
-}
-
-
-}
-
-
 }

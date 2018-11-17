@@ -1,82 +1,47 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:48
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeStartedMountStockMessage : NetworkMessage
 {
 
-public const uint Id = 5984;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5984;
+	public override uint MessageId { get { return Id; } }
+
+	public ObjectItem[] ObjectsInfos { get; set; }
+
+	public ExchangeStartedMountStockMessage() {}
+
+
+	public ExchangeStartedMountStockMessage InitExchangeStartedMountStockMessage(ObjectItem[] ObjectsInfos)
+	{
+		this.ObjectsInfos = ObjectsInfos;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ObjectsInfos.Length);
+		foreach (ObjectItem item in this.ObjectsInfos)
+		{
+			item.Serialize(writer);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectsInfosLen = reader.ReadShort();
+		ObjectsInfos = new ObjectItem[ObjectsInfosLen];
+		for (int i = 0; i < ObjectsInfosLen; i++)
+		{
+			this.ObjectsInfos[i] = new ObjectItem();
+			this.ObjectsInfos[i].Deserialize(reader);
+		}
+	}
 }
-
-public Types.ObjectItem[] objectsInfos;
-        
-
-public ExchangeStartedMountStockMessage()
-{
-}
-
-public ExchangeStartedMountStockMessage(Types.ObjectItem[] objectsInfos)
-        {
-            this.objectsInfos = objectsInfos;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)objectsInfos.Length);
-            foreach (var entry in objectsInfos)
-            {
-                 entry.Serialize(writer);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            objectsInfos = new Types.ObjectItem[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectsInfos[i] = new Types.ObjectItem();
-                 objectsInfos[i].Deserialize(reader);
-            }
-            
-
-}
-
-
-}
-
-
 }

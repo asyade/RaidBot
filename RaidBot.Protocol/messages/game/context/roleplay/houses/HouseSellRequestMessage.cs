@@ -1,74 +1,45 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:24
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class HouseSellRequestMessage : NetworkMessage
 {
 
-public const uint Id = 5697;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5697;
+	public override uint MessageId { get { return Id; } }
+
+	public int InstanceId { get; set; }
+	public long Amount { get; set; }
+	public bool ForSale { get; set; }
+
+	public HouseSellRequestMessage() {}
+
+
+	public HouseSellRequestMessage InitHouseSellRequestMessage(int InstanceId, long Amount, bool ForSale)
+	{
+		this.InstanceId = InstanceId;
+		this.Amount = Amount;
+		this.ForSale = ForSale;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteInt(this.InstanceId);
+		writer.WriteVarLong(this.Amount);
+		writer.WriteBoolean(this.ForSale);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.InstanceId = reader.ReadInt();
+		this.Amount = reader.ReadVarLong();
+		this.ForSale = reader.ReadBoolean();
+	}
 }
-
-public uint amount;
-        
-
-public HouseSellRequestMessage()
-{
-}
-
-public HouseSellRequestMessage(uint amount)
-        {
-            this.amount = amount;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVaruhint(amount);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-amount = reader.ReadVaruhint();
-            if (amount < 0)
-                throw new Exception("Forbidden value on amount = " + amount + ", it doesn't respect the following condition : amount < 0");
-            
-
-}
-
-
-}
-
-
 }

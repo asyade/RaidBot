@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:47
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeShopStockMultiMovementRemovedMessage : NetworkMessage
 {
 
-public const uint Id = 6037;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 6037;
+	public override uint MessageId { get { return Id; } }
+
+	public int[] ObjectIdList { get; set; }
+
+	public ExchangeShopStockMultiMovementRemovedMessage() {}
+
+
+	public ExchangeShopStockMultiMovementRemovedMessage InitExchangeShopStockMultiMovementRemovedMessage(int[] ObjectIdList)
+	{
+		this.ObjectIdList = ObjectIdList;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ObjectIdList.Length);
+		foreach (int item in this.ObjectIdList)
+		{
+			writer.WriteVarInt(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ObjectIdListLen = reader.ReadShort();
+		ObjectIdList = new int[ObjectIdListLen];
+		for (int i = 0; i < ObjectIdListLen; i++)
+		{
+			this.ObjectIdList[i] = reader.ReadVarInt();
+		}
+	}
 }
-
-public uint[] objectIdList;
-        
-
-public ExchangeShopStockMultiMovementRemovedMessage()
-{
-}
-
-public ExchangeShopStockMultiMovementRemovedMessage(uint[] objectIdList)
-        {
-            this.objectIdList = objectIdList;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)objectIdList.Length);
-            foreach (var entry in objectIdList)
-            {
-                 writer.WriteVaruhint(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            objectIdList = new uint[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 objectIdList[i] = reader.ReadVaruhint();
-            }
-            
-
-}
-
-
-}
-
-
 }

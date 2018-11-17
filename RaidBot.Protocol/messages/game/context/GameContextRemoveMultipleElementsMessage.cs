@@ -1,81 +1,46 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:14
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class GameContextRemoveMultipleElementsMessage : NetworkMessage
 {
 
-public const uint Id = 252;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 252;
+	public override uint MessageId { get { return Id; } }
+
+	public double[] ElementsIds { get; set; }
+
+	public GameContextRemoveMultipleElementsMessage() {}
+
+
+	public GameContextRemoveMultipleElementsMessage InitGameContextRemoveMultipleElementsMessage(double[] ElementsIds)
+	{
+		this.ElementsIds = ElementsIds;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteShort(this.ElementsIds.Length);
+		foreach (double item in this.ElementsIds)
+		{
+			writer.WriteDouble(item);
+		}
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		int ElementsIdsLen = reader.ReadShort();
+		ElementsIds = new double[ElementsIdsLen];
+		for (int i = 0; i < ElementsIdsLen; i++)
+		{
+			this.ElementsIds[i] = reader.ReadDouble();
+		}
+	}
 }
-
-public int[] id;
-        
-
-public GameContextRemoveMultipleElementsMessage()
-{
-}
-
-public GameContextRemoveMultipleElementsMessage(int[] id)
-        {
-            this.id = id;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteUShort((ushort)id.Length);
-            foreach (var entry in id)
-            {
-                 writer.WriteInt(entry);
-            }
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-var limit = reader.ReadUShort();
-            id = new int[limit];
-            for (int i = 0; i < limit; i++)
-            {
-                 id[i] = reader.ReadInt();
-            }
-            
-
-}
-
-
-}
-
-
 }

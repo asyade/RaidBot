@@ -1,72 +1,37 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:46
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ExchangeObjectMoveKamaMessage : NetworkMessage
 {
 
-public const uint Id = 5520;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 5520;
+	public override uint MessageId { get { return Id; } }
+
+	public long Quantity { get; set; }
+
+	public ExchangeObjectMoveKamaMessage() {}
+
+
+	public ExchangeObjectMoveKamaMessage InitExchangeObjectMoveKamaMessage(long Quantity)
+	{
+		this.Quantity = Quantity;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteVarLong(this.Quantity);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Quantity = reader.ReadVarLong();
+	}
 }
-
-public int quantity;
-        
-
-public ExchangeObjectMoveKamaMessage()
-{
-}
-
-public ExchangeObjectMoveKamaMessage(int quantity)
-        {
-            this.quantity = quantity;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteVarint(quantity);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-quantity = reader.ReadVarint();
-            
-
-}
-
-
-}
-
-
 }

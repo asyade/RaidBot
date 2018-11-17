@@ -1,78 +1,41 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Generated on 06/26/2015 11:41:12
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using RaidBot.Protocol.Types;
+using RaidBot.Protocol.Messages;
 using RaidBot.Common.IO;
 
-namespace RaidBot.Protocol.Messages
+namespace Raidbot.Protocol.Messages
 {
-
 public class ChannelEnablingMessage : NetworkMessage
 {
 
-public const uint Id = 890;
-public override uint MessageId
-{
-    get { return Id; }
+	public const uint Id = 890;
+	public override uint MessageId { get { return Id; } }
+
+	public byte Channel { get; set; }
+	public bool Enable { get; set; }
+
+	public ChannelEnablingMessage() {}
+
+
+	public ChannelEnablingMessage InitChannelEnablingMessage(byte Channel, bool Enable)
+	{
+		this.Channel = Channel;
+		this.Enable = Enable;
+		return (this);
+	}
+
+	public override void Serialize(ICustomDataWriter writer)
+	{
+		writer.WriteByte(this.Channel);
+		writer.WriteBoolean(this.Enable);
+	}
+
+	public override void Deserialize(ICustomDataReader reader)
+	{
+		this.Channel = reader.ReadByte();
+		this.Enable = reader.ReadBoolean();
+	}
 }
-
-public sbyte channel;
-        public bool enable;
-        
-
-public ChannelEnablingMessage()
-{
-}
-
-public ChannelEnablingMessage(sbyte channel, bool enable)
-        {
-            this.channel = channel;
-            this.enable = enable;
-        }
-        
-
-public override void Serialize(ICustomDataWriter writer)
-{
-
-writer.WriteSByte(channel);
-            writer.WriteBoolean(enable);
-            
-
-}
-
-public override void Deserialize(ICustomDataReader reader)
-{
-
-channel = reader.ReadSByte();
-            if (channel < 0)
-                throw new Exception("Forbidden value on channel = " + channel + ", it doesn't respect the following condition : channel < 0");
-            enable = reader.ReadBoolean();
-            
-
-}
-
-
-}
-
-
 }
